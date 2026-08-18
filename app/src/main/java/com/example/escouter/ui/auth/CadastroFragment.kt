@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentCadastroBinding
+import android.app.DatePickerDialog
+import java.util.Calendar
 
 class CadastroFragment : Fragment() {
 
@@ -26,6 +28,29 @@ class CadastroFragment : Fragment() {
 
         configurarSpinners()
 
+
+        binding.edtDataNascimento.setOnClickListener {
+            val calendario = Calendar.getInstance()
+
+            val ano=calendario.get(Calendar.YEAR)
+            val mes=calendario.get(Calendar.MONTH)
+            val dia=calendario.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(
+                requireContext(),{_,anoSelecionado,mesSelecionado,diaSelecionado ->
+                    val data = String.format(
+                        "%02d/%02d/%04d",
+                        diaSelecionado,
+                        mesSelecionado+1,
+                        anoSelecionado
+                    )
+                    binding.edtDataNascimento.setText(data)
+                },
+                ano,
+                mes,
+                dia
+            ).show()
+        }
         return binding.root
     }
 
