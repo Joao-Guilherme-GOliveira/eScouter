@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Rótulo acima de cada campo (ex: "Nome", "Email") -->
     <style name="FieldLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -11,7 +10,6 @@
         <item name="android:textSize">13sp</item>
     </style>
 
-    <!-- Estilo padrão dos EditText (Nome, Email, Senha, etc.) -->
     <style name="FieldInput">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
@@ -27,4 +25,7 @@
 
     </style>
 
+    <style name="Botao">
+        <item name="backgroundTint">@null</item>
+    </style>
 </resources>
