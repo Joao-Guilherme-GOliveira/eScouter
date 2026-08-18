@@ -14,13 +14,26 @@
             app:destination="@id/autentication" />
     </fragment>
     <navigation android:id="@+id/autentication"
-        app:startDestination="@id/cadastroFragment">
+        app:startDestination="@id/loginFragment">
         <fragment
             android:id="@+id/cadastroFragment"
             android:name="com.example.escouter.ui.auth.CadastroFragment"
             android:label="CadastroFragment"
 
-            tools:layout="@layout/fragment_cadastro" />
+            tools:layout="@layout/fragment_cadastro" >
+            <action
+                android:id="@+id/action_cadastroFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.example.escouter.ui.auth.LoginFragment"
+            android:label="LoginFragment"
+            tools:layout="@layout/fragment_login" >
+            <action
+                android:id="@+id/action_loginFragment_to_cadastroFragment"
+                app:destination="@id/cadastroFragment" />
+        </fragment>
     </navigation>
 
 </navigation>

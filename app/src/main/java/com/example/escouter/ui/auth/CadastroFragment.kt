@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentCadastroBinding
 import android.app.DatePickerDialog
+import androidx.navigation.fragment.findNavController
 import java.util.Calendar
 
 class CadastroFragment : Fragment() {
@@ -151,6 +152,18 @@ class CadastroFragment : Fragment() {
         )
 
         binding.spinnerTipoUsuario.adapter = adapterUsuario
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initListener()
+
+    }
+    private fun initListener(){
+        binding.tvJaPossuiConta.setOnClickListener {
+            findNavController().navigate(R.id.action_cadastroFragment_to_loginFragment)
+        }
     }
 
     override fun onDestroyView() {

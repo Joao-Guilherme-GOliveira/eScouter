@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F5F7"
@@ -155,7 +154,7 @@
                 android:focusable="true"
                 android:text="Já possui uma conta? Faça login"
                 android:textColor="#5A5F73"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
