@@ -3,12 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/cadastroFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
-        android:id="@+id/cadastroFragment"
-        android:name="com.example.escouter.ui.auth.CadastroFragment"
-        android:label="CadastroFragment"
+        android:id="@+id/splashFragment"
+        android:name="com.example.escouter.ui.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_autentication"
+            app:destination="@id/autentication" />
+    </fragment>
+    <navigation android:id="@+id/autentication"
+        app:startDestination="@id/cadastroFragment">
+        <fragment
+            android:id="@+id/cadastroFragment"
+            android:name="com.example.escouter.ui.auth.CadastroFragment"
+            android:label="CadastroFragment"
 
-        tools:layout="@layout/fragment_cadastro"/>
+            tools:layout="@layout/fragment_cadastro" />
+    </navigation>
 
 </navigation>
