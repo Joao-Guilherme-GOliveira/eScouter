@@ -27,6 +27,29 @@ class LoginFragment : Fragment() {
         initListener()
     }
     private fun initListener(){
+
+        binding.btnEntrar.setOnClickListener {
+
+            val email = binding.etEmail.text.toString().trim()
+            val senha = binding.etSenha.text.toString().trim()
+
+            when {
+                email.isEmpty() -> {
+                    binding.etEmail.error = "Informe seu email"
+                    binding.etEmail.requestFocus()
+                }
+
+                senha.isEmpty() -> {
+                    binding.etSenha.error = "Informe sua senha"
+                    binding.etSenha.requestFocus()
+                }
+
+                else -> {
+                    // Lógica de login
+                }
+            }
+        }
+
         binding.tvCriarConta.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_cadastroFragment)
         }
