@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="txtBranco">#FFFFFF</color>
+    <color name="cardPeneira">#1946AB</color>
+    <color name="txtPreto">#000000</color>
+    <color name="txtCinza">#686B70</color>
+    <color name="txtCinzaClaro">#787A7E</color>
+    <color name="card">#E4E4E7</color>
+    <color name="minicard">#374151</color>
+    <color name="pontuacoes">#4974D2</color>
+    <color name="opcoes">#2A2828</color>
+    <color name="fundo">#F5F5F5</color>
+    <color name="background">#F4F5F7</color>
+</resources>

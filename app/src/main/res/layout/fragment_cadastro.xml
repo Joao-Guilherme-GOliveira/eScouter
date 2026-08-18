@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F5F7"
+    android:fillViewport="true">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/fundo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="24dp">
+
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="180dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="Logo eScouter"
+                android:src="@drawable/logo" />
+
+            <!-- Tipo de Usuário -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Tipo de Usuário" />
+
+            <Spinner
+                android:id="@+id/spinnerTipoUsuario"
+                style="@style/Spinnerstyle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input"
+                android:paddingHorizontal="12dp"
+                android:spinnerMode="dropdown" />
+
+            <!-- Nome -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Nome" />
+
+            <EditText
+                android:id="@+id/edtNome"
+                style="@style/FieldInput"
+                android:hint="Nome Completo"
+                android:inputType="textPersonName" />
+
+            <!-- Email -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Email" />
+
+            <EditText
+                android:id="@+id/edtEmail"
+                style="@style/FieldInput"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+
+            <!-- Senha -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Senha" />
+
+            <EditText
+                android:id="@+id/edtSenha"
+                style="@style/FieldInput"
+                android:hint="Senha"
+                android:inputType="textPassword" />
+
+            <!-- Confirmar Senha -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Confirmar Senha" />
+
+            <!-- Data de Nascimento -->
+            <EditText
+                android:id="@+id/edtConfirmarSenha"
+                style="@style/FieldInput"
+                android:hint="Conf. Senha"
+                android:inputType="textPassword" />
+
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Data de Nascimento" />
+
+            <EditText
+                android:id="@+id/edtDataNascimento"
+                style="@style/FieldInput"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="00/00/0000"
+                android:inputType="date" />
+
+            <!-- Estado -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Estado" />
+
+            <Spinner
+                android:id="@+id/spinnerEstado"
+                style="@style/Spinnerstyle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_input"
+                android:paddingHorizontal="12dp"
+                android:spinnerMode="dropdown" />
+
+            <!-- Cidade -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="Cidade" />
+
+            <EditText
+                android:id="@+id/edtCidade"
+                style="@style/FieldInput"
+                android:hint="Ex: São Paulo"
+                android:inputType="text" />
+
+            <!-- Botão Criar Conta -->
+            <Button
+                android:id="@+id/btnCriarConta"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_button_primary"
+                android:elevation="0dp"
+                android:text="Criar Conta"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Login -->
+            <TextView
+                android:id="@+id/tvJaPossuiConta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Já possui uma conta? Faça login"
+                android:textColor="#5A5F73"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</ScrollView>
