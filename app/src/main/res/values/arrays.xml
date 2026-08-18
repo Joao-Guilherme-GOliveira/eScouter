@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="estados_brasil">
+        <item>Acre</item>
+        <item>Alagoas</item>
+        <item>Amapá</item>
+        <item>Amazonas</item>
+        <item>Bahia</item>
+        <item>Ceará</item>
+        <item>Distrito Federal</item>
+        <item>Espírito Santo</item>
+        <item>Goiás</item>
+        <item>Maranhão</item>
+        <item>Mato Grosso</item>
+        <item>Mato Grosso do Sul</item>
+        <item>Minas Gerais</item>
+        <item>Pará</item>
+        <item>Paraíba</item>
+        <item>Paraná</item>
+        <item>Pernambuco</item>
+        <item>Piauí</item>
+        <item>Rio de Janeiro</item>
+        <item>Rio Grande do Norte</item>
+        <item>Rio Grande do Sul</item>
+        <item>Rondônia</item>
+        <item>Roraima</item>
+        <item>Santa Catarina</item>
+        <item>São Paulo</item>
+        <item>Sergipe</item>
+        <item>Tocantins</item>
+    </string-array>
+
+    <string-array name="tipo_de_usuario">
+        <item>Atleta</item>
+        <item>Clube/Olheiro</item>
+    </string-array>
+</resources>
