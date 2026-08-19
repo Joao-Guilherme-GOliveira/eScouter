@@ -53,6 +53,9 @@ class LoginFragment : Fragment() {
         binding.tvCriarConta.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_cadastroFragment)
         }
+        binding.tvEsqueceuSenha.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_redefinirSenhaFragment)
+        }
     }
 
     override fun onDestroyView() {

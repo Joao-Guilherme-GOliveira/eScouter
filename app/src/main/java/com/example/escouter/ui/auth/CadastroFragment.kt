@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentCadastroBinding
 import android.app.DatePickerDialog
+import android.widget.EditText
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import java.util.Calendar
 
@@ -51,6 +53,77 @@ class CadastroFragment : Fragment() {
                 mes,
                 dia
             ).show()
+        }
+
+        binding.btnCriarConta.setOnClickListener {
+            val nome = binding.edtNome.text.toString().trim()
+            val email = binding.edtEmail.text.toString().trim()
+            val senha = binding.edtSenha.text.toString().trim()
+            val confirmsenha = binding.edtConfirmarSenha.text.toString()
+            val dtnascimento = binding.edtDataNascimento.text.toString()
+            val cidade = binding.edtCidade.text.toString().trim()
+
+            //valida nome
+            if (nome.isEmpty()){
+                binding.edtNome.error = "Preencha o campo de nome"
+                return@setOnClickListener
+            }
+
+            //valida email e confere se está nos padroes
+
+            val regexEmail = Regex("^[A-Za-z0-9._%+-]+@(gmail|hotmail|outlook|yahoo)\\.com$")
+
+            if (email.isEmpty()){
+                binding.edtEmail.error = "Preencha o campo de email"
+                return@setOnClickListener
+            }
+
+            if (!regexEmail.matches(email)){
+                binding.edtEmail.error = "Use um email válido"
+                return@setOnClickListener
+            }
+
+            //verifica se os spinners estao selecionado
+            if (binding.spinnerTipoUsuario.selectedItemPosition == 0){
+                val textErro = binding.spinnerTipoUsuario.selectedView as? TextView
+                textErro?.error = "Selecione um tipo de usuário"
+                Toast.makeText(requireContext(), "Selecione um tipo de Usuário", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+
+            }
+
+            if (binding.spinnerEstado.selectedItemPosition == 0){
+                val textErro = binding.spinnerEstado.selectedView as? TextView
+                textErro?.error = "Selecione um estado"
+                Toast.makeText(requireContext(), "Selecione um estado", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+
+            }
+
+            //verifica data de nascimento
+            if (dtnascimento.isEmpty()){
+                binding.edtDataNascimento.error = "Preencha o campo de data de nascimento"
+                return@setOnClickListener
+            }
+
+            //verifica a cidade
+            if (cidade.isEmpty()){
+                binding.edtCidade.error = "Preencha o campo de cidade"
+                return@setOnClickListener
+            }
+
+            // verifica senha
+            //confere se o campo de senha esta igual ao confirmar senha
+            if (senha.isEmpty() || confirmsenha.isEmpty()){
+                binding.edtConfirmarSenha.error = "Preencha o campo de senha"
+                return@setOnClickListener
+            }
+            if(senha != confirmsenha){
+                binding.edtConfirmarSenha.error = "As senhas não coincidem"
+                return@setOnClickListener
+            }
+
+
         }
         return binding.root
     }
@@ -156,16 +229,13 @@ class CadastroFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initListener()
-
     }
-    private fun initListener(){
+    private fun initListener() {
         binding.tvJaPossuiConta.setOnClickListener {
             findNavController().navigate(R.id.action_cadastroFragment_to_loginFragment)
         }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

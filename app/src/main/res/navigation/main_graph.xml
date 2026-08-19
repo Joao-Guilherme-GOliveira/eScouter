@@ -33,6 +33,18 @@
             <action
                 android:id="@+id/action_loginFragment_to_cadastroFragment"
                 app:destination="@id/cadastroFragment" />
+            <action
+                android:id="@+id/action_loginFragment_to_redefinirSenhaFragment"
+                app:destination="@id/redefinirSenhaFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/redefinirSenhaFragment"
+            android:name="com.example.escouter.ui.auth.RedefinirSenhaFragment"
+            android:label="RedefinirSenhaFragment"
+            tools:layout="@layout/fragment_redefinir_senha">
+            <action
+                android:id="@+id/action_redefinirSenhaFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
         </fragment>
     </navigation>
 
