@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentCadastroBinding
 import android.app.DatePickerDialog
-import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import java.util.Calendar
+import android.content.Context
+import com.example.escouter.model.Usuario
+import com.google.gson.Gson
 
 class CadastroFragment : Fragment() {
 
@@ -123,6 +125,38 @@ class CadastroFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            // Cria o objeto Usuario
+            val usuario = Usuario(
+                nome = nome,
+                email = email,
+                senha = senha,
+                dataNascimento = dtnascimento,
+                estado = binding.spinnerEstado.selectedItem.toString(),
+                cidade = cidade,
+                tipoUsuario = binding.spinnerTipoUsuario.selectedItem.toString()
+            )
+
+            // Converte o Usuario para JSON
+            val json = Gson().toJson(usuario)
+
+            // Abre o SharedPreferences
+            val preferences = requireContext().getSharedPreferences(
+                "eScouter",
+                Context.MODE_PRIVATE
+            )
+
+            // Salva o JSON
+            preferences.edit()
+                .putString("usuario", json)
+                .apply()
+
+            Toast.makeText(
+                requireContext(),
+                "Cadastro realizado com sucesso!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            findNavController().navigate(R.id.action_cadastroFragment_to_loginFragment)
 
         }
         return binding.root
