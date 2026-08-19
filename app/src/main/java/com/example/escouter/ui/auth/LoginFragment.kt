@@ -45,7 +45,9 @@ class LoginFragment : Fragment() {
                 }
 
                 else -> {
-                    // Lógica de login
+                    findNavController().navigate(
+                        R.id.action_loginFragment_to_home
+                    )
                 }
             }
         }
