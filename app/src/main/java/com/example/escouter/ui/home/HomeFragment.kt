@@ -9,14 +9,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
+    private lateinit var bottomNavigation: BottomNavigationView
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bottomNavigation = view.findViewById<BottomNavigationView>(
-            R.id.bottomNavigation
-        )
-
-        val navController = findNavController()
+        bottomNavigation = view.findViewById(R.id.bottomNavigation)
 
         bottomNavigation.setOnItemSelectedListener { item ->
 
@@ -27,12 +25,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
 
                 R.id.nav_perfil -> {
-                    navController.navigate(R.id.perfilFragment)
+                    findNavController().navigate(R.id.perfilFragment)
                     true
                 }
 
                 else -> false
             }
+        }
+
+        bottomNavigation.selectedItemId = R.id.nav_inicio
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Sempre que voltar para o Home,
+        // marca o ícone de início como selecionado.
+        if (::bottomNavigation.isInitialized) {
+            bottomNavigation.selectedItemId = R.id.nav_inicio
         }
     }
 }
