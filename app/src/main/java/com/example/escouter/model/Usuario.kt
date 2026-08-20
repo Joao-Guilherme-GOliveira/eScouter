@@ -7,5 +7,12 @@ data class Usuario(
     val dataNascimento: String,
     val estado: String,
     val cidade: String,
-    val tipoUsuario: String
+    val tipoUsuario: String,
+
+    val posicao: String = "",
+    val peso: String = "",
+    val altura: String = "",
+    val experiencia: String = "",
+
+    val midias: List<Midia> = emptyList()
 )

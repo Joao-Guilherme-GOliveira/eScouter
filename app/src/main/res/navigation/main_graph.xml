@@ -58,6 +58,11 @@
             android:name="com.example.escouter.ui.home.HomeFragment"
             android:label="HomeFragment"
             tools:layout="@layout/fragment_home"/>
+        <fragment
+            android:id="@+id/perfilFragment"
+            android:name="com.example.escouter.ui.home.PerfilFragment"
+            android:label="fragment_perfil"
+            tools:layout="@layout/fragment_perfil" />
     </navigation>
 
 </navigation>
