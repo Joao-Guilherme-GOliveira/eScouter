@@ -44,6 +44,12 @@ class PerfilFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnEditarPerfil.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_perfilFragment_to_editarPerfilAtletaFragment
+            )
+        }
+
         carregarUsuario()
         configurarBottomNavigation()
     }
@@ -65,6 +71,7 @@ class PerfilFragment : Fragment() {
             json,
             Usuario::class.java
         )
+        val anoCadastro = usuario.dataCadastro.takeLast(4)
 
         // =========================
         // DADOS PRINCIPAIS
@@ -77,6 +84,18 @@ class PerfilFragment : Fragment() {
 
         binding.txtLocalizacao.text =
             "${usuario.cidade} - ${usuario.estado}"
+
+        binding.txtDescricao.text =
+            usuario.descricao
+
+        if (usuario.descricao.isEmpty()) {
+            binding.txtDescricao.visibility = View.GONE
+        } else {
+            binding.txtDescricao.visibility = View.VISIBLE
+            binding.txtDescricao.text = usuario.descricao
+        }
+
+        binding.txtDesde.text = "Desde $anoCadastro"
 
 
         // =========================

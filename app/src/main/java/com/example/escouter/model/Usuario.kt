@@ -13,6 +13,8 @@ data class Usuario(
     val peso: String = "",
     val altura: String = "",
     val experiencia: String = "",
+    val descricao: String = "",
+    val dataCadastro: String = "",
 
     val midias: List<Midia> = emptyList()
 )

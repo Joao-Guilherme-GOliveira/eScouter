@@ -17,6 +17,9 @@ import java.util.Calendar
 import android.content.Context
 import com.example.escouter.model.Usuario
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CadastroFragment : Fragment() {
 
@@ -125,6 +128,11 @@ class CadastroFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            val dataCadastro = SimpleDateFormat(
+                "dd/MM/yyyy",
+                Locale.getDefault()
+            ).format(Date())
+
             // Cria o objeto Usuario
             val usuario = Usuario(
                 nome = nome,
@@ -133,7 +141,8 @@ class CadastroFragment : Fragment() {
                 dataNascimento = dtnascimento,
                 estado = binding.spinnerEstado.selectedItem.toString(),
                 cidade = cidade,
-                tipoUsuario = binding.spinnerTipoUsuario.selectedItem.toString()
+                tipoUsuario = binding.spinnerTipoUsuario.selectedItem.toString(),
+                dataCadastro = dataCadastro
             )
 
             // Converte o Usuario para JSON

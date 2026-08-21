@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nome"
                     android:textColor="@color/txtPreto"
-                    android:textSize="17sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
 
@@ -100,7 +100,7 @@
                     android:layout_marginTop="4dp"
                     android:text="Posição"
                     android:textColor="@color/txtCinzaClaro"
-                    android:textSize="11sp" />
+                    android:textSize="14sp" />
 
 
                 <!-- CIDADE E ESTADO -->
@@ -112,7 +112,7 @@
                     android:layout_marginTop="2dp"
                     android:text="Cidade - Estado"
                     android:textColor="@color/txtCinzaClaro"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
 
                 <!-- DESDE -->
@@ -124,7 +124,7 @@
                     android:layout_marginTop="1dp"
                     android:text="Desde"
                     android:textColor="@color/txtCinzaClaro"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
 
                 <!-- DESCRIÇÃO -->
@@ -134,9 +134,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Atacante veloz com 3 anos de experiência em futebol."
+                    android:text=""
                     android:textColor="@color/txtCinzaClaro"
-                    android:textSize="10sp" />
+                    android:textSize="14sp" />
 
 
                 <!-- BOTÃO EDITAR -->

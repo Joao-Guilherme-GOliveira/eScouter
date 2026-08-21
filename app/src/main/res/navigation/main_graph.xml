@@ -62,7 +62,16 @@
             android:id="@+id/perfilFragment"
             android:name="com.example.escouter.ui.home.PerfilFragment"
             android:label="fragment_perfil"
-            tools:layout="@layout/fragment_perfil" />
+            tools:layout="@layout/fragment_perfil" >
+            <action
+                android:id="@+id/action_perfilFragment_to_editarPerfilAtletaFragment"
+                app:destination="@id/editarPerfilAtletaFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/editarPerfilAtletaFragment"
+            android:name="com.example.escouter.ui.home.EditarPerfilAtletaFragment"
+            android:label="fragment_editar_perfil_atleta"
+            tools:layout="@layout/fragment_editar_perfil_atleta" />
     </navigation>
 
 </navigation>
