@@ -25,7 +25,4 @@
 
     </style>
 
-    <style name="Botao">
-        <item name="backgroundTint">@null</item>
-    </style>
 </resources>
