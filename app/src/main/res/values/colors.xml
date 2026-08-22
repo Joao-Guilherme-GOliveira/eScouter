@@ -11,5 +11,7 @@
     <color name="opcoes">#2A2828</color>
     <color name="fundo">#F5F5F5</color>
     <color name="background">#F4F5F7</color>
+    <color name="branco">#FFFFFF</color>
+    <color name="preto">#000000</color>
 
 </resources>

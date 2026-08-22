@@ -15,11 +15,13 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import java.util.Calendar
 import android.content.Context
+import android.widget.AdapterView
 import com.example.escouter.model.Usuario
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 class CadastroFragment : Fragment() {
 
@@ -268,6 +270,41 @@ class CadastroFragment : Fragment() {
         )
 
         binding.spinnerTipoUsuario.adapter = adapterUsuario
+
+        binding.spinnerTipoUsuario.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val tipoSelecionado = binding.spinnerTipoUsuario.selectedItem?.toString() ?: ""
+                attCamposporTipoUsuario(tipoSelecionado)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //nd selecionado, mantem campos padrao
+            }
+        }
+
+    }
+
+    private fun attCamposporTipoUsuario(tipo: String){
+        val serClube = tipo.equals("Clube/Olheiro", ignoreCase = true)
+
+        if (serClube){
+            binding.lblNome.text = "Nome do Clube"
+            binding.edtNome.hint = "ex: União FC"
+
+            binding.lblDataNascimento.text = "Data de Fundação"
+            binding.edtDataNascimento.hint = "00/00/0000"
+        } else {
+            binding.lblNome.text = "Nome"
+            binding.edtNome.hint = "Nome Completo"
+
+            binding.lblDataNascimento.text = "Data de Nascimento"
+            binding.edtDataNascimento.hint = "00/00/0000"
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -47,6 +47,7 @@
 
             <!-- Nome -->
             <TextView
+                android:id="@+id/lblNome"
                 style="@style/FieldLabel"
                 android:text="Nome" />
 
@@ -83,14 +84,15 @@
                 style="@style/FieldLabel"
                 android:text="Confirmar Senha" />
 
-            <!-- Data de Nascimento -->
             <EditText
                 android:id="@+id/edtConfirmarSenha"
                 style="@style/FieldInput"
                 android:hint="Conf. Senha"
                 android:inputType="textPassword" />
 
+            <!-- Data de Nascimento -->
             <TextView
+                android:id="@+id/lblDataNascimento"
                 style="@style/FieldLabel"
                 android:text="Data de Nascimento" />
 

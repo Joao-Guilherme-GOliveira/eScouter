@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Criar nova peneira"
+            android:textColor="@color/preto"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <!--nome do time-->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Nome do Time"/>
+        <EditText
+            android:id="@+id/edtNomeTime"
+            style="@style/FieldInput"
+            android:hint="ex: União FC - Sub-19"
+            android:inputType="text"/>
+
+        <!--data da peneira-->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Data da peneira"/>
+
+        <EditText
+            android:id="@+id/edtDataPeneira"
+            style="@style/FieldInput"
+            android:hint="Selecione a data da peneira"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"/>
+
+        <!--horario peneira-->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Horário da peneira"/>
+
+        <EditText
+            android:id="@+id/edtHoraPeneira"
+            style="@style/FieldInput"
+            android:hint="Selecione o horário"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none"
+            />
+
+        <!--local peneria-->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Local da peneira"/>
+
+        <EditText
+            android:id="@+id/edtLocalPeneira"
+            style="@style/FieldInput"
+            android:hint="ex: Rua Nelcy Lopes, 23 - Jardim Limoeiro"
+            android:inputType="text"/>
+
+        <!--botao salvar-->
+        <Button
+            android:id="@+id/btnSalvarPeneira"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_button_primary"
+            android:elevation="0dp"
+            android:text="Salvar Peneira"
+            android:textAllCaps="false"
+            android:textColor="@color/branco"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+</ScrollView>

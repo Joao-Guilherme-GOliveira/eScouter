@@ -79,6 +79,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/btnCriarPeneira"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_button_primary"
+        android:text="+ Criar Peneira"
+        android:textAllCaps="false"
+        android:textColor="@color/txtBranco"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/cardPeneira"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/destaques"
         android:layout_width="0dp"
@@ -89,7 +107,7 @@
         android:layout_marginEnd="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardPeneira">
+        app:layout_constraintTop_toBottomOf="@id/btnCriarPeneira">
 
         <TextView
             android:layout_width="wrap_content"
