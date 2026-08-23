@@ -1,359 +1,383 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <LinearLayout
-        android:id="@+id/cabecalho"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/txtPreto"
-            android:text="@string/app_name"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/txtCinza"
-            android:textSize="16sp"
-            android:layout_marginStart="10dp"
-            android:text="@string/desc_name"/>
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cardPeneira"
+    <!-- CONTEÚDO -->
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/bg_cardpeneira"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/cabecalho"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/txtPeneira"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Próxima Peneira"
-            android:textColor="@color/txtBranco"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <TextView
-            android:id="@+id/txtTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text=""
-            android:textColor="@color/txtBranco"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtPeneira" />
-
-        <TextView
-            android:id="@+id/txtData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text=""
-            android:textColor="@color/txtBranco"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtTime" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/btnCriarPeneira"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/bg_button_primary"
-        android:text="+ Criar Peneira"
-        android:textAllCaps="false"
-        android:textColor="@color/txtBranco"
-        style="@style/Botao"
-        android:textSize="14sp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/cardPeneira"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/destaques"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnCriarPeneira">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/txtPreto"
-            android:textSize="20sp"
-            android:text="Destaques da Semana"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardJogador1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="76dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bg_cardhome">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/fotoJogador1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/foto_jogador"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/CircularImage" />
-
-            <TextView
-                android:id="@+id/nomeJogador1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:text="Pablo Nistal"
-                android:textColor="@color/txtPreto"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/fotoJogador1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/infoJogador1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:text="Fixo • 18 anos"
-                android:textColor="@color/txtCinza"
-                android:textSize="10sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nomeJogador1" />
-
-            <TextView
-                android:id="@+id/golsJogador1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_estatistica"
-                android:paddingStart="8dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp"
-                android:text="8 gols"
-                android:textColor="@color/txtBranco"
-                android:textSize="9sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/infoJogador1" />
-
-            <TextView
-                android:id="@+id/assistenciasJogador1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_estatistica"
-                android:paddingStart="8dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp"
-                android:text="12 assistências"
-                android:textColor="@color/txtBranco"
-                android:textSize="9sp"
-                app:layout_constraintStart_toEndOf="@id/golsJogador1"
-                app:layout_constraintTop_toTopOf="@id/golsJogador1" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardJogador2"
-            android:layout_width="match_parent"
-            android:layout_height="76dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_cardhome">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/fotoJogador2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/foto_jogador2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/CircularImage" />
-
-            <TextView
-                android:id="@+id/nomeJogador2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:text="Phietro Sousa"
-                android:textColor="@color/txtPreto"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/fotoJogador2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/infoJogador2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:text="Ala-Pivô • 18 anos"
-                android:textColor="@color/txtCinza"
-                android:textSize="10sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nomeJogador2" />
-
-            <TextView
-                android:id="@+id/golsJogador2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_estatistica"
-                android:paddingStart="8dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp"
-                android:text="20 pontos"
-                android:textColor="@color/txtBranco"
-                android:textSize="9sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/infoJogador2" />
-
-            <TextView
-                android:id="@+id/assistenciasJogador2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_estatistica"
-                android:paddingStart="8dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp"
-                android:text="4 assistências"
-                android:textColor="@color/txtBranco"
-                android:textSize="9sp"
-                app:layout_constraintStart_toEndOf="@id/golsJogador2"
-                app:layout_constraintTop_toTopOf="@id/golsJogador2" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/partidas"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/destaques">
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/txtPreto"
-            android:textSize="20sp"
-            android:text="Partidas Recentes"/>
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="22dp"
+            android:paddingBottom="24dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardPartida1"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bg_cardhome">
-
-            <TextView
-                android:id="@+id/txtInfoPartida"
-                android:layout_width="wrap_content"
+            <!-- CABEÇALHO -->
+            <LinearLayout
+                android:id="@+id/cabecalho"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="7dp"
-                android:text="Ontem • Campeonato do Tigrão"
-                android:textColor="@color/txtCinza"
-                android:textSize="10sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtTimeCasa"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/txtPreto"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/desc_name"
+                    android:textColor="@color/txtCinza"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- PRÓXIMA PENEIRA -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardPeneira"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="União FC"
-                android:textColor="@color/txtPreto"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_cardpeneira"
+                android:minHeight="140dp"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/txtPeneira"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Próxima Peneira"
+                    android:textColor="@color/txtBranco"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/txtBranco"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtPeneira" />
+
+                <TextView
+                    android:id="@+id/txtData"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/txtBranco"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtTime" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- CRIAR PENEIRA -->
+            <Button
+                android:id="@+id/btnCriarPeneira"
+                style="@style/Botao"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_button_primary"
+                android:elevation="0dp"
+                android:text="+ Criar Peneira"
+                android:textAllCaps="false"
+                android:textColor="@color/txtBranco"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.728" />
-
-            <TextView
-                android:id="@+id/txtPlacar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 x 1"
-                android:textColor="@color/pontuacoes"
-                android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/txtTimeFora"
-                app:layout_constraintHorizontal_bias="0.494"
-                app:layout_constraintStart_toEndOf="@+id/txtTimeCasa"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.75" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/txtTimeFora"
-                android:layout_width="wrap_content"
+            <!-- DESTAQUES -->
+            <LinearLayout
+                android:id="@+id/destaques"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="Bons Amigos"
-                android:textColor="@color/txtPreto"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.711" />
+                android:layout_marginTop="28dp"
+                android:orientation="vertical">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Destaques da Semana"
+                    android:textColor="@color/txtPreto"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <!-- JOGADOR 1 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cardJogador1"
+                    android:layout_width="match_parent"
+                    android:layout_height="78dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_cardhome"
+                    android:padding="8dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/fotoJogador1"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/foto_jogador"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/CircularImage" />
+
+                    <TextView
+                        android:id="@+id/nomeJogador1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Pablo Nistal"
+                        android:textColor="@color/txtPreto"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/infoJogador1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="3dp"
+                        android:text="Fixo • 18 anos"
+                        android:textColor="@color/txtCinza"
+                        android:textSize="11sp"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nomeJogador1" />
+
+                    <TextView
+                        android:id="@+id/golsJogador1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_estatistica"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="8 gols"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="9sp"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador1"
+                        app:layout_constraintTop_toBottomOf="@id/infoJogador1" />
+
+                    <TextView
+                        android:id="@+id/assistenciasJogador1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_estatistica"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="12 assistências"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="9sp"
+                        app:layout_constraintStart_toEndOf="@id/golsJogador1"
+                        app:layout_constraintTop_toTopOf="@id/golsJogador1" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- JOGADOR 2 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cardJogador2"
+                    android:layout_width="match_parent"
+                    android:layout_height="78dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_cardhome"
+                    android:padding="8dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/fotoJogador2"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/foto_jogador2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/CircularImage" />
+
+                    <TextView
+                        android:id="@+id/nomeJogador2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Phietro Sousa"
+                        android:textColor="@color/txtPreto"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/infoJogador2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="3dp"
+                        android:text="Ala-Pivô • 18 anos"
+                        android:textColor="@color/txtCinza"
+                        android:textSize="11sp"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nomeJogador2" />
+
+                    <TextView
+                        android:id="@+id/golsJogador2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_estatistica"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="20 pontos"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="9sp"
+                        app:layout_constraintStart_toEndOf="@id/fotoJogador2"
+                        app:layout_constraintTop_toBottomOf="@id/infoJogador2" />
+
+                    <TextView
+                        android:id="@+id/assistenciasJogador2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_estatistica"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="4 assistências"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="9sp"
+                        app:layout_constraintStart_toEndOf="@id/golsJogador2"
+                        app:layout_constraintTop_toTopOf="@id/golsJogador2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <!-- PARTIDAS -->
+            <LinearLayout
+                android:id="@+id/partidas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Partidas Recentes"
+                    android:textColor="@color/txtPreto"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cardPartida1"
+                    android:layout_width="match_parent"
+                    android:layout_height="82dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_cardhome"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/txtInfoPartida"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ontem • Campeonato do Tigrão"
+                        android:textColor="@color/txtCinza"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtTimeCasa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="União FC"
+                        android:textColor="@color/txtPreto"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.72" />
+
+                    <TextView
+                        android:id="@+id/txtPlacar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2 x 1"
+                        android:textColor="@color/pontuacoes"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/txtTimeCasa"
+                        app:layout_constraintEnd_toStartOf="@id/txtTimeFora"
+                        app:layout_constraintStart_toEndOf="@id/txtTimeCasa"
+                        app:layout_constraintTop_toTopOf="@id/txtTimeCasa" />
+
+                    <TextView
+                        android:id="@+id/txtTimeFora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bons Amigos"
+                        android:textColor="@color/txtPreto"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/txtTimeCasa"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/txtTimeCasa" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTTOM NAVIGATION -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
