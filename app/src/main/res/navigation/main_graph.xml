@@ -72,6 +72,13 @@
             android:name="com.example.escouter.ui.home.EditarPerfilAtletaFragment"
             android:label="fragment_editar_perfil_atleta"
             tools:layout="@layout/fragment_editar_perfil_atleta" />
+
+        <fragment
+            android:id="@+id/minhasPeneirasFragment"
+            android:name="com.example.escouter.ui.home.MinhasPeneirasFragment"
+            android:label="Minhas Peneiras"
+            tools:layout="@layout/fragment_minhas_peneiras" />
+
     </navigation>
 
 </navigation>

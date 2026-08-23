@@ -26,6 +26,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var txtTime: TextView
     private lateinit var txtData: TextView
     private lateinit var btnCriarPeneira: Button
+    private lateinit var btnMinhasPeneiras: Button
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,6 +38,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         txtTime = view.findViewById(R.id.txtTime)
         txtData = view.findViewById(R.id.txtData)
         btnCriarPeneira = view.findViewById(R.id.btnCriarPeneira)
+        btnMinhasPeneiras = view.findViewById(R.id.btnMinhasPeneiras)
 
         configurarBottomNavigation()
     }
@@ -95,14 +98,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (isClubeOuOlheiro) {
 
             btnCriarPeneira.visibility = View.VISIBLE
+            btnMinhasPeneiras.visibility = View.VISIBLE
 
             btnCriarPeneira.setOnClickListener {
                 abrirCriarPeneira()
+            }
+            btnMinhasPeneiras.setOnClickListener {
+                findNavController().navigate(
+                    R.id.minhasPeneirasFragment
+                )
             }
 
         } else {
 
             btnCriarPeneira.visibility = View.GONE
+            btnMinhasPeneiras.visibility = View.GONE
         }
 
         exibirProximaPeneira()

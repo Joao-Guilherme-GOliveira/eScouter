@@ -120,6 +120,18 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <Button
+                android:id="@+id/btnMinhasPeneiras"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_button_primary"
+                android:text="Minhas Peneiras"
+                android:textAllCaps="false"
+                android:textColor="@color/branco"
+                android:textSize="15sp"
+                style="@style/Botao" />
+
             <!-- DESTAQUES -->
             <LinearLayout
                 android:id="@+id/destaques"
