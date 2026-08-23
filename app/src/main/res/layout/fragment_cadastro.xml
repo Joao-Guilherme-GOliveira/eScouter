@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/fundo"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/fundo">
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,119 +32,279 @@
                 android:contentDescription="Logo eScouter"
                 android:src="@drawable/logo" />
 
-            <!-- Tipo de Usuário -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Tipo de Usuário" />
-
-            <Spinner
-                android:id="@+id/spinnerTipoUsuario"
-                style="@style/Spinnerstyle"
+            <!-- Título e progresso -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input"
-                android:paddingHorizontal="12dp"
-                android:spinnerMode="dropdown" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <!-- Nome -->
-            <TextView
-                android:id="@+id/lblNome"
-                style="@style/FieldLabel"
-                android:text="Nome" />
+                <TextView
+                    android:id="@+id/txtTituloCadastro"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="CRIAR NOVA CONTA"
+                    android:textColor="@color/txtPreto"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edtNome"
-                style="@style/FieldInput"
-                android:hint="Nome Completo"
-                android:inputType="textPersonName" />
+                <TextView
+                    android:id="@+id/txtProgresso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Passo 1 de 3"
+                    android:textColor="@color/cardPeneira"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-            <!-- Email -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Email" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/edtEmail"
-                style="@style/FieldInput"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
-
-            <!-- Senha -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Senha" />
-
-            <EditText
-                android:id="@+id/edtSenha"
-                style="@style/FieldInput"
-                android:hint="Senha"
-                android:inputType="textPassword" />
-
-            <!-- Confirmar Senha -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Confirmar Senha" />
-
-            <EditText
-                android:id="@+id/edtConfirmarSenha"
-                style="@style/FieldInput"
-                android:hint="Conf. Senha"
-                android:inputType="textPassword" />
-
-            <!-- Data de Nascimento -->
-            <TextView
-                android:id="@+id/lblDataNascimento"
-                style="@style/FieldLabel"
-                android:text="Data de Nascimento" />
-
-            <EditText
-                android:id="@+id/edtDataNascimento"
-                style="@style/FieldInput"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="00/00/0000"
-                android:inputType="date" />
-
-            <!-- Estado -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Estado" />
-
-            <Spinner
-                android:id="@+id/spinnerEstado"
-                style="@style/Spinnerstyle"
+            <!-- Barra de progresso -->
+            <ProgressBar
+                android:id="@+id/progressCadastro"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="14dp"
-                android:background="@drawable/bg_input"
-                android:paddingHorizontal="12dp"
-                android:spinnerMode="dropdown" />
+                android:layout_height="5dp"
+                android:layout_marginTop="10dp"
+                android:max="3"
+                android:progress="1"
+                android:progressTint="@color/cardPeneira" />
 
-            <!-- Cidade -->
-            <TextView
-                style="@style/FieldLabel"
-                android:text="Cidade" />
+            <!-- ================================================= -->
+            <!-- PASSO 1 -->
+            <!-- ================================================= -->
 
-            <EditText
-                android:id="@+id/edtCidade"
-                style="@style/FieldInput"
-                android:hint="Ex: São Paulo"
-                android:inputType="text" />
-
-            <!-- Botão Criar Conta -->
-            <Button
-                android:id="@+id/btnCriarConta"
+            <LinearLayout
+                android:id="@+id/layoutPasso1"
                 android:layout_width="match_parent"
-                style="@style/Botao"
-                android:layout_height="52dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_button_primary"
-                android:elevation="0dp"
-                android:text="Criar Conta"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Tipo de Usuário -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="24dp"
+                    android:text="Tipo de Usuário" />
+
+                <Spinner
+                    android:id="@+id/spinnerTipoUsuario"
+                    style="@style/Spinnerstyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:paddingHorizontal="12dp"
+                    android:spinnerMode="dropdown" />
+
+                <!-- Nome -->
+                <TextView
+                    android:id="@+id/lblNome"
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Nome" />
+
+                <EditText
+                    android:id="@+id/edtNome"
+                    style="@style/FieldInput"
+                    android:hint="Nome Completo"
+                    android:inputType="textPersonName" />
+
+                <!-- Email -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Email" />
+
+                <EditText
+                    android:id="@+id/edtEmail"
+                    style="@style/FieldInput"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+
+                <!-- Próximo -->
+                <Button
+                    android:id="@+id/btnProximo1"
+                    style="@style/Botao"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_button_primary"
+                    android:elevation="0dp"
+                    android:text="Próximo Passo →"
+                    android:textAllCaps="false"
+                    android:textColor="@color/txtBranco"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- ================================================= -->
+            <!-- PASSO 2 -->
+            <!-- ================================================= -->
+
+            <LinearLayout
+                android:id="@+id/layoutPasso2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Data -->
+                <TextView
+                    android:id="@+id/lblDataNascimento"
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="24dp"
+                    android:text="Data de Nascimento" />
+
+                <EditText
+                    android:id="@+id/edtDataNascimento"
+                    style="@style/FieldInput"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="00/00/0000"
+                    android:inputType="date" />
+
+                <!-- Estado -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Estado" />
+
+                <Spinner
+                    android:id="@+id/spinnerEstado"
+                    style="@style/Spinnerstyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:paddingHorizontal="12dp"
+                    android:spinnerMode="dropdown" />
+
+                <!-- Cidade -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Cidade" />
+
+                <EditText
+                    android:id="@+id/edtCidade"
+                    style="@style/FieldInput"
+                    android:hint="Ex: São Paulo"
+                    android:inputType="text" />
+
+                <!-- Botões -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnVoltar2"
+                        style="@style/Botao"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_primary"
+                        android:elevation="0dp"
+                        android:text="← Voltar"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btnProximo2"
+                        style="@style/Botao"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_primary"
+                        android:elevation="0dp"
+                        android:text="Próximo →"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ================================================= -->
+            <!-- PASSO 3 -->
+            <!-- ================================================= -->
+
+            <LinearLayout
+                android:id="@+id/layoutPasso3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Senha -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="24dp"
+                    android:text="Senha" />
+
+                <EditText
+                    android:id="@+id/edtSenha"
+                    style="@style/FieldInput"
+                    android:hint="Senha"
+                    android:inputType="textPassword" />
+
+                <!-- Confirmar senha -->
+                <TextView
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Confirmar Senha" />
+
+                <EditText
+                    android:id="@+id/edtConfirmarSenha"
+                    style="@style/FieldInput"
+                    android:hint="Conf. Senha"
+                    android:inputType="textPassword" />
+
+                <!-- Botões -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnVoltar3"
+                        style="@style/Botao"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_primary"
+                        android:elevation="0dp"
+                        android:text="← Voltar"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btnCriarConta"
+                        style="@style/Botao"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_primary"
+                        android:elevation="0dp"
+                        android:text="Criar Conta"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- Login -->
             <TextView
@@ -151,7 +312,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="Já possui uma conta? Faça login"
@@ -159,6 +320,7 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
 </ScrollView>

@@ -1,9 +1,11 @@
 package com.example.escouter.ui.home
 
-
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
@@ -12,25 +14,43 @@ import com.example.escouter.model.Usuario
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Calendar
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var bottomNavigation: BottomNavigationView
 
-    // card "Próxima Peneira"
-    private var cardPeneira: View? = null
-    private var txtTime: android.widget.TextView? = null
-    private var txtData: android.widget.TextView? = null
-    private var btnCriarPeneira: android.widget.Button? = null
+    private lateinit var cardPeneira: View
+    private lateinit var txtTime: TextView
+    private lateinit var txtData: TextView
+    private lateinit var btnCriarPeneira: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bottomNavigation = view.findViewById(R.id.bottomNavigation)
+
         cardPeneira = view.findViewById(R.id.cardPeneira)
         txtTime = view.findViewById(R.id.txtTime)
         txtData = view.findViewById(R.id.txtData)
         btnCriarPeneira = view.findViewById(R.id.btnCriarPeneira)
+
+        configurarBottomNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::bottomNavigation.isInitialized) {
+            bottomNavigation.selectedItemId = R.id.nav_inicio
+        }
+
+        configurarTelaPorTipoDeUsuario()
+    }
+
+    private fun configurarBottomNavigation() {
 
         bottomNavigation.setOnItemSelectedListener { item ->
 
@@ -41,43 +61,48 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
 
                 R.id.nav_perfil -> {
-                    findNavController().navigate(R.id.perfilFragment)
+                    findNavController().navigate(
+                        R.id.perfilFragment
+                    )
                     true
                 }
 
                 else -> false
             }
         }
-
-        bottomNavigation.selectedItemId = R.id.nav_inicio
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun configurarTelaPorTipoDeUsuario() {
 
-        // Sempre que voltar para o Home,
-        // marca o ícone de início como selecionado.
-        if (::bottomNavigation.isInitialized) {
-            bottomNavigation.selectedItemId = R.id.nav_inicio
+        val usuario = carregarUsuario()
+
+        if (usuario == null) {
+            Toast.makeText(
+                requireContext(),
+                "Usuário não encontrado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
         }
-        configuraTelaByTipodeUser()
-    }
-    private fun configuraTelaByTipodeUser() {
 
-        val usuario = carregarUsuario() ?: return
+        val isClubeOuOlheiro =
+            usuario.tipoUsuario.equals(
+                "Clube/Olheiro",
+                ignoreCase = true
+            )
 
-        val ClubeOrScout = usuario.tipoUsuario.equals("Clube/Olheiro",
-            ignoreCase = true)
+        if (isClubeOuOlheiro) {
 
-        if (ClubeOrScout) {
-            // Clube/Olheiro: mostra o botão de criar peneira
-            btnCriarPeneira?.visibility = View.VISIBLE
-            btnCriarPeneira?.setOnClickListener {
+            btnCriarPeneira.visibility = View.VISIBLE
+
+            btnCriarPeneira.setOnClickListener {
                 abrirCriarPeneira()
             }
+
         } else {
-            //não aparece para o atleta
-            btnCriarPeneira?.visibility = View.GONE
+
+            btnCriarPeneira.visibility = View.GONE
         }
 
         exibirProximaPeneira()
@@ -85,33 +110,51 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun carregarUsuario(): Usuario? {
 
-        val context = context ?: return null
-
-        val preferences = context.getSharedPreferences(
+        val preferences = requireContext().getSharedPreferences(
             "eScouter",
             Context.MODE_PRIVATE
         )
 
-        val json = preferences.getString("usuario", null) ?: return null
+        val json = preferences.getString(
+            "usuario",
+            null
+        ) ?: return null
 
-        return Gson().fromJson(json, Usuario::class.java)
+        return try {
+            Gson().fromJson(
+                json,
+                Usuario::class.java
+            )
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun carregarPeneiras(): List<Peneira> {
 
-        val context = context ?: return emptyList()
-
-        val preferences = context.getSharedPreferences(
+        val preferences = requireContext().getSharedPreferences(
             "eScouter",
             Context.MODE_PRIVATE
         )
 
-        val json = preferences.getString("peneiras", null) ?:
-        return emptyList()
+        val json = preferences.getString(
+            "peneiras",
+            null
+        ) ?: return emptyList()
 
-        val tipoLista = object : TypeToken<List<Peneira>>() {}.type
+        return try {
 
-        return Gson().fromJson(json, tipoLista) ?: emptyList()
+            val tipoLista =
+                object : TypeToken<List<Peneira>>() {}.type
+
+            Gson().fromJson(
+                json,
+                tipoLista
+            ) ?: emptyList()
+
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     private fun exibirProximaPeneira() {
@@ -119,17 +162,54 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val peneiras = carregarPeneiras()
 
         if (peneiras.isEmpty()) {
-            cardPeneira?.visibility = View.GONE
+            cardPeneira.visibility = View.GONE
             return
         }
 
-        // Exibe a peneira mais recentemente criada
-        val proximaPeneira = peneiras.last()
+        val formato = SimpleDateFormat(
+            "dd/MM/yyyy",
+            Locale.getDefault()
+        )
 
-        cardPeneira?.visibility = View.VISIBLE
-        txtTime?.text = proximaPeneira.nomeTime
-        txtData?.text = "${proximaPeneira.data} • " +
-                "${proximaPeneira.hora} • ${proximaPeneira.local}"
+        val hoje = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+
+        val proximaPeneira = peneiras
+            .mapNotNull { peneira ->
+
+                try {
+                    val dataPeneira = formato.parse(peneira.data)
+
+                    if (dataPeneira != null && !dataPeneira.before(hoje)) {
+                        Pair(peneira, dataPeneira)
+                    } else {
+                        null
+                    }
+
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            .minByOrNull { it.second }
+            ?.first
+
+        if (proximaPeneira == null) {
+            cardPeneira.visibility = View.GONE
+            return
+        }
+
+        cardPeneira.visibility = View.VISIBLE
+
+        txtTime.text = proximaPeneira.nomeTime
+
+        txtData.text =
+            "${proximaPeneira.data} • " +
+                    "${proximaPeneira.hora} • " +
+                    proximaPeneira.local
     }
 
     private fun abrirCriarPeneira() {
@@ -137,9 +217,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val dialog = CriarPeneiraFragment()
 
         dialog.onPeneiraCriada = {
+
             exibirProximaPeneira()
         }
 
-        dialog.show(parentFragmentManager, "CriarPeneiraFragment")
+        dialog.show(
+            parentFragmentManager,
+            "CriarPeneiraFragment"
+        )
     }
 }
