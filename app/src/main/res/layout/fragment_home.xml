@@ -132,6 +132,17 @@
                 android:textSize="15sp"
                 style="@style/Botao" />
 
+            <Button
+                android:id="@+id/btnInscreverPeneira"
+                style="@style/Botao"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_button_primary"
+                android:text="Inscrever-se na Peneira"
+                android:textAllCaps="false"
+                android:textColor="@color/txtBranco"
+                android:textSize="15sp" />
             <!-- DESTAQUES -->
             <LinearLayout
                 android:id="@+id/destaques"

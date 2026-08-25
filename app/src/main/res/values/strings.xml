@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">eScouter</string>
     <string name="desc_name">Conectando talentos ao esporte</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_informacoes">Informações</string>
+    <string name="title_midias">Mídias</string>
+    <string name="btn_editar_perfil">Editar Perfil</string>
 </resources>
