@@ -13,5 +13,10 @@
     <color name="background">#F4F5F7</color>
     <color name="branco">#FFFFFF</color>
     <color name="preto">#000000</color>
+    <color name="badge_overlay">#990000</color>
+    <color name="card_white">#FFFFFF</color>
+    <color name="header_border">#4D8BFF</color>
+    <color name="primary_blue">#1E3FCB</color>
+    <color name="icon_blue">#2A4BD7</color>
 
 </resources>
