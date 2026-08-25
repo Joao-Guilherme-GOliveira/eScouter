@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TimePicker
 import android.widget.Toast
+import com.example.escouter.R
 import com.example.escouter.databinding.CriaPeneiraBinding
 import com.example.escouter.model.Peneira
 import com.example.escouter.model.Usuario
@@ -15,6 +17,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.Calendar
+import android.app.AlertDialog
+
 
 class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
@@ -77,20 +81,29 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
             val horaAtual = calendario.get(Calendar.HOUR_OF_DAY)
             val minutoAtual = calendario.get(Calendar.MINUTE)
+            val view = LayoutInflater.from(requireContext())
+                .inflate(R.layout.timer_peneira, null)
 
-            TimePickerDialog(
-                requireContext(), { _, horaSelecionada, minutoSelecionado ->
+            //time picker spinner
+
+            val timePicker = view.findViewById<TimePicker>(R.id.timerPickerPeneira)
+            timePicker.setIs24HourView(true)
+            timePicker.hour = horaAtual
+            timePicker.minute
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Selecione o horário da peneira")
+                .setView(view)
+                .setPositiveButton("OK") { _, _ ->
                     val hora = String.format(
                         "%02d:%02d",
-                        horaSelecionada,
-                        minutoSelecionado
+                        timePicker.hour,
+                        timePicker.minute
                     )
                     binding.edtHoraPeneira.setText(hora)
-                },
-                horaAtual,
-                minutoAtual,
-                true
-            ).show()
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 
