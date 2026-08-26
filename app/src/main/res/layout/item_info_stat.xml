@@ -24,7 +24,6 @@
             android:id="@+id/txtStatLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Idade"
             android:textColor="@color/txtCinza"
             android:textSize="11sp" />
 
@@ -32,7 +31,6 @@
             android:id="@+id/txtStatValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="18 anos"
             android:textColor="@color/txtPreto"
             android:textSize="13sp"
             android:textStyle="bold" />

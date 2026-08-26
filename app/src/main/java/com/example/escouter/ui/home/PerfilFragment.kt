@@ -1,7 +1,6 @@
 package com.example.escouter.ui.home
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentPerfilBinding
-import com.example.escouter.model.Midia
 import com.example.escouter.model.Usuario
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -44,14 +41,15 @@ class PerfilFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        carregarUsuario()
+        configurarBottomNavigation()
+
         binding.btnEditarPerfil.setOnClickListener {
+
             findNavController().navigate(
                 R.id.action_perfilFragment_to_editarPerfilAtletaFragment
             )
         }
-
-        carregarUsuario()
-        configurarBottomNavigation()
     }
 
     private fun carregarUsuario() {
@@ -61,60 +59,83 @@ class PerfilFragment : Fragment() {
             Context.MODE_PRIVATE
         )
 
-        val json = preferences.getString("usuario", null)
-
-        if (json == null) {
-            return
-        }
+        val json = preferences.getString(
+            "usuario",
+            null
+        ) ?: return
 
         val usuario = Gson().fromJson(
             json,
             Usuario::class.java
         )
-        val anoCadastro = usuario.dataCadastro.takeLast(4)
 
         // =========================
-        // DADOS PRINCIPAIS
+        // NOME
         // =========================
 
-        binding.txtNome.text = usuario.nome
+        binding.txtName.text = usuario.nome
 
-        binding.txtPosicao.text =
-            usuario.posicao
+        // =========================
+        // IDADE E POSIÇÃO
+        // =========================
 
-        binding.txtLocalizacao.text =
-            "${usuario.cidade} - ${usuario.estado}"
+        val idade = calcularIdade(
+            usuario.dataNascimento
+        )
 
-        binding.txtDescricao.text =
-            usuario.descricao
+        binding.txtPositionAge.text =
+            "${usuario.posicao} • $idade anos"
 
-        if (usuario.descricao.isEmpty()) {
-            binding.txtDescricao.visibility = View.GONE
+        // =========================
+        // LOCALIZAÇÃO E DATA
+        // =========================
+
+        val anoCadastro = if (usuario.dataCadastro.isNotEmpty()) {
+            usuario.dataCadastro.takeLast(4)
         } else {
-            binding.txtDescricao.visibility = View.VISIBLE
-            binding.txtDescricao.text = usuario.descricao
+            ""
         }
 
-        binding.txtDesde.text = "Desde $anoCadastro"
+        binding.txtLocationDate.text =
+            if (anoCadastro.isNotEmpty()) {
+                "📍 ${usuario.cidade}, ${usuario.estado}     🗓 Desde $anoCadastro"
+            } else {
+                "📍 ${usuario.cidade}, ${usuario.estado}"
+            }
 
+        // =========================
+        // DESCRIÇÃO
+        // =========================
+
+        if (usuario.descricao.isEmpty()) {
+
+            binding.txtBio.visibility = View.GONE
+
+        } else {
+
+            binding.txtBio.visibility = View.VISIBLE
+            binding.txtBio.text = usuario.descricao
+        }
 
         // =========================
         // INFORMAÇÕES
         // =========================
 
-        val idade = calcularIdade(usuario.dataNascimento)
-        binding.txtIdade.text =
+        binding.statIdade.txtStatLabel.text = "Idade"
+        binding.statIdade.txtStatValue.text =
             "$idade anos"
 
-        binding.txtPeso.text =
+        binding.statPeso.txtStatLabel.text = "Peso"
+        binding.statPeso.txtStatValue.text =
             usuario.peso
 
-        binding.txtAltura.text =
+        binding.statAltura.txtStatLabel.text = "Altura"
+        binding.statAltura.txtStatValue.text =
             usuario.altura
 
-        binding.txtExperiencia.text =
+        binding.statExperiencia.txtStatLabel.text = "Experiência"
+        binding.statExperiencia.txtStatValue.text =
             usuario.experiencia
-
 
         // =========================
         // MÍDIAS
@@ -125,99 +146,82 @@ class PerfilFragment : Fragment() {
 
     private fun calcularIdade(dataNascimento: String): Int {
 
-        return try {
-
-            val formato = SimpleDateFormat(
-                "dd/MM/yyyy",
-                Locale.getDefault()
-            )
-
-            formato.isLenient = false
-
-            val dataNascimentoDate = formato.parse(dataNascimento)
-                ?: return 0
-
-            val nascimento = Calendar.getInstance()
-            nascimento.time = dataNascimentoDate
-
-            val hoje = Calendar.getInstance()
-
-            var idade = hoje.get(Calendar.YEAR) -
-                    nascimento.get(Calendar.YEAR)
-
-            if (
-                hoje.get(Calendar.MONTH) < nascimento.get(Calendar.MONTH) ||
-                (
-                        hoje.get(Calendar.MONTH) == nascimento.get(Calendar.MONTH) &&
-                                hoje.get(Calendar.DAY_OF_MONTH) < nascimento.get(Calendar.DAY_OF_MONTH)
-                        )
-            ) {
-                idade--
-            }
-
-            idade
-
-        } catch (e: Exception) {
-            0
+        if (dataNascimento.isBlank()) {
+            return 0
         }
+
+        val formatos = listOf(
+            "dd/MM/yyyy",
+            "dd-MM-yyyy",
+            "yyyy-MM-dd"
+        )
+
+        for (padrao in formatos) {
+
+            try {
+
+                val formato = SimpleDateFormat(
+                    padrao,
+                    Locale.getDefault()
+                )
+
+                formato.isLenient = false
+
+                val data = formato.parse(dataNascimento)
+                    ?: continue
+
+                val nascimento = Calendar.getInstance()
+                nascimento.time = data
+
+                val hoje = Calendar.getInstance()
+
+                var idade =
+                    hoje.get(Calendar.YEAR) -
+                            nascimento.get(Calendar.YEAR)
+
+                if (
+                    hoje.get(Calendar.MONTH) <
+                    nascimento.get(Calendar.MONTH)
+                ) {
+
+                    idade--
+
+                } else if (
+                    hoje.get(Calendar.MONTH) ==
+                    nascimento.get(Calendar.MONTH) &&
+                    hoje.get(Calendar.DAY_OF_MONTH) <
+                    nascimento.get(Calendar.DAY_OF_MONTH)
+                ) {
+
+                    idade--
+                }
+
+                return idade
+
+            } catch (_: Exception) {
+                // tenta o próximo formato
+            }
+        }
+
+        return 0
     }
 
-    private fun carregarMidias(midias: List<Midia>) {
+    private fun carregarMidias(
+        midias: List<com.example.escouter.model.Midia>
+    ) {
 
         if (midias.isEmpty()) {
 
-            binding.layoutMidias.visibility = View.GONE
+            binding.recyclerMedia.visibility =
+                View.GONE
 
             return
         }
 
-        binding.layoutMidias.visibility = View.VISIBLE
+        binding.recyclerMedia.visibility =
+            View.VISIBLE
 
-        binding.gridMidias.removeAllViews()
-
-        for (midia in midias) {
-
-            val item = layoutInflater.inflate(
-                R.layout.item_midia,
-                binding.gridMidias,
-                false
-            )
-
-            val imgMidia = item.findViewById<android.widget.ImageView>(
-                R.id.imgMidia
-            )
-
-            val txtNome = item.findViewById<android.widget.TextView>(
-                R.id.txtNomeMidia
-            )
-
-            val txtDuracao = item.findViewById<android.widget.TextView>(
-                R.id.txtDuracaoMidia
-            )
-
-            txtNome.text = midia.nome
-            txtDuracao.text = midia.duracao
-
-            if (midia.uri.isNotEmpty()) {
-                imgMidia.setImageURI(Uri.parse(midia.uri))
-            }
-
-            val params = android.widget.GridLayout.LayoutParams()
-
-            params.width = 0
-            params.height =
-                android.widget.GridLayout.LayoutParams.WRAP_CONTENT
-
-            params.columnSpec =
-                android.widget.GridLayout.spec(
-                    android.widget.GridLayout.UNDEFINED,
-                    1f
-                )
-
-            item.layoutParams = params
-
-            binding.gridMidias.addView(item)
-        }
+        // O Adapter das mídias será configurado aqui futuramente.
     }
 
     private fun configurarBottomNavigation() {
@@ -230,7 +234,9 @@ class PerfilFragment : Fragment() {
 
                 R.id.nav_inicio -> {
 
-                    navController.popBackStack()
+                    navController.navigate(
+                        R.id.homeFragment
+                    )
 
                     true
                 }
@@ -244,13 +250,14 @@ class PerfilFragment : Fragment() {
             }
         }
 
-        // Deixa o ícone de perfil selecionado
         binding.bottomNavigation.selectedItemId =
             R.id.nav_perfil
     }
 
     override fun onDestroyView() {
+
         super.onDestroyView()
+
         _binding = null
     }
 }
