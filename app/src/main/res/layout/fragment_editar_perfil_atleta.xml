@@ -14,6 +14,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,122 +25,166 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="30dp">
+            android:paddingStart="20dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="35dp">
 
-            <!-- TÍTULO -->
+            <!-- ========================= -->
+            <!-- CABEÇALHO -->
+            <!-- ========================= -->
 
             <TextView
                 android:id="@+id/txtTitulo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="25dp"
-                android:text="Editar Perfil"
+                android:text="Editar perfil"
                 android:textColor="@color/txtPreto"
-                android:textSize="22sp"
+                android:textSize="26sp"
                 android:textStyle="bold" />
-
-
-            <!-- FOTO -->
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="145dp"
-                android:layout_marginTop="15dp">
-
-                <ImageView
-                    android:id="@+id/imgFotoPerfil"
-                    android:layout_width="105dp"
-                    android:layout_height="105dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_foto_perfil"
-                    android:clipToOutline="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_perfil"
-                    android:contentDescription="Foto de perfil" />
-
-                <TextView
-                    android:id="@+id/txtAlterarFoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="8dp"
-                    android:text="Alterar foto"
-                    android:textColor="@color/cardPeneira"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </FrameLayout>
-
-
-            <!-- DADOS DO CADASTRO -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
                 android:layout_marginTop="5dp"
+                android:text="Atualize suas informações e deixe seu perfil completo."
+                android:textColor="@color/txtCinzaClaro"
+                android:textSize="13sp" />
+
+            <!-- ========================= -->
+            <!-- FOTO -->
+            <!-- ========================= -->
+
+            <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="18dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:id="@+id/imgFotoPerfil"
+                    android:layout_width="115dp"
+                    android:layout_height="115dp"
+                    android:background="@drawable/bg_foto_perfil"
+                    android:clipToOutline="true"
+                    android:contentDescription="Foto de perfil"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_perfil" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/txtAlterarFoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Alterar foto"
+                    android:textAllCaps="false"
+                    android:textColor="@color/txtBranco"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/cardPeneira"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ========================= -->
+            <!-- DADOS PESSOAIS -->
+            <!-- ========================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
                 android:text="Dados pessoais"
                 android:textColor="@color/txtPreto"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-
-            <!-- NOME -->
-
             <TextView
-                android:id="@+id/txtNome"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="25dp"
-                android:text="Nome"
-                android:textColor="@color/txtPreto"
-                android:textSize="14sp" />
-
-
-            <!-- EMAIL -->
-
-            <TextView
-                android:id="@+id/txtEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="25dp"
-                android:text="Email"
+                android:layout_marginTop="4dp"
+                android:text="Informações básicas do seu perfil"
                 android:textColor="@color/txtCinzaClaro"
                 android:textSize="12sp" />
 
-
-            <!-- LOCALIZAÇÃO -->
-
-            <TextView
-                android:id="@+id/txtLocalizacao"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="25dp"
-                android:text="Cidade - Estado"
-                android:textColor="@color/txtCinzaClaro"
-                android:textSize="12sp" />
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="17dp">
 
-            <!-- DATA DE NASCIMENTO -->
+                    <!-- NOME -->
 
-            <TextView
-                android:id="@+id/txtDataNascimento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="25dp"
-                android:text="Data de nascimento"
-                android:textColor="@color/txtCinzaClaro"
-                android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/txtNome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nome"
+                        android:textColor="@color/txtPreto"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- EMAIL -->
+
+                    <TextView
+                        android:id="@+id/txtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Email"
+                        android:textColor="@color/txtCinzaClaro"
+                        android:textSize="12sp" />
+
+                    <!-- LOCALIZAÇÃO -->
+
+                    <TextView
+                        android:id="@+id/txtLocalizacao"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Cidade - Estado"
+                        android:textColor="@color/txtCinzaClaro"
+                        android:textSize="12sp" />
+
+                    <!-- DATA NASCIMENTO -->
+
+                    <TextView
+                        android:id="@+id/txtDataNascimento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Data de nascimento"
+                        android:textColor="@color/txtCinzaClaro"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
 
             <!-- ========================= -->
@@ -148,100 +194,154 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="28dp"
                 android:text="Informações do atleta"
                 android:textColor="@color/txtPreto"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Esses dados ajudam clubes a conhecerem você."
+                android:textColor="@color/txtCinzaClaro"
+                android:textSize="12sp" />
 
-            <!-- POSIÇÃO -->
 
-
-            <EditText
-                android:id="@+id/edtPosicao"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="25dp"
-                android:hint="Posição"
-                android:inputType="text"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="13sp"
-                android:textColor="@color/txtPreto"
-                android:textColorHint="@color/txtPreto"/>
-            <!-- PESO -->
-            <EditText
-                android:id="@+id/edtPeso"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="25dp"
-                android:hint="Peso (kg)"
-                android:inputType="numberDecimal"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="13sp"
-                android:textColor="@color/txtPreto"
-                android:textColorHint="@color/txtPreto"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="17dp">
+
+                    <!-- POSIÇÃO -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Posição"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtPosicao"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-            <!-- ALTURA -->
+                    <!-- PESO -->
 
-            <EditText
-                android:id="@+id/edtAltura"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="25dp"
-                android:hint="Altura (m)"
-                android:inputType="numberDecimal"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="13sp"
-                android:textColor="@color/txtPreto"
-                android:textColorHint="@color/txtPreto"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Peso (kg)"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp">
 
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtPeso"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp" />
 
-            <!-- EXPERIÊNCIA -->
-
-            <EditText
-                android:id="@+id/edtExperiencia"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="25dp"
-                android:hint="Experiência"
-                android:inputType="text"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="13sp"
-                android:textColor="@color/txtPreto"
-                android:textColorHint="@color/txtPreto"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-            <!-- DESCRIÇÃO -->
+                    <!-- ALTURA -->
 
-            <EditText
-                android:id="@+id/edtDescricao"
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="25dp"
-                android:gravity="top"
-                android:hint="Fale um pouco sobre você"
-                android:inputType="textMultiLine"
-                android:padding="15dp"
-                android:textSize="13sp"
-                android:textColor="@color/txtPreto"
-                android:textColorHint="@color/txtPreto"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Altura (m)"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtAltura"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- EXPERIÊNCIA -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Experiência"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtExperiencia"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- DESCRIÇÃO -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Sobre você"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtDescricao"
+                            android:layout_width="match_parent"
+                            android:layout_height="110dp"
+                            android:gravity="top"
+                            android:inputType="textMultiLine"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
 
             <!-- ========================= -->
@@ -251,40 +351,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="28dp"
                 android:text="Mídias"
                 android:textColor="@color/txtPreto"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
-
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginTop="4dp"
                 android:text="Adicione vídeos ou outras mídias para mostrar seu desempenho."
                 android:textColor="@color/txtCinzaClaro"
-                android:textSize="11sp" />
-
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnAdicionarMidia"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="25dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="14dp"
                 android:backgroundTint="@color/cardPeneira"
-                android:text="+ Adicionar mídia"
+                android:text="+  Adicionar mídia"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
-                android:textSize="12sp" />
-
-
-            <!-- MÍDIAS EXISTENTES -->
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <GridLayout
                 android:id="@+id/gridMidias"
@@ -292,37 +383,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:columnCount="2"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp" />
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp" />
 
 
             <!-- ========================= -->
-            <!-- BOTÕES -->
+            <!-- SALVAR -->
             <!-- ========================= -->
 
             <Button
                 android:id="@+id/btnSalvar"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="25dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="32dp"
                 android:backgroundTint="@color/cardPeneira"
                 android:text="Salvar alterações"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
-                android:textSize="13sp" />
-
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtCancelar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="15dp"
+                android:padding="8dp"
                 android:text="Cancelar"
                 android:textColor="@color/cardPeneira"
-                android:textSize="12sp" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
