@@ -16,5 +16,8 @@ data class Usuario(
     val descricao: String = "",
     val dataCadastro: String = "",
 
+    val cnpj: String = "",
+    val telefone: String = "",
+
     val midias: List<Midia> = emptyList()
 )

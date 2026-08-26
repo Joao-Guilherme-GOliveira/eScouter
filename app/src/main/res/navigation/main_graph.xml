@@ -66,6 +66,9 @@
             <action
                 android:id="@+id/action_perfilFragment_to_editarPerfilAtletaFragment"
                 app:destination="@id/editarPerfilAtletaFragment" />
+            <action
+                android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
+                app:destination="@id/editarPerfilClubeFragment" />
         </fragment>
         <fragment
             android:id="@+id/editarPerfilAtletaFragment"
@@ -78,6 +81,11 @@
             android:name="com.example.escouter.ui.home.MinhasPeneirasFragment"
             android:label="Minhas Peneiras"
             tools:layout="@layout/fragment_minhas_peneiras" />
+        <fragment
+            android:id="@+id/editarPerfilClubeFragment"
+            android:name="com.example.escouter.ui.home.EditarPerfilClubeFragment"
+            android:label="fragment_editar_perfil_clube"
+            tools:layout="@layout/fragment_editar_perfil_clube" />
 
     </navigation>
 

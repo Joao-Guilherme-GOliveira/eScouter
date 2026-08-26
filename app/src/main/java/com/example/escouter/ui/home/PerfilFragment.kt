@@ -46,9 +46,37 @@ class PerfilFragment : Fragment() {
 
         binding.btnEditarPerfil.setOnClickListener {
 
-            findNavController().navigate(
-                R.id.action_perfilFragment_to_editarPerfilAtletaFragment
+            val preferences = requireContext().getSharedPreferences(
+                "eScouter",
+                Context.MODE_PRIVATE
             )
+
+            val json = preferences.getString(
+                "usuario",
+                null
+            )
+
+            if (json == null) {
+                return@setOnClickListener
+            }
+
+            val usuario = Gson().fromJson(
+                json,
+                Usuario::class.java
+            )
+
+            if (usuario.tipoUsuario.equals("Atleta", ignoreCase = true)) {
+
+                findNavController().navigate(
+                    R.id.action_perfilFragment_to_editarPerfilAtletaFragment
+                )
+
+            } else if (usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)) {
+
+                findNavController().navigate(
+                    R.id.action_perfilFragment_to_editarPerfilClubeFragment
+                )
+            }
         }
     }
 
@@ -68,6 +96,15 @@ class PerfilFragment : Fragment() {
             json,
             Usuario::class.java
         )
+
+        if (usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)) {
+            binding.txtPositionAge.visibility = View.GONE
+            binding.cardInfo.visibility = View.GONE
+
+        } else {
+            binding.txtPositionAge.visibility = View.VISIBLE
+            binding.cardInfo.visibility = View.VISIBLE
+        }
 
         // =========================
         // NOME
