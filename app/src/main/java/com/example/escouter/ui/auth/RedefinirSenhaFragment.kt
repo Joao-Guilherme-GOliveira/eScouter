@@ -10,11 +10,13 @@ import com.example.escouter.R
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.databinding.FragmentRedefinirSenhaBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class RedefinirSenhaFragment : Fragment() {
 
     private var _binding: FragmentRedefinirSenhaBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +30,8 @@ class RedefinirSenhaFragment : Fragment() {
             false
         )
 
+        auth = FirebaseAuth.getInstance()
+
         return binding.root
     }
 
@@ -40,31 +44,58 @@ class RedefinirSenhaFragment : Fragment() {
         // Botão Enviar
         binding.btnEnviar.setOnClickListener {
 
-            val email = binding.edtEmail.text.toString().trim()
+            val email = binding.edtEmail.text
+                .toString()
+                .trim()
 
             if (email.isEmpty()) {
 
-                binding.inputEmail.error = "Digite seu e-mail"
+                binding.inputEmail.error =
+                    "Digite seu e-mail"
 
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            } else if (
+                !Patterns.EMAIL_ADDRESS
+                    .matcher(email)
+                    .matches()
+            ) {
 
-                binding.inputEmail.error = "Digite um e-mail válido"
+                binding.inputEmail.error =
+                    "Digite um e-mail válido"
 
             } else {
 
                 binding.inputEmail.error = null
 
-                Toast.makeText(
-                    requireContext(),
-                    "Código enviado para seu e-mail!",
-                    Toast.LENGTH_LONG
-                ).show()
+                auth.sendPasswordResetEmail(email)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "E-mail de redefinição enviado!",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        findNavController().navigate(
+                            R.id.action_redefinirSenhaFragment_to_loginFragment
+                        )
+                    }
+                    .addOnFailureListener {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Não foi possível enviar o e-mail.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
             }
         }
 
         // Botão/Texto Voltar
         binding.txtVoltar.setOnClickListener {
-            findNavController().navigate(R.id.action_redefinirSenhaFragment_to_loginFragment)
+
+            findNavController().navigate(
+                R.id.action_redefinirSenhaFragment_to_loginFragment
+            )
         }
     }
 
