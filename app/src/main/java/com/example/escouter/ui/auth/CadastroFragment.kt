@@ -1,7 +1,6 @@
 package com.example.escouter.ui.auth
 
 import android.app.DatePickerDialog
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,16 +15,19 @@ import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentCadastroBinding
 import com.example.escouter.model.Usuario
-import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CadastroFragment : Fragment() {
 
     private var _binding: FragmentCadastroBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +40,10 @@ class CadastroFragment : Fragment() {
             container,
             false
         )
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
 
         configurarSpinners()
         configurarDataNascimento()
@@ -371,49 +377,91 @@ class CadastroFragment : Fragment() {
             binding.spinnerTipoUsuario.selectedItem
                 .toString()
 
-        // Data em que a conta foi criada
         val dataCadastro = SimpleDateFormat(
             "dd/MM/yyyy",
             Locale.getDefault()
         ).format(Date())
 
-        // Cria o objeto Usuario
-        val usuario = Usuario(
-            nome = nome,
-            email = email,
-            senha = senha,
-            dataNascimento = dataNascimento,
-            estado = estado,
-            cidade = cidade,
-            tipoUsuario = tipoUsuario,
-            dataCadastro = dataCadastro
+
+        // ==========================================
+        // CRIA A CONTA NO FIREBASE AUTH
+        // ==========================================
+
+        auth.createUserWithEmailAndPassword(
+            email,
+            senha
         )
+            .addOnSuccessListener { result ->
 
-        // Converte para JSON
-        val json = Gson().toJson(usuario)
+                val uid = result.user?.uid
 
-        // SharedPreferences
-        val preferences =
-            requireContext().getSharedPreferences(
-                "eScouter",
-                Context.MODE_PRIVATE
-            )
+                if (uid == null) {
 
-        // Salva o JSON
-        preferences.edit()
-            .putString("usuario", json)
-            .apply()
+                    Toast.makeText(
+                        requireContext(),
+                        "Erro ao obter ID do usuário",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-        Toast.makeText(
-            requireContext(),
-            "Cadastro realizado com sucesso!",
-            Toast.LENGTH_SHORT
-        ).show()
+                    return@addOnSuccessListener
+                }
 
-        findNavController().navigate(
-            R.id.action_cadastroFragment_to_loginFragment
-        )
+
+                // ==========================================
+                // CRIA O PERFIL DO USUÁRIO
+                // ==========================================
+
+                val usuario = Usuario(
+                    nome = nome,
+                    email = email,
+                    senha = "",
+                    dataNascimento = dataNascimento,
+                    estado = estado,
+                    cidade = cidade,
+                    tipoUsuario = tipoUsuario,
+                    dataCadastro = dataCadastro
+                )
+
+
+                // ==========================================
+                // SALVA NO FIRESTORE
+                // ==========================================
+
+                db.collection("usuarios")
+                    .document(uid)
+                    .set(usuario)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Cadastro realizado com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        findNavController().navigate(
+                            R.id.action_cadastroFragment_to_loginFragment
+                        )
+                    }
+                    .addOnFailureListener { erro ->
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Erro ao salvar usuário: ${erro.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao criar conta: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
+
+
 
     // =========================================================
     // SPINNERS
