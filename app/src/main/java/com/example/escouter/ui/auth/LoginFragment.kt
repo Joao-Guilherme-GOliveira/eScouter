@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentLoginBinding
 import androidx.navigation.fragment.findNavController
-import android.content.Context
 import android.widget.Toast
-import com.google.gson.Gson
-import com.example.escouter.model.Usuario
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
 
     private var _binding : FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
 
@@ -24,13 +23,18 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater,container,false)
+
+        auth = FirebaseAuth.getInstance()
+
         return binding.root
+
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
     }
-    private fun initListener(){
+    private fun initListener() {
 
         binding.btnEntrar.setOnClickListener {
 
@@ -38,6 +42,7 @@ class LoginFragment : Fragment() {
             val senha = binding.etSenha.text.toString().trim()
 
             when {
+
                 email.isEmpty() -> {
                     binding.etEmail.error = "Informe seu email"
                     binding.etEmail.requestFocus()
@@ -49,26 +54,12 @@ class LoginFragment : Fragment() {
                 }
 
                 else -> {
-                    val preferences = requireContext().getSharedPreferences(
-                        "eScouter",
-                        Context.MODE_PRIVATE
+
+                    auth.signInWithEmailAndPassword(
+                        email,
+                        senha
                     )
-
-                    val json = preferences.getString("usuario", null)
-
-                    if (json == null) {
-
-                        Toast.makeText(
-                            requireContext(),
-                            "Nenhum usuário cadastrado.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                    } else {
-
-                        val usuario = Gson().fromJson(json, Usuario::class.java)
-
-                        if (email == usuario.email && senha == usuario.senha) {
+                        .addOnSuccessListener {
 
                             Toast.makeText(
                                 requireContext(),
@@ -79,8 +70,9 @@ class LoginFragment : Fragment() {
                             findNavController().navigate(
                                 R.id.action_loginFragment_to_home
                             )
+                        }
 
-                        } else {
+                        .addOnFailureListener {
 
                             Toast.makeText(
                                 requireContext(),
@@ -88,16 +80,20 @@ class LoginFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }
                 }
             }
         }
 
         binding.tvCriarConta.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_cadastroFragment)
+            findNavController().navigate(
+                R.id.action_loginFragment_to_cadastroFragment
+            )
         }
+
         binding.tvEsqueceuSenha.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_redefinirSenhaFragment)
+            findNavController().navigate(
+                R.id.action_loginFragment_to_redefinirSenhaFragment
+            )
         }
     }
 
