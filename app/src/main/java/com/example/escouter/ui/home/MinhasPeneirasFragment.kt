@@ -1,26 +1,28 @@
 package com.example.escouter.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentMinhasPeneirasBinding
 import com.example.escouter.model.Peneira
-import com.example.escouter.model.Usuario
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MinhasPeneirasFragment : Fragment() {
 
     private var _binding: FragmentMinhasPeneirasBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,18 +36,30 @@ class MinhasPeneirasFragment : Fragment() {
             false
         )
 
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
-        bottomNavigation = view.findViewById(R.id.bottomNavigation)
+
+        bottomNavigation =
+            view.findViewById(R.id.bottomNavigation)
 
         configurarBottomNavigation()
 
-
         carregarMinhasPeneiras()
     }
+
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
+
     private fun configurarBottomNavigation() {
 
         bottomNavigation.setOnItemSelectedListener { item ->
@@ -53,12 +67,20 @@ class MinhasPeneirasFragment : Fragment() {
             when (item.itemId) {
 
                 R.id.nav_inicio -> {
-                    findNavController().navigate(R.id.homeFragment)
+
+                    findNavController().navigate(
+                        R.id.homeFragment
+                    )
+
                     true
                 }
 
                 R.id.nav_perfil -> {
-                    findNavController().navigate(R.id.perfilFragment)
+
+                    findNavController().navigate(
+                        R.id.perfilFragment
+                    )
+
                     true
                 }
 
@@ -67,100 +89,149 @@ class MinhasPeneirasFragment : Fragment() {
         }
     }
 
+    // =========================================================
+    // CARREGAR MINHAS PENEIRAS
+    // =========================================================
+
     private fun carregarMinhasPeneiras() {
 
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
+        val usuario = auth.currentUser
 
-        // Pega o usuário atualmente logado
-        val jsonUsuario = preferences.getString("usuario", null)
+        if (usuario == null) {
 
-        if (jsonUsuario == null) {
-            mostrarMensagem("Nenhum usuário encontrado.")
-            return
-        }
-
-        val usuario = Gson().fromJson(
-            jsonUsuario,
-            Usuario::class.java
-        )
-
-        // Pega todas as peneiras salvas
-        val jsonPeneiras = preferences.getString(
-            "peneiras",
-            null
-        )
-
-        if (jsonPeneiras == null) {
-            mostrarMensagem("Você ainda não criou nenhuma peneira.")
-            return
-        }
-
-        val tipoLista = object : TypeToken<List<Peneira>>() {}.type
-
-        val todasPeneiras: List<Peneira> =
-            Gson().fromJson(jsonPeneiras, tipoLista)
-                ?: emptyList()
-
-        // Filtra somente as peneiras desse clube
-        val minhasPeneiras = todasPeneiras
-            .filter {
-                it.emailClube.equals(
-                    usuario.email,
-                    ignoreCase = true
-                )
-            }
-            .reversed()
-
-        if (minhasPeneiras.isEmpty()) {
-            mostrarMensagem("Você ainda não criou nenhuma peneira.")
-            return
-        }
-
-        binding.txtMensagem.visibility = View.GONE
-
-        // Adiciona cada peneira na tela
-        minhasPeneiras.forEach { peneira ->
-
-            val item = layoutInflater.inflate(
-                R.layout.item_minhas_peneiras,
-                binding.containerPeneiras,
-                false
+            mostrarMensagem(
+                "Nenhum usuário está logado."
             )
 
-            val txtNomeTime = item.findViewById<TextView>(
+            return
+        }
+
+        val emailClube = usuario.email
+
+        if (emailClube.isNullOrEmpty()) {
+
+            mostrarMensagem(
+                "Não foi possível identificar o clube."
+            )
+
+            return
+        }
+
+        db.collection("peneiras")
+            .whereEqualTo(
+                "emailClube",
+                emailClube
+            )
+            .get()
+            .addOnSuccessListener { resultado ->
+
+                binding.containerPeneiras.removeAllViews()
+
+                if (resultado.isEmpty) {
+
+                    mostrarMensagem(
+                        "Você ainda não criou nenhuma peneira."
+                    )
+
+                    return@addOnSuccessListener
+                }
+
+                binding.txtMensagem.visibility =
+                    View.GONE
+
+                // Percorre as peneiras encontradas
+                for (documento in resultado) {
+
+                    val peneira =
+                        documento.toObject(
+                            Peneira::class.java
+                        )
+
+                    adicionarPeneiraNaTela(
+                        peneira
+                    )
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao carregar peneiras: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                mostrarMensagem(
+                    "Erro ao carregar suas peneiras."
+                )
+            }
+    }
+
+    // =========================================================
+    // ADICIONAR PENEIRA NA TELA
+    // =========================================================
+
+    private fun adicionarPeneiraNaTela(
+        peneira: Peneira
+    ) {
+
+        val item = layoutInflater.inflate(
+            R.layout.item_minhas_peneiras,
+            binding.containerPeneiras,
+            false
+        )
+
+        val txtNomeTime =
+            item.findViewById<TextView>(
                 R.id.txtNomeTime
             )
 
-            val txtData = item.findViewById<TextView>(
+        val txtData =
+            item.findViewById<TextView>(
                 R.id.txtData
             )
 
-            val txtLocal = item.findViewById<TextView>(
+        val txtLocal =
+            item.findViewById<TextView>(
                 R.id.txtLocal
             )
 
-            txtNomeTime.text = peneira.nomeTime
+        txtNomeTime.text =
+            peneira.nomeTime
 
-            txtData.text =
-                "${peneira.data} • ${peneira.hora}"
+        txtData.text =
+            "${peneira.data} • ${peneira.hora}"
 
-            txtLocal.text = peneira.local
+        txtLocal.text =
+            peneira.local
 
-            binding.containerPeneiras.addView(item)
-        }
+        binding.containerPeneiras.addView(
+            item
+        )
     }
 
-    private fun mostrarMensagem(mensagem: String) {
+    // =========================================================
+    // MENSAGEM
+    // =========================================================
 
-        binding.txtMensagem.visibility = View.VISIBLE
-        binding.txtMensagem.text = mensagem
+    private fun mostrarMensagem(
+        mensagem: String
+    ) {
+
+        binding.txtMensagem.visibility =
+            View.VISIBLE
+
+        binding.txtMensagem.text =
+            mensagem
     }
+
+    // =========================================================
+    // DESTROY
+    // =========================================================
 
     override fun onDestroyView() {
+
         super.onDestroyView()
+
         _binding = null
     }
 }

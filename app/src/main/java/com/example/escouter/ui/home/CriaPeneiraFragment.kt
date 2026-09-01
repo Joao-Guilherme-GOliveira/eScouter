@@ -1,8 +1,7 @@
 package com.example.escouter.ui.home
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,20 +11,20 @@ import android.widget.Toast
 import com.example.escouter.R
 import com.example.escouter.databinding.CriaPeneiraBinding
 import com.example.escouter.model.Peneira
-import com.example.escouter.model.Usuario
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.util.Calendar
-import android.app.AlertDialog
-
 
 class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
     private var _binding: CriaPeneiraBinding? = null
     private val binding get() = _binding!!
 
-    // Chamado quando a peneira é salva com sucesso, para o HomeFragment atualizar a tela
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
+    // Chamado quando a peneira é salva com sucesso
     var onPeneiraCriada: (() -> Unit)? = null
 
     override fun onCreateView(
@@ -33,11 +32,23 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = CriaPeneiraBinding.inflate(inflater, container, false)
+
+        _binding = CriaPeneiraBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         configurarDatePicker()
@@ -48,7 +59,12 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
         }
     }
 
+    // =========================================================
+    // DATA
+    // =========================================================
+
     private fun configurarDatePicker() {
+
         binding.edtDataPeneira.setOnClickListener {
 
             val calendario = Calendar.getInstance()
@@ -58,13 +74,16 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
             val dia = calendario.get(Calendar.DAY_OF_MONTH)
 
             DatePickerDialog(
-                requireContext(), { _, anoSelecionado, mesSelecionado, diaSelecionado ->
+                requireContext(),
+                { _, anoSelecionado, mesSelecionado, diaSelecionado ->
+
                     val data = String.format(
                         "%02d/%02d/%04d",
                         diaSelecionado,
                         mesSelecionado + 1,
                         anoSelecionado
                     )
+
                     binding.edtDataPeneira.setText(data)
                 },
                 ano,
@@ -74,121 +93,208 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
         }
     }
 
+    // =========================================================
+    // HORA
+    // =========================================================
+
     private fun configurarTimePicker() {
+
         binding.edtHoraPeneira.setOnClickListener {
 
             val calendario = Calendar.getInstance()
 
-            val horaAtual = calendario.get(Calendar.HOUR_OF_DAY)
-            val minutoAtual = calendario.get(Calendar.MINUTE)
-            val view = LayoutInflater.from(requireContext())
-                .inflate(R.layout.timer_peneira, null)
+            val horaAtual =
+                calendario.get(Calendar.HOUR_OF_DAY)
 
-            //time picker spinner
+            val minutoAtual =
+                calendario.get(Calendar.MINUTE)
 
-            val timePicker = view.findViewById<TimePicker>(R.id.timerPickerPeneira)
+            val view = LayoutInflater
+                .from(requireContext())
+                .inflate(
+                    R.layout.timer_peneira,
+                    null
+                )
+
+            val timePicker =
+                view.findViewById<TimePicker>(
+                    R.id.timerPickerPeneira
+                )
+
             timePicker.setIs24HourView(true)
+
             timePicker.hour = horaAtual
-            timePicker.minute
+            timePicker.minute = minutoAtual
 
             AlertDialog.Builder(requireContext())
                 .setTitle("Selecione o horário da peneira")
                 .setView(view)
                 .setPositiveButton("OK") { _, _ ->
+
                     val hora = String.format(
                         "%02d:%02d",
                         timePicker.hour,
                         timePicker.minute
                     )
+
                     binding.edtHoraPeneira.setText(hora)
                 }
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(
+                    "Cancelar",
+                    null
+                )
                 .show()
         }
     }
 
+    // =========================================================
+    // SALVAR PENEIRA
+    // =========================================================
+
     private fun salvarPeneira() {
 
-        val nomeTime = binding.edtNomeTime.text.toString().trim()
-        val data = binding.edtDataPeneira.text.toString().trim()
-        val hora = binding.edtHoraPeneira.text.toString().trim()
-        val local = binding.edtLocalPeneira.text.toString().trim()
+        val nomeTime =
+            binding.edtNomeTime.text
+                .toString()
+                .trim()
+
+        val data =
+            binding.edtDataPeneira.text
+                .toString()
+                .trim()
+
+        val hora =
+            binding.edtHoraPeneira.text
+                .toString()
+                .trim()
+
+        val local =
+            binding.edtLocalPeneira.text
+                .toString()
+                .trim()
+
+        // =====================================================
+        // VALIDAÇÕES
+        // =====================================================
 
         if (nomeTime.isEmpty()) {
-            binding.edtNomeTime.error = "Preencha o nome do time"
+
+            binding.edtNomeTime.error =
+                "Preencha o nome do time"
+
+            binding.edtNomeTime.requestFocus()
+
             return
         }
 
         if (data.isEmpty()) {
-            Toast.makeText(requireContext(),
+
+            Toast.makeText(
+                requireContext(),
                 "Selecione a data da peneira",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
+
             return
         }
 
         if (hora.isEmpty()) {
-            Toast.makeText(requireContext(),
+
+            Toast.makeText(
+                requireContext(),
                 "Selecione o horário da peneira",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
+
             return
         }
 
         if (local.isEmpty()) {
-            binding.edtLocalPeneira.error = "Preencha o local da peneira"
+
+            binding.edtLocalPeneira.error =
+                "Preencha o local da peneira"
+
+            binding.edtLocalPeneira.requestFocus()
+
             return
         }
 
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
+        // =====================================================
+        // VERIFICAR USUÁRIO LOGADO
+        // =====================================================
 
-        // Pega o e-mail do clube logado, para vincular a peneira a ele
-        val jsonUsuario = preferences.getString("usuario", null)
-        val emailClube = if (jsonUsuario != null) {
-            Gson().fromJson(jsonUsuario, Usuario::class.java).email
-        } else {
-            ""
+        val usuario = auth.currentUser
+
+        if (usuario == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
         }
 
+        // E-mail do clube logado
+        val emailClube =
+            usuario.email ?: ""
+
+        // =====================================================
+        // CRIAR OBJETO PENEIRA
+        // =====================================================
+
         val novaPeneira = Peneira(
+
             nomeTime = nomeTime,
+
             hora = hora,
+
             data = data,
+
             local = local,
+
             emailClube = emailClube
         )
 
-        // Carrega a lista já salva
-        val tipoLista = object : TypeToken<MutableList<Peneira>>() {}.type
-        val jsonPeneiras = preferences.getString("peneiras", null)
+        // =====================================================
+        // SALVAR NO FIRESTORE
+        // =====================================================
 
-        val listaPeneiras: MutableList<Peneira> = if (jsonPeneiras != null) {
-            Gson().fromJson(jsonPeneiras, tipoLista)
-        } else {
-            mutableListOf()
-        }
+        db.collection("peneiras")
+            .add(novaPeneira)
+            .addOnSuccessListener {
 
-        listaPeneiras.add(novaPeneira)
+                Toast.makeText(
+                    requireContext(),
+                    "Peneira criada com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-        // Salva a lista atualizada
-        preferences.edit()
-            .putString("peneiras", Gson().toJson(listaPeneiras))
-            .apply()
+                // Atualiza o HomeFragment
+                onPeneiraCriada?.invoke()
 
-        Toast.makeText(
-            requireContext(),
-            "Peneira criada com sucesso!",
-            Toast.LENGTH_SHORT
-        ).show()
+                // Fecha o BottomSheet
+                dismiss()
+            }
+            .addOnFailureListener { erro ->
 
-        onPeneiraCriada?.invoke()
-
-        dismiss()
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao criar peneira: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
+    // =========================================================
+    // DESTROY
+    // =========================================================
+
     override fun onDestroyView() {
+
         super.onDestroyView()
+
         _binding = null
     }
 }

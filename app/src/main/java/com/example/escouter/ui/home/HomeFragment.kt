@@ -1,6 +1,5 @@
 package com.example.escouter.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,8 +12,8 @@ import com.example.escouter.model.InscricaoPeneira
 import com.example.escouter.model.Peneira
 import com.example.escouter.model.Usuario
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -33,33 +32,186 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var peneiraExibida: Peneira? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
+    private var usuarioAtual: Usuario? = null
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
-        bottomNavigation = view.findViewById(R.id.bottomNavigation)
+        // Firebase
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-        cardPeneira = view.findViewById(R.id.cardPeneira)
-        txtTime = view.findViewById(R.id.txtTime)
-        txtData = view.findViewById(R.id.txtData)
+        // Views
+        bottomNavigation =
+            view.findViewById(R.id.bottomNavigation)
 
-        btnCriarPeneira = view.findViewById(R.id.btnCriarPeneira)
-        btnMinhasPeneiras = view.findViewById(R.id.btnMinhasPeneiras)
+        cardPeneira =
+            view.findViewById(R.id.cardPeneira)
 
-        // CORRIGIDO: o nome da variável é btnInscreverPeneira
-        btnInscreverPeneira = view.findViewById(R.id.btnInscreverPeneira)
+        txtTime =
+            view.findViewById(R.id.txtTime)
+
+        txtData =
+            view.findViewById(R.id.txtData)
+
+        btnCriarPeneira =
+            view.findViewById(R.id.btnCriarPeneira)
+
+        btnMinhasPeneiras =
+            view.findViewById(R.id.btnMinhasPeneiras)
+
+        btnInscreverPeneira =
+            view.findViewById(R.id.btnInscreverPeneira)
 
         configurarBottomNavigation()
+
+        carregarUsuario()
     }
 
-    override fun onResume() {
-        super.onResume()
+    // =========================================================
+    // USUÁRIO
+    // =========================================================
 
-        if (::bottomNavigation.isInitialized) {
-            bottomNavigation.selectedItemId = R.id.nav_inicio
+    private fun carregarUsuario() {
+
+        val usuarioFirebase = auth.currentUser
+
+        if (usuarioFirebase == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
         }
 
-        configurarTelaPorTipoDeUsuario()
+        db.collection("usuarios")
+            .document(usuarioFirebase.uid)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (!document.exists()) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Usuário não encontrado no Firestore.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@addOnSuccessListener
+                }
+
+                val usuario =
+                    document.toObject(Usuario::class.java)
+
+                if (usuario == null) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Erro ao carregar usuário.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@addOnSuccessListener
+                }
+
+                usuarioAtual = usuario
+
+                configurarTelaPorTipoDeUsuario()
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao carregar usuário: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
+
+    // =========================================================
+    // TELA DE ACORDO COM O USUÁRIO
+    // =========================================================
+
+    private fun configurarTelaPorTipoDeUsuario() {
+
+        val usuario = usuarioAtual ?: return
+
+        val isClubeOuOlheiro =
+            usuario.tipoUsuario.equals(
+                "Clube/Olheiro",
+                ignoreCase = true
+            )
+
+        val isAtleta =
+            usuario.tipoUsuario.equals(
+                "Atleta",
+                ignoreCase = true
+            )
+
+        if (isClubeOuOlheiro) {
+
+            btnCriarPeneira.visibility =
+                View.VISIBLE
+
+            btnMinhasPeneiras.visibility =
+                View.VISIBLE
+
+            btnInscreverPeneira.visibility =
+                View.GONE
+
+            btnCriarPeneira.setOnClickListener {
+                abrirCriarPeneira()
+            }
+
+            btnMinhasPeneiras.setOnClickListener {
+
+                findNavController().navigate(
+                    R.id.minhasPeneirasFragment
+                )
+            }
+
+        } else if (isAtleta) {
+
+            btnCriarPeneira.visibility =
+                View.GONE
+
+            btnMinhasPeneiras.visibility =
+                View.GONE
+
+            btnInscreverPeneira.visibility =
+                View.VISIBLE
+
+            btnInscreverPeneira.setOnClickListener {
+                inscreverAtletaNaPeneira()
+            }
+
+        } else {
+
+            btnCriarPeneira.visibility =
+                View.GONE
+
+            btnMinhasPeneiras.visibility =
+                View.GONE
+
+            btnInscreverPeneira.visibility =
+                View.GONE
+        }
+
+        exibirProximaPeneira()
+    }
+
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
 
     private fun configurarBottomNavigation() {
 
@@ -72,9 +224,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
 
                 R.id.nav_perfil -> {
+
                     findNavController().navigate(
                         R.id.perfilFragment
                     )
+
                     true
                 }
 
@@ -83,125 +237,57 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun configurarTelaPorTipoDeUsuario() {
-
-        val usuario = carregarUsuario()
-
-        if (usuario == null) {
-            Toast.makeText(
-                requireContext(),
-                "Usuário não encontrado.",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return
-        }
-
-        val isClubeOuOlheiro = usuario.tipoUsuario.equals(
-            "Clube/Olheiro",
-            ignoreCase = true
-        )
-
-        val isAtleta = usuario.tipoUsuario.equals(
-            "Atleta",
-            ignoreCase = true
-        )
-
-        if (isClubeOuOlheiro) {
-
-            btnCriarPeneira.visibility = View.VISIBLE
-            btnMinhasPeneiras.visibility = View.VISIBLE
-            btnInscreverPeneira.visibility = View.GONE
-
-            btnCriarPeneira.setOnClickListener {
-                abrirCriarPeneira()
-            }
-
-            btnMinhasPeneiras.setOnClickListener {
-                findNavController().navigate(
-                    R.id.minhasPeneirasFragment
-                )
-            }
-
-        } else if (isAtleta) {
-
-            btnCriarPeneira.visibility = View.GONE
-            btnMinhasPeneiras.visibility = View.GONE
-
-            btnInscreverPeneira.setOnClickListener {
-                inscreverAtletaNaPeneira()
-            }
-
-        } else {
-
-            btnCriarPeneira.visibility = View.GONE
-            btnMinhasPeneiras.visibility = View.GONE
-            btnInscreverPeneira.visibility = View.GONE
-        }
-
-        exibirProximaPeneira()
-    }
-
-    private fun carregarUsuario(): Usuario? {
-
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
-
-        val json = preferences.getString(
-            "usuario",
-            null
-        ) ?: return null
-
-        return try {
-            Gson().fromJson(
-                json,
-                Usuario::class.java
-            )
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun carregarPeneiras(): List<Peneira> {
-
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
-
-        val json = preferences.getString(
-            "peneiras",
-            null
-        ) ?: return emptyList()
-
-        return try {
-
-            val tipoLista =
-                object : TypeToken<List<Peneira>>() {}.type
-
-            Gson().fromJson(
-                json,
-                tipoLista
-            ) ?: emptyList()
-
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
+    // =========================================================
+    // BUSCAR PENEIRAS NO FIRESTORE
+    // =========================================================
 
     private fun exibirProximaPeneira() {
 
-        val usuario = carregarUsuario()
-        val peneiras = carregarPeneiras()
+        db.collection("peneiras")
+            .get()
+            .addOnSuccessListener { resultado ->
 
-        if (peneiras.isEmpty()) {
-            cardPeneira.visibility = View.GONE
-            btnInscreverPeneira.visibility = View.GONE
-            peneiraExibida = null
-            return
-        }
+                val peneiras = resultado.documents.mapNotNull {
+                    it.toObject(Peneira::class.java)
+                }
+
+                if (peneiras.isEmpty()) {
+
+                    cardPeneira.visibility =
+                        View.GONE
+
+                    btnInscreverPeneira.visibility =
+                        View.GONE
+
+                    peneiraExibida = null
+
+                    return@addOnSuccessListener
+                }
+
+                encontrarProximaPeneira(
+                    peneiras
+                )
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao carregar peneiras: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                cardPeneira.visibility =
+                    View.GONE
+            }
+    }
+
+    // =========================================================
+    // ENCONTRAR PRÓXIMA PENEIRA
+    // =========================================================
+
+    private fun encontrarProximaPeneira(
+        peneiras: List<Peneira>
+    ) {
 
         val formato = SimpleDateFormat(
             "dd/MM/yyyy",
@@ -209,64 +295,103 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
 
         val hoje = Calendar.getInstance().apply {
+
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+
         }.time
 
-        val proximaPeneira = peneiras
-            .mapNotNull { peneira ->
+        val proximaPeneira =
+            peneiras
+                .mapNotNull { peneira ->
 
-                try {
+                    try {
 
-                    val dataPeneira = formato.parse(peneira.data)
+                        val dataPeneira =
+                            formato.parse(
+                                peneira.data
+                            )
 
-                    if (dataPeneira != null && !dataPeneira.before(hoje)) {
-                        Pair(peneira, dataPeneira)
-                    } else {
+                        if (
+                            dataPeneira != null &&
+                            !dataPeneira.before(hoje)
+                        ) {
+
+                            Pair(
+                                peneira,
+                                dataPeneira
+                            )
+
+                        } else {
+
+                            null
+                        }
+
+                    } catch (_: Exception) {
+
                         null
                     }
-
-                } catch (e: Exception) {
-                    null
                 }
-            }
-            .minByOrNull { it.second }
-            ?.first
+                .minByOrNull {
+                    it.second
+                }
+                ?.first
 
         if (proximaPeneira == null) {
-            cardPeneira.visibility = View.GONE
-            btnInscreverPeneira.visibility = View.GONE
+
+            cardPeneira.visibility =
+                View.GONE
+
+            btnInscreverPeneira.visibility =
+                View.GONE
+
             peneiraExibida = null
+
             return
         }
 
-        peneiraExibida = proximaPeneira
+        peneiraExibida =
+            proximaPeneira
 
-        cardPeneira.visibility = View.VISIBLE
+        cardPeneira.visibility =
+            View.VISIBLE
 
-        txtTime.text = proximaPeneira.nomeTime
+        txtTime.text =
+            proximaPeneira.nomeTime
 
         txtData.text =
             "${proximaPeneira.data} • " +
                     "${proximaPeneira.hora} • " +
                     proximaPeneira.local
 
-        val isAtleta = usuario?.tipoUsuario.equals(
-            "Atleta",
-            ignoreCase = true
-        )
+        val usuario =
+            usuarioAtual
+
+        val isAtleta =
+            usuario?.tipoUsuario.equals(
+                "Atleta",
+                ignoreCase = true
+            )
 
         if (isAtleta) {
+
             configurarBotaoInscricao(
                 usuario,
                 proximaPeneira
             )
+
         } else {
-            btnInscreverPeneira.visibility = View.GONE
+
+            btnInscreverPeneira.visibility =
+                View.GONE
         }
     }
+
+    // =========================================================
+    // VERIFICAR INSCRIÇÃO
+    // =========================================================
 
     private fun configurarBotaoInscricao(
         usuario: Usuario?,
@@ -274,38 +399,71 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ) {
 
         if (usuario == null) {
-            btnInscreverPeneira.visibility = View.GONE
+
+            btnInscreverPeneira.visibility =
+                View.GONE
+
             return
         }
 
-        val jaInscrito = carregarInscricoes().any { inscricao ->
+        db.collection("inscricoesPeneira")
+            .whereEqualTo(
+                "atletaEmail",
+                usuario.email
+            )
+            .whereEqualTo(
+                "nomeTime",
+                peneira.nomeTime
+            )
+            .whereEqualTo(
+                "data",
+                peneira.data
+            )
+            .whereEqualTo(
+                "hora",
+                peneira.hora
+            )
+            .get()
+            .addOnSuccessListener { resultado ->
 
-            inscricao.atletaEmail == usuario.email &&
-                    inscricao.nomeTime == peneira.nomeTime &&
-                    inscricao.data == peneira.data &&
-                    inscricao.hora == peneira.hora
-        }
+                btnInscreverPeneira.visibility =
+                    View.VISIBLE
 
-        btnInscreverPeneira.visibility = View.VISIBLE
+                if (!resultado.isEmpty) {
 
-        if (jaInscrito) {
+                    btnInscreverPeneira.text =
+                        "Já inscrito"
 
-            btnInscreverPeneira.text = "Já inscrito"
-            btnInscreverPeneira.isEnabled = false
+                    btnInscreverPeneira.isEnabled =
+                        false
 
-        } else {
+                } else {
 
-            btnInscreverPeneira.text = "Inscrever-se"
-            btnInscreverPeneira.isEnabled = true
-        }
+                    btnInscreverPeneira.text =
+                        "Inscrever-se"
+
+                    btnInscreverPeneira.isEnabled =
+                        true
+                }
+            }
     }
+
+    // =========================================================
+    // INSCRIÇÃO
+    // =========================================================
 
     private fun inscreverAtletaNaPeneira() {
 
-        val usuario = carregarUsuario()
-        val peneira = peneiraExibida
+        val usuario =
+            usuarioAtual
 
-        if (usuario == null || peneira == null) {
+        val peneira =
+            peneiraExibida
+
+        if (
+            usuario == null ||
+            peneira == null
+        ) {
 
             Toast.makeText(
                 requireContext(),
@@ -316,99 +474,107 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             return
         }
 
-        val inscricoes = carregarInscricoes()
+        // Verifica novamente no Firestore
+        db.collection("inscricoesPeneira")
+            .whereEqualTo(
+                "atletaEmail",
+                usuario.email
+            )
+            .whereEqualTo(
+                "nomeTime",
+                peneira.nomeTime
+            )
+            .whereEqualTo(
+                "data",
+                peneira.data
+            )
+            .whereEqualTo(
+                "hora",
+                peneira.hora
+            )
+            .get()
+            .addOnSuccessListener { resultado ->
 
-        val jaInscrito = inscricoes.any { inscricao ->
+                if (!resultado.isEmpty) {
 
-            inscricao.atletaEmail == usuario.email &&
-                    inscricao.nomeTime == peneira.nomeTime &&
-                    inscricao.data == peneira.data &&
-                    inscricao.hora == peneira.hora
-        }
+                    Toast.makeText(
+                        requireContext(),
+                        "Você já está inscrito nesta peneira.",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-        if (jaInscrito) {
+                    configurarBotaoInscricao(
+                        usuario,
+                        peneira
+                    )
 
-            Toast.makeText(
-                requireContext(),
-                "Você já está inscrito nesta peneira.",
-                Toast.LENGTH_SHORT
-            ).show()
+                    return@addOnSuccessListener
+                }
 
-            return
-        }
+                val novaInscricao =
+                    InscricaoPeneira(
 
-        val novaInscricao = InscricaoPeneira(
-            atletaNome = usuario.nome,
-            atletaEmail = usuario.email,
-            nomeTime = peneira.nomeTime,
-            data = peneira.data,
-            hora = peneira.hora,
-            local = peneira.local
-        )
+                        atletaNome =
+                            usuario.nome,
 
-        inscricoes.add(novaInscricao)
+                        atletaEmail =
+                            usuario.email,
 
-        salvarInscricoes(inscricoes)
+                        nomeTime =
+                            peneira.nomeTime,
 
-        Toast.makeText(
-            requireContext(),
-            "Inscrição realizada com sucesso!",
-            Toast.LENGTH_SHORT
-        ).show()
+                        data =
+                            peneira.data,
 
-        configurarBotaoInscricao(
-            usuario,
-            peneira
-        )
+                        hora =
+                            peneira.hora,
+
+                        local =
+                            peneira.local
+                    )
+
+                db.collection("inscricoesPeneira")
+                    .add(novaInscricao)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Inscrição realizada com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        configurarBotaoInscricao(
+                            usuario,
+                            peneira
+                        )
+                    }
+                    .addOnFailureListener { erro ->
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Erro ao realizar inscrição: ${erro.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao verificar inscrição: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
-    private fun carregarInscricoes(): MutableList<InscricaoPeneira> {
-
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
-
-        val json = preferences.getString(
-            "inscricoes",
-            null
-        ) ?: return mutableListOf()
-
-        return try {
-
-            val tipoLista =
-                object : TypeToken<MutableList<InscricaoPeneira>>() {}.type
-
-            Gson().fromJson(
-                json,
-                tipoLista
-            ) ?: mutableListOf()
-
-        } catch (e: Exception) {
-
-            mutableListOf()
-        }
-    }
-
-    private fun salvarInscricoes(
-        inscricoes: MutableList<InscricaoPeneira>
-    ) {
-
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
-
-        val json = Gson().toJson(inscricoes)
-
-        preferences.edit()
-            .putString("inscricoes", json)
-            .apply()
-    }
+    // =========================================================
+    // CRIAR PENEIRA
+    // =========================================================
 
     private fun abrirCriarPeneira() {
 
-        val dialog = CriarPeneiraFragment()
+        val dialog =
+            CriarPeneiraFragment()
 
         dialog.onPeneiraCriada = {
 
