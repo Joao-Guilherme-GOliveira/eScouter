@@ -414,7 +414,6 @@ class CadastroFragment : Fragment() {
                 val usuario = Usuario(
                     nome = nome,
                     email = email,
-                    senha = "",
                     dataNascimento = dataNascimento,
                     estado = estado,
                     cidade = cidade,
