@@ -124,16 +124,12 @@
                 <!-- Próximo -->
                 <Button
                     android:id="@+id/btnProximo1"
-                    style="@style/Botao"
+                    style="@style/Button.Auth"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_button_primary"
                     android:elevation="0dp"
                     android:text="Próximo Passo →"
-                    android:textAllCaps="false"
-                    android:textColor="@color/txtBranco"
-                    android:textSize="16sp"
                     android:textStyle="bold" />
 
             </LinearLayout>

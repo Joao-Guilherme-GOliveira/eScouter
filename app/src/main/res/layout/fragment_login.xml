@@ -94,14 +94,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEntrar"
+            style="@style/Button.Auth"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Entrar"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#2C3B99"
-            app:cornerRadius="10dp"
             android:layout_marginBottom="24dp" />
 
         <TextView
@@ -109,8 +105,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Esqueceu sua senha?"
-            android:textColor="#000000"
-            android:textSize="15sp"
             android:paddingVertical="6dp"
             android:clickable="true"
             android:focusable="true"
