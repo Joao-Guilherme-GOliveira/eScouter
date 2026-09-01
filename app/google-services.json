@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "243325160017",
+    "project_id": "escouter-5d137",
+    "storage_bucket": "escouter-5d137.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243325160017:android:abf1454f18c0ef56970670",
+        "android_client_info": {
+          "package_name": "com.example.escouter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqaiw1MCWuukoSV6nD4Gn9zS3oEWYzDI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
