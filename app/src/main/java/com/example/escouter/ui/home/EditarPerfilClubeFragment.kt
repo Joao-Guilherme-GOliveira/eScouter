@@ -10,13 +10,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.databinding.FragmentEditarPerfilClubeBinding
-import com.example.escouter.model.Usuario
-import com.google.gson.Gson
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class EditarPerfilClubeFragment : Fragment() {
 
     private var _binding: FragmentEditarPerfilClubeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     private var imagemSelecionada: Uri? = null
 
@@ -45,6 +48,9 @@ class EditarPerfilClubeFragment : Fragment() {
             false
         )
 
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
         return binding.root
     }
 
@@ -57,89 +63,104 @@ class EditarPerfilClubeFragment : Fragment() {
         carregarDados()
 
         binding.btnAlterarLogo.setOnClickListener {
-
             selecionarImagem.launch("image/*")
         }
 
         binding.btnSalvar.setOnClickListener {
-
             salvarAlteracoes()
         }
     }
 
+    // =========================================================
+    // CARREGAR DADOS
+    // =========================================================
+
     private fun carregarDados() {
 
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            android.content.Context.MODE_PRIVATE
-        )
+        val usuarioFirebase = auth.currentUser
 
-        val json = preferences.getString(
-            "usuario",
-            null
-        )
-
-        if (json == null) {
+        if (usuarioFirebase == null) {
 
             Toast.makeText(
                 requireContext(),
-                "Usuário não encontrado.",
+                "Nenhum usuário está logado.",
                 Toast.LENGTH_SHORT
             ).show()
 
             return
         }
 
-        try {
+        val uid = usuarioFirebase.uid
 
-            val usuario = Gson().fromJson(
-                json,
-                Usuario::class.java
-            )
+        db.collection("usuarios")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
 
-            // =========================
-            // DADOS DO CLUBE
-            // =========================
+                if (!document.exists()) {
 
-            binding.edtNomeClube.setText(
-                usuario.nome
-            )
+                    Toast.makeText(
+                        requireContext(),
+                        "Perfil não encontrado.",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-            binding.edtCnpj.setText(
-                usuario.cnpj
-            )
+                    return@addOnSuccessListener
+                }
 
-            binding.edtCidade.setText(
-                usuario.cidade
-            )
+                val nome =
+                    document.getString("nome") ?: ""
 
-            binding.edtEstado.setText(
-                usuario.estado
-            )
+                val cnpj =
+                    document.getString("cnpj") ?: ""
 
-            binding.edtDescricao.setText(
-                usuario.descricao
-            )
+                val cidade =
+                    document.getString("cidade") ?: ""
 
-            binding.edtTelefone.setText(
-                usuario.telefone
-            )
+                val estado =
+                    document.getString("estado") ?: ""
 
-        } catch (e: Exception) {
+                val descricao =
+                    document.getString("descricao") ?: ""
 
-            Toast.makeText(
-                requireContext(),
-                "Erro ao carregar os dados do perfil.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+                val telefone =
+                    document.getString("telefone") ?: ""
+
+                binding.edtNomeClube.setText(nome)
+                binding.edtCnpj.setText(cnpj)
+                binding.edtCidade.setText(cidade)
+                binding.edtEstado.setText(estado)
+                binding.edtDescricao.setText(descricao)
+                binding.edtTelefone.setText(telefone)
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao carregar: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
+
+    // =========================================================
+    // SALVAR
+    // =========================================================
 
     private fun salvarAlteracoes() {
 
-        // =========================
-        // PEGAR DADOS DOS CAMPOS
-        // =========================
+        val usuarioFirebase = auth.currentUser
+
+        if (usuarioFirebase == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
 
         val nome = binding.edtNomeClube
             .text
@@ -171,9 +192,9 @@ class EditarPerfilClubeFragment : Fragment() {
             .toString()
             .trim()
 
-        // =========================
+        // =====================================================
         // VALIDAÇÕES
-        // =========================
+        // =====================================================
 
         if (nome.isEmpty()) {
 
@@ -185,7 +206,6 @@ class EditarPerfilClubeFragment : Fragment() {
             return
 
         } else {
-
             binding.tilNomeClube.error = null
         }
 
@@ -199,7 +219,6 @@ class EditarPerfilClubeFragment : Fragment() {
             return
 
         } else {
-
             binding.tilCidade.error = null
         }
 
@@ -213,98 +232,45 @@ class EditarPerfilClubeFragment : Fragment() {
             return
 
         } else {
-
             binding.tilEstado.error = null
         }
 
-        // =========================
-        // CARREGAR USUÁRIO ATUAL
-        // =========================
+        val uid = usuarioFirebase.uid
 
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            android.content.Context.MODE_PRIVATE
+        // =====================================================
+        // DADOS PARA O FIRESTORE
+        // =====================================================
+
+        val dadosAtualizados = mapOf(
+            "nome" to nome,
+            "cnpj" to cnpj,
+            "cidade" to cidade,
+            "estado" to estado,
+            "descricao" to descricao,
+            "telefone" to telefone
         )
 
-        val jsonAtual = preferences.getString(
-            "usuario",
-            null
-        )
+        db.collection("usuarios")
+            .document(uid)
+            .update(dadosAtualizados)
+            .addOnSuccessListener {
 
-        if (jsonAtual == null) {
+                Toast.makeText(
+                    requireContext(),
+                    "Perfil atualizado com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-            Toast.makeText(
-                requireContext(),
-                "Usuário não encontrado.",
-                Toast.LENGTH_SHORT
-            ).show()
+                findNavController().navigateUp()
+            }
+            .addOnFailureListener { erro ->
 
-            return
-        }
-
-        try {
-
-            val usuarioAtual = Gson().fromJson(
-                jsonAtual,
-                Usuario::class.java
-            )
-
-            // =========================
-            // CRIAR USUÁRIO ATUALIZADO
-            // =========================
-
-            val usuarioAtualizado = usuarioAtual.copy(
-                nome = nome,
-                cnpj = cnpj,
-                cidade = cidade,
-                estado = estado,
-                descricao = descricao,
-                telefone = telefone
-            )
-
-            // =========================
-            // CONVERTER PARA JSON
-            // =========================
-
-            val novoJson = Gson().toJson(
-                usuarioAtualizado
-            )
-
-            // =========================
-            // SALVAR
-            // =========================
-
-            preferences.edit()
-                .putString(
-                    "usuario",
-                    novoJson
-                )
-                .apply()
-
-            // =========================
-            // MENSAGEM
-            // =========================
-
-            Toast.makeText(
-                requireContext(),
-                "Perfil atualizado com sucesso!",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            // =========================
-            // VOLTAR PARA O PERFIL
-            // =========================
-
-            findNavController().navigateUp()
-
-        } catch (e: Exception) {
-
-            Toast.makeText(
-                requireContext(),
-                "Erro ao salvar as alterações.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao salvar: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     override fun onDestroyView() {

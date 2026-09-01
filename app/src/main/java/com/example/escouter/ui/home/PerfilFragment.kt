@@ -1,16 +1,17 @@
 package com.example.escouter.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentPerfilBinding
 import com.example.escouter.model.Usuario
-import com.google.gson.Gson
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -19,6 +20,11 @@ class PerfilFragment : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
+    private var usuarioAtual: Usuario? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +37,9 @@ class PerfilFragment : Fragment() {
             container,
             false
         )
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         return binding.root
     }
@@ -46,32 +55,24 @@ class PerfilFragment : Fragment() {
 
         binding.btnEditarPerfil.setOnClickListener {
 
-            val preferences = requireContext().getSharedPreferences(
-                "eScouter",
-                Context.MODE_PRIVATE
-            )
+            val usuario = usuarioAtual ?: return@setOnClickListener
 
-            val json = preferences.getString(
-                "usuario",
-                null
-            )
-
-            if (json == null) {
-                return@setOnClickListener
-            }
-
-            val usuario = Gson().fromJson(
-                json,
-                Usuario::class.java
-            )
-
-            if (usuario.tipoUsuario.equals("Atleta", ignoreCase = true)) {
+            if (usuario.tipoUsuario.equals(
+                    "Atleta",
+                    ignoreCase = true
+                )
+            ) {
 
                 findNavController().navigate(
                     R.id.action_perfilFragment_to_editarPerfilAtletaFragment
                 )
 
-            } else if (usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)) {
+            } else if (
+                usuario.tipoUsuario.equals(
+                    "Clube/Olheiro",
+                    ignoreCase = true
+                )
+            ) {
 
                 findNavController().navigate(
                     R.id.action_perfilFragment_to_editarPerfilClubeFragment
@@ -80,108 +81,223 @@ class PerfilFragment : Fragment() {
         }
     }
 
+    // =========================================================
+    // CARREGAR USUÁRIO DO FIRESTORE
+    // =========================================================
+
     private fun carregarUsuario() {
 
-        val preferences = requireContext().getSharedPreferences(
-            "eScouter",
-            Context.MODE_PRIVATE
-        )
+        val usuarioFirebase = auth.currentUser
 
-        val json = preferences.getString(
-            "usuario",
-            null
-        ) ?: return
+        if (usuarioFirebase == null) {
 
-        val usuario = Gson().fromJson(
-            json,
-            Usuario::class.java
-        )
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_LONG
+            ).show()
 
-        if (usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)) {
-            binding.txtPositionAge.visibility = View.GONE
-            binding.cardInfo.visibility = View.GONE
-
-        } else {
-            binding.txtPositionAge.visibility = View.VISIBLE
-            binding.cardInfo.visibility = View.VISIBLE
+            return
         }
 
-        // =========================
+        val uid = usuarioFirebase.uid
+
+        db.collection("usuarios")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (!document.exists()) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Documento não encontrado: usuarios/$uid",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    return@addOnSuccessListener
+                }
+
+                try {
+
+                    val usuario = document.toObject(
+                        Usuario::class.java
+                    )
+
+                    if (usuario == null) {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Não foi possível converter os dados do usuário.",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        return@addOnSuccessListener
+                    }
+
+                    usuarioAtual = usuario
+
+                    mostrarUsuario(usuario)
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Erro ao converter usuário: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao acessar Firestore: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    // =========================================================
+    // MOSTRAR DADOS NA TELA
+    // =========================================================
+
+    private fun mostrarUsuario(usuario: Usuario) {
+
+        val ehClube =
+            usuario.tipoUsuario.equals(
+                "Clube/Olheiro",
+                ignoreCase = true
+            )
+
+        // =====================================================
+        // TIPO DE PERFIL
+        // =====================================================
+
+        if (ehClube) {
+
+            binding.txtPositionAge.visibility =
+                View.GONE
+
+            binding.cardInfo.visibility =
+                View.GONE
+
+        } else {
+
+            binding.txtPositionAge.visibility =
+                View.VISIBLE
+
+            binding.cardInfo.visibility =
+                View.VISIBLE
+        }
+
+        // =====================================================
         // NOME
-        // =========================
+        // =====================================================
 
-        binding.txtName.text = usuario.nome
+        binding.txtName.text =
+            usuario.nome
 
-        // =========================
-        // IDADE E POSIÇÃO
-        // =========================
+        // =====================================================
+        // IDADE / POSIÇÃO
+        // =====================================================
 
-        val idade = calcularIdade(
-            usuario.dataNascimento
-        )
+        if (!ehClube) {
 
-        binding.txtPositionAge.text =
-            "${usuario.posicao} • $idade anos"
+            val idade =
+                calcularIdade(
+                    usuario.dataNascimento
+                )
 
-        // =========================
-        // LOCALIZAÇÃO E DATA
-        // =========================
+            binding.txtPositionAge.text =
+                "${usuario.posicao} • $idade anos"
 
-        val anoCadastro = if (usuario.dataCadastro.isNotEmpty()) {
-            usuario.dataCadastro.takeLast(4)
-        } else {
-            ""
+            // Informações
+
+            binding.statIdade.txtStatLabel.text =
+                "Idade"
+
+            binding.statIdade.txtStatValue.text =
+                "$idade anos"
+
+            binding.statPeso.txtStatLabel.text =
+                "Peso"
+
+            binding.statPeso.txtStatValue.text =
+                usuario.peso
+
+            binding.statAltura.txtStatLabel.text =
+                "Altura"
+
+            binding.statAltura.txtStatValue.text =
+                usuario.altura
+
+            binding.statExperiencia.txtStatLabel.text =
+                "Experiência"
+
+            binding.statExperiencia.txtStatValue.text =
+                usuario.experiencia
         }
+
+        // =====================================================
+        // LOCALIZAÇÃO / DATA
+        // =====================================================
+
+        val anoCadastro =
+            if (usuario.dataCadastro.isNotEmpty()) {
+
+                usuario.dataCadastro.takeLast(4)
+
+            } else {
+
+                ""
+            }
 
         binding.txtLocationDate.text =
             if (anoCadastro.isNotEmpty()) {
+
                 "📍 ${usuario.cidade}, ${usuario.estado}     🗓 Desde $anoCadastro"
+
             } else {
+
                 "📍 ${usuario.cidade}, ${usuario.estado}"
             }
 
-        // =========================
+        // =====================================================
         // DESCRIÇÃO
-        // =========================
+        // =====================================================
 
         if (usuario.descricao.isEmpty()) {
 
-            binding.txtBio.visibility = View.GONE
+            binding.txtBio.visibility =
+                View.GONE
 
         } else {
 
-            binding.txtBio.visibility = View.VISIBLE
-            binding.txtBio.text = usuario.descricao
+            binding.txtBio.visibility =
+                View.VISIBLE
+
+            binding.txtBio.text =
+                usuario.descricao
         }
 
-        // =========================
-        // INFORMAÇÕES
-        // =========================
 
-        binding.statIdade.txtStatLabel.text = "Idade"
-        binding.statIdade.txtStatValue.text =
-            "$idade anos"
-
-        binding.statPeso.txtStatLabel.text = "Peso"
-        binding.statPeso.txtStatValue.text =
-            usuario.peso
-
-        binding.statAltura.txtStatLabel.text = "Altura"
-        binding.statAltura.txtStatValue.text =
-            usuario.altura
-
-        binding.statExperiencia.txtStatLabel.text = "Experiência"
-        binding.statExperiencia.txtStatValue.text =
-            usuario.experiencia
-
-        // =========================
+        // =====================================================
         // MÍDIAS
-        // =========================
+        // =====================================================
 
-        carregarMidias(usuario.midias)
+        carregarMidias(
+            usuario.midias
+        )
     }
 
-    private fun calcularIdade(dataNascimento: String): Int {
+    // =========================================================
+    // CALCULAR IDADE
+    // =========================================================
+
+    private fun calcularIdade(
+        dataNascimento: String
+    ): Int {
 
         if (dataNascimento.isBlank()) {
             return 0
@@ -197,20 +313,26 @@ class PerfilFragment : Fragment() {
 
             try {
 
-                val formato = SimpleDateFormat(
-                    padrao,
-                    Locale.getDefault()
-                )
+                val formato =
+                    SimpleDateFormat(
+                        padrao,
+                        Locale.getDefault()
+                    )
 
                 formato.isLenient = false
 
-                val data = formato.parse(dataNascimento)
-                    ?: continue
+                val data =
+                    formato.parse(
+                        dataNascimento
+                    ) ?: continue
 
-                val nascimento = Calendar.getInstance()
+                val nascimento =
+                    Calendar.getInstance()
+
                 nascimento.time = data
 
-                val hoje = Calendar.getInstance()
+                val hoje =
+                    Calendar.getInstance()
 
                 var idade =
                     hoje.get(Calendar.YEAR) -
@@ -236,12 +358,16 @@ class PerfilFragment : Fragment() {
                 return idade
 
             } catch (_: Exception) {
-                // tenta o próximo formato
+                // Tenta o próximo formato
             }
         }
 
         return 0
     }
+
+    // =========================================================
+    // MÍDIAS
+    // =========================================================
 
     private fun carregarMidias(
         midias: List<com.example.escouter.model.Midia>
@@ -258,38 +384,48 @@ class PerfilFragment : Fragment() {
         binding.recyclerMedia.visibility =
             View.VISIBLE
 
-        // O Adapter das mídias será configurado aqui futuramente.
+        // Adapter das mídias será configurado futuramente.
     }
+
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
 
     private fun configurarBottomNavigation() {
 
-        val navController = findNavController()
+        val navController =
+            findNavController()
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
+        binding.bottomNavigation
+            .setOnItemSelectedListener { item ->
 
-            when (item.itemId) {
+                when (item.itemId) {
 
-                R.id.nav_inicio -> {
+                    R.id.nav_inicio -> {
 
-                    navController.navigate(
-                        R.id.homeFragment
-                    )
+                        navController.navigate(
+                            R.id.homeFragment
+                        )
 
-                    true
+                        true
+                    }
+
+                    R.id.nav_perfil -> {
+
+                        true
+                    }
+
+                    else -> false
                 }
-
-                R.id.nav_perfil -> {
-
-                    true
-                }
-
-                else -> false
             }
-        }
 
         binding.bottomNavigation.selectedItemId =
             R.id.nav_perfil
     }
+
+    // =========================================================
+    // DESTROY
+    // =========================================================
 
     override fun onDestroyView() {
 
