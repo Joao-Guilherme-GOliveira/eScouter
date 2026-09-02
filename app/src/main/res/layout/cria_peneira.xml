@@ -31,6 +31,14 @@
             style="@style/FieldInput"
             android:hint="ex: União FC - Sub-19"
             android:inputType="text"/>
+        <TextView
+            android:id="@+id/InfoNomeTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Preenchido automaticamente com o nome do seu clube"
+            android:textColor="@color/txtCinza"
+            android:textSize="11sp"/>
 
         <!--data da peneira-->
         <TextView

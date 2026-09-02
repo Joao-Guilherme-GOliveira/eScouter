@@ -11,10 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
+import com.example.escouter.data.IbgeCliente
 import com.example.escouter.databinding.FragmentCadastroBinding
 import com.example.escouter.model.Usuario
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -28,6 +31,19 @@ class CadastroFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+
+    // Mapa nome completo (usado no array de estados) -> sigla (usada pela API do IBGE)
+    private val siglaPorEstado = mapOf(
+        "Acre" to "AC", "Alagoas" to "AL", "Amapá" to "AP", "Amazonas" to "AM",
+        "Bahia" to "BA", "Ceará" to "CE", "Distrito Federal" to "DF",
+        "Espírito Santo" to "ES", "Goiás" to "GO", "Maranhão" to "MA",
+        "Mato Grosso" to "MT", "Mato Grosso do Sul" to "MS", "Minas Gerais" to "MG",
+        "Pará" to "PA", "Paraíba" to "PB", "Paraná" to "PR", "Pernambuco" to "PE",
+        "Piauí" to "PI", "Rio de Janeiro" to "RJ", "Rio Grande do Norte" to "RN",
+        "Rio Grande do Sul" to "RS", "Rondônia" to "RO", "Roraima" to "RR",
+        "Santa Catarina" to "SC", "São Paulo" to "SP", "Sergipe" to "SE",
+        "Tocantins" to "TO"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -240,11 +256,6 @@ class CadastroFragment : Fragment() {
                 .toString()
                 .trim()
 
-        val cidade =
-            binding.edtCidade.text
-                .toString()
-                .trim()
-
         // Estado
         if (binding.spinnerEstado.selectedItemPosition == 0) {
 
@@ -274,12 +285,15 @@ class CadastroFragment : Fragment() {
         }
 
         // Cidade
-        if (cidade.isEmpty()) {
+        if (binding.spinnerCidade.selectedItemPosition == 0 ||
+            !binding.spinnerCidade.isEnabled
+        ) {
 
-            binding.edtCidade.error =
-                "Preencha o campo de cidade"
-
-            binding.edtCidade.requestFocus()
+            Toast.makeText(
+                requireContext(),
+                "Selecione uma cidade",
+                Toast.LENGTH_SHORT
+            ).show()
 
             return false
         }
@@ -365,9 +379,8 @@ class CadastroFragment : Fragment() {
                 .toString()
 
         val cidade =
-            binding.edtCidade.text
+            binding.spinnerCidade.selectedItem
                 .toString()
-                .trim()
 
         val estado =
             binding.spinnerEstado.selectedItem
@@ -460,162 +473,6 @@ class CadastroFragment : Fragment() {
             }
     }
 
-
-
-    // =========================================================
-    // SPINNERS
-    // =========================================================
-
-    private fun configurarSpinners() {
-
-        // -------------------------
-        // ESTADOS
-        // -------------------------
-
-        val estadosArray =
-            resources.getStringArray(
-                R.array.estados_brasil
-            )
-
-        val listaComHint =
-            mutableListOf("Selecione um estado")
-
-        listaComHint.addAll(estadosArray)
-
-        val adapterEstado =
-            object : ArrayAdapter<String>(
-                requireContext(),
-                R.layout.item_spinner_selecionado,
-                listaComHint
-            ) {
-
-                override fun isEnabled(
-                    position: Int
-                ): Boolean {
-                    return position != 0
-                }
-
-                override fun getDropDownView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup
-                ): View {
-
-                    val view =
-                        super.getDropDownView(
-                            position,
-                            convertView,
-                            parent
-                        ) as TextView
-
-                    view.setTextColor(
-                        if (position == 0)
-                            Color.GRAY
-                        else
-                            Color.BLACK
-                    )
-
-                    return view
-                }
-            }
-
-        adapterEstado.setDropDownViewResource(
-            R.layout.item_spinner_dropdown
-        )
-
-        binding.spinnerEstado.adapter =
-            adapterEstado
-
-        // -------------------------
-        // TIPO DE USUÁRIO
-        // -------------------------
-
-        val usuarioArray =
-            resources.getStringArray(
-                R.array.tipo_de_usuario
-            )
-
-        val listaComHint2 =
-            mutableListOf(
-                "Selecione um Tipo de Usuário"
-            )
-
-        listaComHint2.addAll(usuarioArray)
-
-        val adapterUsuario =
-            object : ArrayAdapter<String>(
-                requireContext(),
-                R.layout.item_spinner_selecionado,
-                listaComHint2
-            ) {
-
-                override fun isEnabled(
-                    position: Int
-                ): Boolean {
-                    return position != 0
-                }
-
-                override fun getDropDownView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup
-                ): View {
-
-                    val view =
-                        super.getDropDownView(
-                            position,
-                            convertView,
-                            parent
-                        ) as TextView
-
-                    view.setTextColor(
-                        if (position == 0)
-                            Color.GRAY
-                        else
-                            Color.BLACK
-                    )
-
-                    return view
-                }
-            }
-
-        adapterUsuario.setDropDownViewResource(
-            R.layout.item_spinner_dropdown
-        )
-
-        binding.spinnerTipoUsuario.adapter =
-            adapterUsuario
-
-        // Detecta mudança do tipo de usuário
-        binding.spinnerTipoUsuario.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-
-                    val tipoSelecionado =
-                        binding.spinnerTipoUsuario
-                            .selectedItem
-                            ?.toString()
-                            ?: ""
-
-                    attCamposporTipoUsuario(
-                        tipoSelecionado
-                    )
-                }
-
-                override fun onNothingSelected(
-                    parent: AdapterView<*>?
-                ) {
-                    // Mantém os campos padrão
-                }
-            }
-    }
-
     // =========================================================
     // ALTERA CAMPOS DE ACORDO COM O TIPO
     // =========================================================
@@ -657,6 +514,101 @@ class CadastroFragment : Fragment() {
 
             binding.edtDataNascimento.hint =
                 "00/00/0000"
+        }
+    }
+
+    // =========================================================
+    // SPINNERS
+    // =========================================================
+
+    private fun configurarSpinners() {
+
+        // -------------------------
+        // ESTADOS
+        // -------------------------
+        val estadosArray = resources.getStringArray(R.array.estados_brasil)
+        val adapterEstado = criarAdapterComHint("Selecione um estado", estadosArray.toList())
+        binding.spinnerEstado.adapter = adapterEstado
+
+        // Detecta mudança do estado -> recarrega as cidades
+        binding.spinnerEstado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position == 0) {
+                    configurarSpinnerCidadeVazio("Selecione um estado primeiro")
+                    return
+                }
+                val estadoSelecionado = binding.spinnerEstado.selectedItem.toString()
+                val sigla = siglaPorEstado[estadoSelecionado]
+                if (sigla != null) {
+                    carregarCidades(sigla)
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Cidade começa vazia até um estado ser escolhido
+        configurarSpinnerCidadeVazio("Selecione um estado primeiro")
+
+        // -------------------------
+        // TIPO DE USUÁRIO
+        // -------------------------
+        val usuarioArray = resources.getStringArray(R.array.tipo_de_usuario)
+        val adapterUsuario = criarAdapterComHint("Selecione um Tipo de Usuário", usuarioArray.toList())
+        binding.spinnerTipoUsuario.adapter = adapterUsuario
+
+        binding.spinnerTipoUsuario.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val tipoSelecionado = binding.spinnerTipoUsuario.selectedItem?.toString() ?: ""
+                attCamposporTipoUsuario(tipoSelecionado)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    // =========================================================
+    // ADAPTER COM HINT DESABILITADO NA POSIÇÃO 0 (reutilizado
+    // por Estado, Cidade e Tipo de Usuário)
+    // =========================================================
+
+    private fun criarAdapterComHint(hint: String, itens: List<String>): ArrayAdapter<String> {
+        val listaComHint = mutableListOf(hint)
+        listaComHint.addAll(itens)
+
+        val adapter = object : ArrayAdapter<String>(requireContext(), R.layout.item_spinner_selecionado, listaComHint) {
+            override fun isEnabled(position: Int): Boolean = position != 0
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.setTextColor(if (position == 0) Color.GRAY else Color.BLACK)
+                return view
+            }
+        }
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
+        return adapter
+    }
+
+    // =========================================================
+    // CIDADE (dependente do Estado)
+    // =========================================================
+
+    private fun configurarSpinnerCidadeVazio(hint: String) {
+        binding.spinnerCidade.adapter = criarAdapterComHint(hint, emptyList())
+        binding.spinnerCidade.isEnabled = false
+    }
+
+    private fun carregarCidades(uf: String) {
+        binding.spinnerCidade.adapter = criarAdapterComHint("Carregando cidades...", emptyList())
+        binding.spinnerCidade.isEnabled = false
+
+        lifecycleScope.launch {
+            try {
+                val cidades = IbgeCliente.service.getCidades(uf).map { it.nome }
+                binding.spinnerCidade.adapter = criarAdapterComHint("Selecione uma cidade", cidades)
+                binding.spinnerCidade.isEnabled = true
+            } catch (e: Exception) {
+                binding.spinnerCidade.adapter = criarAdapterComHint("Erro ao carregar cidades", emptyList())
+                Toast.makeText(requireContext(), "Não foi possível carregar as cidades. Verifique sua conexão.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

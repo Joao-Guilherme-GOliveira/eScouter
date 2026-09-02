@@ -181,11 +181,14 @@
                     android:layout_marginTop="14dp"
                     android:text="Cidade" />
 
-                <EditText
-                    android:id="@+id/edtCidade"
-                    style="@style/FieldInput"
-                    android:hint="Ex: São Paulo"
-                    android:inputType="text" />
+                <Spinner
+                    android:id="@+id/spinnerCidade"
+                    style="@style/Spinnerstyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:paddingHorizontal="12dp"
+                    android:spinnerMode="dropdown" />
 
                 <!-- Botões -->
                 <LinearLayout

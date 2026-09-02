@@ -53,10 +53,50 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
         configurarDatePicker()
         configurarTimePicker()
+        configurarNomeClubeImutavel()
 
         binding.btnSalvarPeneira.setOnClickListener {
             salvarPeneira()
         }
+    }
+
+    // =========================================================
+    // NOME DO CLUBE (imutável — vem do perfil do usuário logado)
+    // =========================================================
+
+    private fun configurarNomeClubeImutavel() {
+
+        // Trava o campo: sem foco, sem clique, sem teclado, sem cursor.
+        // O texto continua com a mesma cor/estilo do EditText normal.
+        binding.edtNomeTime.apply {
+            isFocusable = false
+            isFocusableInTouchMode = false
+            isClickable = false
+            isCursorVisible = false
+            keyListener = null
+            setText("Carregando...")
+        }
+
+        val uid = auth.currentUser?.uid
+
+        if (uid == null) {
+            binding.edtNomeTime.setText("")
+            return
+        }
+
+        db.collection("usuarios")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { documento ->
+
+                val nomeClube =
+                    documento.getString("nome") ?: ""
+
+                binding.edtNomeTime.setText(nomeClube)
+            }
+            .addOnFailureListener {
+                binding.edtNomeTime.setText("")
+            }
     }
 
     // =========================================================
@@ -179,10 +219,11 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
         if (nomeTime.isEmpty()) {
 
-            binding.edtNomeTime.error =
-                "Preencha o nome do time"
-
-            binding.edtNomeTime.requestFocus()
+            Toast.makeText(
+                requireContext(),
+                "Não foi possível carregar o nome do clube. Tente novamente.",
+                Toast.LENGTH_SHORT
+            ).show()
 
             return
         }
