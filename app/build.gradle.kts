@@ -55,5 +55,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
 
 }
