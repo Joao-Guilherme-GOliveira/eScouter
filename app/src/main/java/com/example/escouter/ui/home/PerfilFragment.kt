@@ -15,12 +15,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import com.example.escouter.adapter.MediaAdapter
+import com.example.escouter.model.Midia
 
 class PerfilFragment : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
-
+    private lateinit var mediaAdapter: MediaAdapter
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
@@ -52,6 +54,7 @@ class PerfilFragment : Fragment() {
 
         carregarUsuario()
         configurarBottomNavigation()
+        configurarRecyclerMidias()
 
         binding.btnEditarPerfil.setOnClickListener {
 
@@ -79,6 +82,16 @@ class PerfilFragment : Fragment() {
                 )
             }
         }
+    }
+
+
+    private fun configurarRecyclerMidias() {
+
+        mediaAdapter = MediaAdapter(emptyList())
+
+        binding.recyclerMedia.adapter = mediaAdapter
+
+        carregarMidias()
     }
 
     // =========================================================
@@ -286,9 +299,6 @@ class PerfilFragment : Fragment() {
         // MÍDIAS
         // =====================================================
 
-        carregarMidias(
-            usuario.midias
-        )
     }
 
     // =========================================================
@@ -369,22 +379,55 @@ class PerfilFragment : Fragment() {
     // MÍDIAS
     // =========================================================
 
-    private fun carregarMidias(
-        midias: List<com.example.escouter.model.Midia>
-    ) {
+    private fun carregarMidias() {
 
-        if (midias.isEmpty()) {
+        val usuarioFirebase = auth.currentUser
 
-            binding.recyclerMedia.visibility =
-                View.GONE
-
+        if (usuarioFirebase == null) {
+            binding.recyclerMedia.visibility = View.GONE
             return
         }
 
-        binding.recyclerMedia.visibility =
-            View.VISIBLE
+        val uid = usuarioFirebase.uid
 
-        // Adapter das mídias será configurado futuramente.
+        db.collection("midias")
+            .whereEqualTo("usuarioId", uid)
+            .get()
+            .addOnSuccessListener { documentos ->
+
+                val listaMidias = documentos.mapNotNull { documento ->
+
+                    try {
+                        documento.toObject(Midia::class.java)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+
+                if (listaMidias.isEmpty()) {
+
+                    binding.recyclerMedia.visibility =
+                        View.GONE
+
+                } else {
+
+                    binding.recyclerMedia.visibility =
+                        View.VISIBLE
+
+                    mediaAdapter.atualizarMidias(listaMidias)
+                }
+            }
+            .addOnFailureListener {
+
+                binding.recyclerMedia.visibility =
+                    View.GONE
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao carregar mídias.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     // =========================================================
