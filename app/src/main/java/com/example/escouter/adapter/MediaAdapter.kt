@@ -1,13 +1,13 @@
 package com.example.escouter.adapter
 
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.escouter.VideoPlayerActivity
 import com.example.escouter.R
 import com.example.escouter.model.Midia
 
@@ -67,9 +67,11 @@ class MediaAdapter(
             if (midia.uri.isNotEmpty()) {
 
                 val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(midia.uri)
+                    holder.itemView.context,
+                    VideoPlayerActivity::class.java
                 )
+
+                intent.putExtra("video_url", midia.uri)
 
                 holder.itemView.context.startActivity(intent)
             }
