@@ -65,40 +65,40 @@
             app:strokeColor="#E5E7EB"
             app:strokeWidth="1dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingTop="18dp"
-                android:paddingBottom="15dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="15dp">
 
-                <ImageView
-                    android:id="@+id/imgFotoPerfil"
-                    android:layout_width="115dp"
-                    android:layout_height="115dp"
-                    android:background="@drawable/bg_foto_perfil"
-                    android:clipToOutline="true"
-                    android:contentDescription="Foto de perfil"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_perfil" />
+                    <ImageView
+                        android:id="@+id/imgFotoPerfil"
+                        android:layout_width="115dp"
+                        android:layout_height="115dp"
+                        android:background="@drawable/bg_foto_perfil"
+                        android:clipToOutline="true"
+                        android:contentDescription="Foto de perfil"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_perfil" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/txtAlterarFoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:text="Alterar foto"
-                    android:textAllCaps="false"
-                    android:textColor="@color/txtBranco"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/cardPeneira"
-                    app:cornerRadius="12dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/txtAlterarFoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="Alterar foto"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtBranco"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/cardPeneira"
+                        app:cornerRadius="12dp" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
 
             <!-- ========================= -->
@@ -237,12 +237,13 @@
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusTopStart="12dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtPosicao"
+                        <Spinner
+                            android:id="@+id/spinnerPosicao"
+                            android:background="@drawable/bg_spinner_perfil"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textSize="14sp" />
+                            android:layout_height="50dp"
+                            android:layout_marginTop="4dp"/>
+
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -254,6 +255,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:hint="Peso (kg)"
+                        app:hintTextColor="@color/txtPreto"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -265,6 +267,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
+                            android:textColor="@color/txtPreto"
                             android:textSize="14sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -276,7 +279,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Altura (m)"
+                        android:hint="Altura (cm)"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -287,7 +290,9 @@
                             android:id="@+id/edtAltura"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
+                            android:textColor="@color/txtPreto"
+                            android:inputType="number"
+                            android:textColorHint="@color/txtPreto"
                             android:textSize="14sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -306,12 +311,13 @@
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusTopStart="12dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtExperiencia"
+                        <Spinner
+                            android:id="@+id/spinnerExperiencia"
+                            android:background="@drawable/bg_spinner_perfil"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textSize="14sp" />
+                            android:layout_height="50dp"
+                            android:layout_marginTop="4dp"/>
+
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -323,6 +329,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:hint="Sobre você"
+                        android:textColorHint="@color/txtPreto"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -333,6 +340,7 @@
                             android:id="@+id/edtDescricao"
                             android:layout_width="match_parent"
                             android:layout_height="110dp"
+                            android:textColor="@color/txtPreto"
                             android:gravity="top"
                             android:inputType="textMultiLine"
                             android:textSize="14sp" />

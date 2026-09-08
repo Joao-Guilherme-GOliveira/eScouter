@@ -8,6 +8,7 @@ import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -72,6 +73,7 @@ class EditarPerfilAtletaFragment : Fragment() {
         carregarUsuario()
         carregarMidias()
         configurarListeners()
+        configuraSpinner()
     }
 
     private fun configurarListeners() {
@@ -164,11 +166,74 @@ class EditarPerfilAtletaFragment : Fragment() {
         binding.txtDataNascimento.text =
             "Nascimento: ${usuario.dataNascimento}"
 
-        binding.edtPosicao.setText(usuario.posicao)
+        val posicaoSelecionada =
+            (binding.spinnerPosicao.adapter as ArrayAdapter<String>)
+                .getPosition(usuario.posicao)
+
+        if (posicaoSelecionada >= 0) {
+            binding.spinnerPosicao.setSelection(posicaoSelecionada)
+        }
+
         binding.edtPeso.setText(usuario.peso)
         binding.edtAltura.setText(usuario.altura)
-        binding.edtExperiencia.setText(usuario.experiencia)
         binding.edtDescricao.setText(usuario.descricao)
+
+        val experienciaSelecionada =
+            (binding.spinnerExperiencia.adapter as ArrayAdapter<String>)
+                .getPosition(usuario.experiencia)
+
+        if (experienciaSelecionada >= 0) {
+            binding.spinnerExperiencia.setSelection(experienciaSelecionada)
+        }
+    }
+
+    //CONFIGURAÇÃO DOS SPINNERS DO PERFIL DE ATLETA
+    private fun configuraSpinner() {
+
+        // SPINNER DE POSIÇÃO
+        val posicoes = arrayOf(
+            "Selecione sua posição",
+            "Goleiro",
+            "Defensor",
+            "Meio-Campo",
+            "Atacante"
+        )
+
+        val adapterPosicao = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner_selecionado,
+            posicoes
+        )
+
+        adapterPosicao.setDropDownViewResource(
+            R.layout.item_spinner_dropdown
+        )
+
+        binding.spinnerPosicao.adapter = adapterPosicao
+
+
+        // SPINNER DE EXPERIÊNCIA
+        val experiencia = arrayOf(
+            "Selecione sua experiência",
+            "Menos de 1 ano",
+            "1 a 2 anos",
+            "2 a 3 anos",
+            "3 a 4 anos",
+            "5 a 10 anos",
+            "Mais de 10 anos"
+        )
+
+        val adapterExperiencia = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner_selecionado,
+            experiencia
+        )
+
+        adapterExperiencia.setDropDownViewResource(
+            R.layout.item_spinner_dropdown
+        )
+
+        binding.spinnerExperiencia.adapter = adapterExperiencia
     }
 
     // ============================================================
@@ -180,7 +245,6 @@ class EditarPerfilAtletaFragment : Fragment() {
         val usuarioFirebase = auth.currentUser
 
         if (usuarioFirebase == null) {
-
             Toast.makeText(
                 requireContext(),
                 "Nenhum usuário está logado.",
@@ -192,18 +256,77 @@ class EditarPerfilAtletaFragment : Fragment() {
 
         val uid = usuarioFirebase.uid
 
+        // ==============================
+        // VALIDAÇÃO DE PESO E ALTURA
+        // ==============================
+
+        val peso = binding.edtPeso.text.toString().trim()
+        val pesoValor = peso.toDoubleOrNull()
+
+        val altura = binding.edtAltura.text.toString().trim()
+        val alturaValor = altura.toDoubleOrNull()
+
+        // Validação do peso
+        if (pesoValor == null || pesoValor <= 0) {
+            binding.edtPeso.error = "Informe um peso válido"
+            binding.edtPeso.requestFocus()
+            return
+        }
+
+        // Validação da altura
+        if (alturaValor == null || alturaValor <= 0) {
+            binding.edtAltura.error = "Informe uma altura válida em cm"
+            binding.edtAltura.requestFocus()
+            return
+        }
+        //transforma altura para metros
+
+        val alturaMetros = alturaValor/100
+
+
+        // ==============================
+        // VALIDAÇÃO DOS SPINNERS
+        // ==============================
+
+        if (binding.spinnerPosicao.selectedItemPosition == 0) {
+            Toast.makeText(
+                requireContext(),
+                "Selecione sua posição",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        if (binding.spinnerExperiencia.selectedItemPosition == 0) {
+            Toast.makeText(
+                requireContext(),
+                "Selecione sua experiência",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        // Pega os valores selecionados nos Spinners
+        val posicao = binding.spinnerPosicao.selectedItem.toString()
+        val experiencia = binding.spinnerExperiencia.selectedItem.toString()
+
+        // ==============================
+        // DADOS ATUALIZADOS
+        // ==============================
+
         val dadosAtualizados = hashMapOf<String, Any>(
-
-            "posicao" to binding.edtPosicao.text.toString().trim(),
-
-            "peso" to binding.edtPeso.text.toString().trim(),
-
-            "altura" to binding.edtAltura.text.toString().trim(),
-
-            "experiencia" to binding.edtExperiencia.text.toString().trim(),
-
+            "posicao" to posicao,
+            "peso" to peso,
+            "altura" to alturaMetros,
+            "experiencia" to experiencia,
             "descricao" to binding.edtDescricao.text.toString().trim()
         )
+
+        // ==============================
+        // ATUALIZAÇÃO NO FIRESTORE
+        // ==============================
 
         db.collection("usuarios")
             .document(uid)
