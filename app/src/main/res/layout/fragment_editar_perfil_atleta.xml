@@ -385,6 +385,17 @@
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btnExcluirSelecionadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Excluir selecionadas"
+                android:visibility="gone"
+                android:backgroundTint="@color/cardPeneira"
+                android:textColor="@color/txtBranco"
+                android:textSize="13sp"
+                android:layout_marginTop="8dp" />
+
             <GridLayout
                 android:id="@+id/gridMidias"
                 android:layout_width="match_parent"

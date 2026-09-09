@@ -1,36 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_margin="4dp">
 
-    <ImageView
-        android:id="@+id/imgMidia"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/bg_midia"
-        android:contentDescription="Mídia do atleta" />
-
-    <TextView
-        android:id="@+id/txtNomeMidia"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:textColor="@color/txtPreto"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:ellipsize="end" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtDuracaoMidia"
-        android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imgMidia"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_midia"
+            android:contentDescription="Mídia do atleta" />
+
+        <TextView
+            android:id="@+id/txtNomeMidia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/txtPreto"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/txtDuracaoMidia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/txtCinzaClaro"
+            android:textSize="9sp" />
+
+    </LinearLayout>
+
+    <!-- Selecionar mídia -->
+    <CheckBox
+        android:id="@+id/checkSelecionar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/txtCinzaClaro"
-        android:textSize="9sp" />
+        android:layout_gravity="top|start"
+        android:layout_margin="2dp" />
 
-</LinearLayout>
+    <!-- Editar nome -->
+    <ImageButton
+        android:id="@+id/btnEditarNomeMidia"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="4dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Editar nome da mídia"
+        android:src="@android:drawable/ic_menu_edit" />
+
+</FrameLayout>

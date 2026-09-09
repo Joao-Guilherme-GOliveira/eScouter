@@ -4,5 +4,7 @@ data class Midia(
     val nome: String = "",
     val uri: String = "",
     val duracao: String = "",
-    val usuarioId: String = ""
+    val usuarioId: String = "",
+    val tipo: String = "",
+    val thumbnailUri: String = ""
 )

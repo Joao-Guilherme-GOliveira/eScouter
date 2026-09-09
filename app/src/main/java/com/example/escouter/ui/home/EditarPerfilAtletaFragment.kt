@@ -22,6 +22,10 @@ import com.example.escouter.model.Midia
 import com.example.escouter.model.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.CheckBox
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import coil.load
 
 class EditarPerfilAtletaFragment : Fragment() {
 
@@ -30,7 +34,7 @@ class EditarPerfilAtletaFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-
+    private val midiasSelecionadas = mutableSetOf<String>()
     private var usuarioAtual: Usuario? = null
 
     /*
@@ -89,6 +93,10 @@ class EditarPerfilAtletaFragment : Fragment() {
         binding.btnAdicionarMidia.setOnClickListener {
 
             selecionarMidia.launch("*/*")
+        }
+
+        binding.btnExcluirSelecionadas.setOnClickListener {
+            confirmarExclusaoMidias()
         }
     }
 
@@ -175,7 +183,28 @@ class EditarPerfilAtletaFragment : Fragment() {
         }
 
         binding.edtPeso.setText(usuario.peso)
-        binding.edtAltura.setText(usuario.altura)
+
+        // ==========================================
+        // ALTURA
+        // Firestore: 1.86 metros
+        // Campo de edição: 186 centímetros
+        // ==========================================
+
+        val alturaMetros = usuario.altura.toDoubleOrNull()
+
+        if (alturaMetros != null) {
+
+            val alturaCm = alturaMetros * 100
+
+            binding.edtAltura.setText(
+                alturaCm.toInt().toString()
+            )
+
+        } else {
+
+            binding.edtAltura.setText("")
+        }
+
         binding.edtDescricao.setText(usuario.descricao)
 
         val experienciaSelecionada =
@@ -319,7 +348,7 @@ class EditarPerfilAtletaFragment : Fragment() {
         val dadosAtualizados = hashMapOf<String, Any>(
             "posicao" to posicao,
             "peso" to peso,
-            "altura" to alturaMetros,
+            "altura" to alturaMetros.toString(),
             "experiencia" to experiencia,
             "descricao" to binding.edtDescricao.text.toString().trim()
         )
@@ -372,6 +401,17 @@ class EditarPerfilAtletaFragment : Fragment() {
 
         val uid = usuarioFirebase.uid
 
+        // Descobre se o arquivo é imagem ou vídeo
+        val tipoMime = requireContext()
+            .contentResolver
+            .getType(uri)
+
+        val tipo = if (tipoMime?.startsWith("video") == true) {
+            "video"
+        } else {
+            "imagem"
+        }
+
         Toast.makeText(
             requireContext(),
             "Enviando mídia...",
@@ -380,13 +420,12 @@ class EditarPerfilAtletaFragment : Fragment() {
 
         val nomeArquivo = obterNomeArquivo(uri)
 
-        val requestId = MediaManager.get()
+        MediaManager.get()
             .upload(uri)
             .unsigned("escouter_midias")
             .callback(object : UploadCallback {
 
                 override fun onStart(requestId: String) {
-
                 }
 
                 override fun onProgress(
@@ -427,14 +466,27 @@ class EditarPerfilAtletaFragment : Fragment() {
                         return
                     }
 
-                    val duracao =
+                    // Só calcula duração se for vídeo
+                    val duracao = if (tipo == "video") {
                         obterDuracao(uri)
+                    } else {
+                        ""
+                    }
+
+                    // Gera a capa automaticamente para vídeos
+                    val thumbnailUri = if (tipo == "video") {
+                        gerarThumbnailVideo(url)
+                    } else {
+                        url
+                    }
 
                     salvarMidiaNoFirestore(
                         uid = uid,
                         nome = nomeArquivo,
                         url = url,
-                        duracao = duracao
+                        duracao = duracao,
+                        tipo = tipo,
+                        thumbnailUri = thumbnailUri
                     )
                 }
 
@@ -457,10 +509,19 @@ class EditarPerfilAtletaFragment : Fragment() {
                     requestId: String,
                     error: ErrorInfo
                 ) {
-
                 }
             })
             .dispatch()
+    }
+
+    private fun gerarThumbnailVideo(videoUrl: String): String {
+
+        return videoUrl
+            .replace("/upload/", "/upload/so_0/")
+            .replace(
+                Regex("\\.[^./?]+$"),
+                ".jpg"
+            )
     }
 
     // ============================================================
@@ -471,14 +532,18 @@ class EditarPerfilAtletaFragment : Fragment() {
         uid: String,
         nome: String,
         url: String,
-        duracao: String
+        duracao: String,
+        tipo: String,
+        thumbnailUri: String
     ) {
 
         val midia = Midia(
             nome = nome,
             uri = url,
             duracao = duracao,
-            usuarioId = uid
+            usuarioId = uid,
+            tipo = tipo,
+            thumbnailUri = thumbnailUri
         )
 
         db.collection("midias")
@@ -518,8 +583,15 @@ class EditarPerfilAtletaFragment : Fragment() {
             .get()
             .addOnSuccessListener { resultado ->
 
-                val midias = resultado.documents.mapNotNull {
-                    it.toObject(Midia::class.java)
+                val midias = resultado.documents.mapNotNull { documento ->
+
+                    val midia = documento.toObject(Midia::class.java)
+
+                    if (midia != null) {
+                        Pair(documento.id, midia)
+                    } else {
+                        null
+                    }
                 }
 
                 mostrarMidias(midias)
@@ -534,17 +606,172 @@ class EditarPerfilAtletaFragment : Fragment() {
             }
     }
 
-    private fun mostrarMidias(midias: List<Midia>) {
+    private fun atualizarBotaoExcluir() {
+
+        if (midiasSelecionadas.isEmpty()) {
+
+            binding.btnExcluirSelecionadas.visibility =
+                View.GONE
+
+        } else {
+
+            binding.btnExcluirSelecionadas.visibility =
+                View.VISIBLE
+
+            binding.btnExcluirSelecionadas.text =
+                "Excluir ${midiasSelecionadas.size} selecionada(s)"
+        }
+    }
+
+    private fun confirmarExclusaoMidias() {
+
+        if (midiasSelecionadas.isEmpty()) {
+            return
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Excluir mídias")
+            .setMessage(
+                "Deseja realmente excluir ${midiasSelecionadas.size} mídia(s)?"
+            )
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Excluir") { _, _ ->
+
+                excluirMidiasSelecionadas()
+            }
+            .show()
+    }
+    private fun excluirMidiasSelecionadas() {
+
+        val batch = db.batch()
+
+        for (documentoId in midiasSelecionadas) {
+
+            val referencia = db.collection("midias")
+                .document(documentoId)
+
+            batch.delete(referencia)
+        }
+
+        batch.commit()
+            .addOnSuccessListener {
+
+                Toast.makeText(
+                    requireContext(),
+                    "Mídia(s) excluída(s) com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                midiasSelecionadas.clear()
+
+                carregarMidias()
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao excluir: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+    private fun mostrarDialogEditarNome(
+        documentoId: String,
+        nomeAtual: String
+    ) {
+
+        val input = EditText(requireContext())
+
+        input.setText(nomeAtual)
+
+        input.setSelection(
+            input.text.length
+        )
+
+        input.setPadding(
+            50,
+            20,
+            50,
+            20
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Alterar nome da mídia")
+            .setMessage("Digite o novo nome que aparecerá no perfil.")
+            .setView(input)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Salvar") { _, _ ->
+
+                val novoNome =
+                    input.text.toString().trim()
+
+                if (novoNome.isEmpty()) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "O nome não pode ficar vazio.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@setPositiveButton
+                }
+
+                alterarNomeMidia(
+                    documentoId,
+                    novoNome
+                )
+            }
+            .show()
+    }
+    private fun alterarNomeMidia(
+        documentoId: String,
+        novoNome: String
+    ) {
+
+        db.collection("midias")
+            .document(documentoId)
+            .update("nome", novoNome)
+            .addOnSuccessListener {
+
+                Toast.makeText(
+                    requireContext(),
+                    "Nome alterado com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                carregarMidias()
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao alterar nome: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+    private fun mostrarMidias(
+        midias: List<Pair<String, Midia>>
+    ) {
 
         binding.gridMidias.removeAllViews()
 
-        for (midia in midias) {
+        midiasSelecionadas.clear()
+
+        atualizarBotaoExcluir()
+
+        for ((documentoId, midia) in midias) {
 
             val item = layoutInflater.inflate(
                 R.layout.item_midia,
                 binding.gridMidias,
                 false
             )
+
+            val imgMidia =
+                item.findViewById<android.widget.ImageView>(
+                    R.id.imgMidia
+                )
 
             val txtNome =
                 item.findViewById<android.widget.TextView>(
@@ -556,9 +783,81 @@ class EditarPerfilAtletaFragment : Fragment() {
                     R.id.txtDuracaoMidia
                 )
 
-            txtNome.text = midia.nome
-            txtDuracao.text = midia.duracao
+            val checkSelecionar =
+                item.findViewById<CheckBox>(
+                    R.id.checkSelecionar
+                )
 
+            val btnEditarNome =
+                item.findViewById<android.widget.ImageButton>(
+                    R.id.btnEditarNomeMidia
+                )
+
+            // Nome
+            txtNome.text = midia.nome
+
+            // Duração
+            if (midia.tipo == "video") {
+                txtDuracao.text = midia.duracao
+                txtDuracao.visibility = View.VISIBLE
+            } else {
+                txtDuracao.visibility = View.GONE
+            }
+
+            // Imagem ou thumbnail do vídeo
+            val imagemParaMostrar =
+                if (midia.thumbnailUri.isNotEmpty()) {
+                    midia.thumbnailUri
+                } else {
+                    midia.uri
+                }
+
+            imgMidia.load(imagemParaMostrar) {
+                crossfade(true)
+                error(R.drawable.ic_video)
+            }
+
+            // =========================
+            // SELECIONAR MÍDIA
+            // =========================
+
+            checkSelecionar.setOnCheckedChangeListener { _, marcado ->
+
+                if (marcado) {
+                    midiasSelecionadas.add(documentoId)
+                } else {
+                    midiasSelecionadas.remove(documentoId)
+                }
+
+                atualizarBotaoExcluir()
+            }
+
+            // =========================
+            // EDITAR NOME
+            // =========================
+
+            btnEditarNome.setOnClickListener {
+                mostrarDialogEditarNome(
+                    documentoId,
+                    midia.nome
+                )
+            }
+
+            // =========================
+            // ABRIR MÍDIA
+            // =========================
+
+            imgMidia.setOnClickListener {
+
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(midia.uri)
+                )
+
+                startActivity(intent)
+            }
+
+            // Configuração do GridLayout
             val params =
                 android.widget.GridLayout.LayoutParams()
 
@@ -574,20 +873,6 @@ class EditarPerfilAtletaFragment : Fragment() {
                 )
 
             item.layoutParams = params
-
-            /*
-             * Quando clicar na mídia,
-             * abre a URL no navegador/aplicativo compatível.
-             */
-            item.setOnClickListener {
-
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(midia.uri)
-                )
-
-                startActivity(intent)
-            }
 
             binding.gridMidias.addView(item)
         }

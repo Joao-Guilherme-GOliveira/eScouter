@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.escouter.VideoPlayerActivity
+import coil.load
+import com.example.escouter.ImageViewerActivity
 import com.example.escouter.R
+import com.example.escouter.VideoPlayerActivity
 import com.example.escouter.model.Midia
 
 class MediaAdapter(
@@ -54,24 +56,62 @@ class MediaAdapter(
         holder.txtMediaTitle.text = midia.nome
 
         // Duração
-        holder.txtDuration.text = midia.duracao
+        if (midia.tipo == "video" && midia.duracao.isNotEmpty()) {
+            holder.txtDuration.visibility = View.VISIBLE
+            holder.txtDuration.text = midia.duracao
+        } else {
+            holder.txtDuration.visibility = View.GONE
+        }
 
-        // Imagem padrão enquanto ainda não temos thumbnail
-        holder.imgThumbnail.setImageResource(
-            R.drawable.ic_video
-        )
+        // Carrega a imagem da mídia / capa do vídeo
+        if (midia.thumbnailUri.isNotEmpty()) {
 
-        // Abrir mídia do Cloudinary ao clicar
+            holder.imgThumbnail.load(midia.thumbnailUri) {
+                crossfade(true)
+            }
+
+        } else {
+
+            // Para mídias antigas que ainda não possuem thumbnail
+            holder.imgThumbnail.setImageResource(
+                R.drawable.ic_video
+            )
+        }
+
+        // Abrir mídia
         holder.itemView.setOnClickListener {
 
-            if (midia.uri.isNotEmpty()) {
+            if (midia.uri.isEmpty()) {
+                return@setOnClickListener
+            }
 
+            if (midia.tipo == "video") {
+
+                // Vídeo → abre no player do próprio app
                 val intent = Intent(
                     holder.itemView.context,
                     VideoPlayerActivity::class.java
                 )
 
-                intent.putExtra("video_url", midia.uri)
+                intent.putExtra(
+                    "video_url",
+                    midia.uri
+                )
+
+                holder.itemView.context.startActivity(intent)
+
+            } else if (midia.tipo == "imagem") {
+
+                // Imagem → abre no visualizador do próprio app
+                val intent = Intent(
+                    holder.itemView.context,
+                    ImageViewerActivity::class.java
+                )
+
+                intent.putExtra(
+                    "image_url",
+                    midia.uri
+                )
 
                 holder.itemView.context.startActivity(intent)
             }

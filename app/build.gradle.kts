@@ -58,4 +58,5 @@ dependencies {
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("androidx.media3:media3-exoplayer:1.9.2")
     implementation("androidx.media3:media3-ui:1.9.2")
+    implementation("io.coil-kt:coil:2.7.0")
 }
