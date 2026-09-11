@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
@@ -34,5 +36,34 @@
         android:text="Vitória - ES"
         android:textColor="@color/txtCinza"
         android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Editar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#23357A"
+            app:cornerRadius="30dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnExcluir"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Excluir"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#23357A"
+            app:cornerRadius="30dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

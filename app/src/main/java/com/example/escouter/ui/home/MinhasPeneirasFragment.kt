@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
@@ -139,7 +142,6 @@ class MinhasPeneirasFragment : Fragment() {
                 binding.txtMensagem.visibility =
                     View.GONE
 
-                // Percorre as peneiras encontradas
                 for (documento in resultado) {
 
                     val peneira =
@@ -148,6 +150,7 @@ class MinhasPeneirasFragment : Fragment() {
                         )
 
                     adicionarPeneiraNaTela(
+                        documento.id,
                         peneira
                     )
                 }
@@ -171,6 +174,7 @@ class MinhasPeneirasFragment : Fragment() {
     // =========================================================
 
     private fun adicionarPeneiraNaTela(
+        idPeneira: String,
         peneira: Peneira
     ) {
 
@@ -195,18 +199,272 @@ class MinhasPeneirasFragment : Fragment() {
                 R.id.txtLocal
             )
 
+        val btnEditar =
+            item.findViewById<View>(
+                R.id.btnEditar
+            )
+
+        val btnExcluir =
+            item.findViewById<View>(
+                R.id.btnExcluir
+            )
+
         txtNomeTime.text =
             peneira.nomeTime
 
-        txtData.text =
-            "${peneira.data} • ${peneira.hora}"
+        txtData.text = getString(
+            R.string.data_hora_peneira,
+            peneira.data,
+            peneira.hora
+        )
 
         txtLocal.text =
             peneira.local
 
+        btnEditar.setOnClickListener {
+
+            editarPeneira(
+                idPeneira,
+                peneira
+            )
+        }
+
+        btnExcluir.setOnClickListener {
+
+            confirmarExclusao(
+                idPeneira
+            )
+        }
+
         binding.containerPeneiras.addView(
             item
         )
+    }
+
+    // =========================================================
+    // EDITAR PENEIRA
+    // =========================================================
+
+    private fun editarPeneira(
+        idPeneira: String,
+        peneira: Peneira
+    ) {
+
+        val layout = LinearLayout(requireContext())
+
+        layout.orientation =
+            LinearLayout.VERTICAL
+
+        layout.setPadding(
+            48,
+            0,
+            48,
+            0
+        )
+
+        val editNomeTime =
+            EditText(requireContext())
+
+        editNomeTime.hint =
+            "Nome do time"
+
+        editNomeTime.setText(
+            peneira.nomeTime
+        )
+
+        val editData =
+            EditText(requireContext())
+
+        editData.hint =
+            "Data"
+
+        editData.setText(
+            peneira.data
+        )
+
+        val editHora =
+            EditText(requireContext())
+
+        editHora.hint =
+            "Hora"
+
+        editHora.setText(
+            peneira.hora
+        )
+
+        val editLocal =
+            EditText(requireContext())
+
+        editLocal.hint =
+            "Local"
+
+        editLocal.setText(
+            peneira.local
+        )
+
+        layout.addView(
+            editNomeTime
+        )
+
+        layout.addView(
+            editData
+        )
+
+        layout.addView(
+            editHora
+        )
+
+        layout.addView(
+            editLocal
+        )
+
+        val dialog =
+            AlertDialog.Builder(requireContext())
+                .setTitle("Editar peneira")
+                .setView(layout)
+                .setNegativeButton(
+                    "Cancelar",
+                    null
+                )
+                .setPositiveButton(
+                    "Salvar",
+                    null
+                )
+                .create()
+
+        dialog.setOnShowListener {
+
+            dialog.getButton(
+                AlertDialog.BUTTON_POSITIVE
+            ).setOnClickListener {
+
+                val nomeTime =
+                    editNomeTime.text
+                        .toString()
+                        .trim()
+
+                val data =
+                    editData.text
+                        .toString()
+                        .trim()
+
+                val hora =
+                    editHora.text
+                        .toString()
+                        .trim()
+
+                val local =
+                    editLocal.text
+                        .toString()
+                        .trim()
+
+                if (
+                    nomeTime.isEmpty() ||
+                    data.isEmpty() ||
+                    hora.isEmpty() ||
+                    local.isEmpty()
+                ) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Preencha todos os campos.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@setOnClickListener
+                }
+
+                val dadosAtualizados: Map<String, Any> =
+                    mapOf(
+                        "nomeTime" to nomeTime,
+                        "data" to data,
+                        "hora" to hora,
+                        "local" to local,
+                        "emailClube" to peneira.emailClube
+                    )
+
+                db.collection("peneiras")
+                    .document(idPeneira)
+                    .update(dadosAtualizados)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Peneira atualizada com sucesso.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        dialog.dismiss()
+
+                        carregarMinhasPeneiras()
+                    }
+                    .addOnFailureListener { erro ->
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Erro ao editar peneira: ${erro.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }
+        }
+
+        dialog.show()
+    }
+
+    // =========================================================
+    // EXCLUIR PENEIRA
+    // =========================================================
+
+    private fun confirmarExclusao(
+        idPeneira: String
+    ) {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Excluir peneira")
+            .setMessage(
+                "Tem certeza que deseja excluir esta peneira?"
+            )
+            .setNegativeButton(
+                "Cancelar",
+                null
+            )
+            .setPositiveButton(
+                "Excluir"
+            ) { _, _ ->
+
+                excluirPeneira(
+                    idPeneira
+                )
+            }
+            .show()
+    }
+
+    private fun excluirPeneira(
+        idPeneira: String
+    ) {
+
+        db.collection("peneiras")
+            .document(idPeneira)
+            .delete()
+            .addOnSuccessListener {
+
+                Toast.makeText(
+                    requireContext(),
+                    "Peneira excluída com sucesso.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                carregarMinhasPeneiras()
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao excluir peneira: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     // =========================================================

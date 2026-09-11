@@ -5,4 +5,5 @@
     <string name="title_informacoes">Informações</string>
     <string name="title_midias">Mídias</string>
     <string name="btn_editar_perfil">Editar Perfil</string>
+    <string name="data_hora_peneira">%1$s • %2$s</string>
 </resources>
