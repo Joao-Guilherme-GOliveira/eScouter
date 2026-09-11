@@ -1,86 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
     app:startDestination="@id/splashFragment">
+
+    <!-- ========================= -->
+    <!-- SPLASH -->
+    <!-- ========================= -->
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.example.escouter.ui.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
+
         <action
             android:id="@+id/action_splashFragment_to_autentication"
             app:destination="@id/autentication" />
+
+        <action
+            android:id="@+id/action_splashFragment_to_home"
+            app:destination="@id/home" />
+
     </fragment>
-    <navigation android:id="@+id/autentication"
+
+
+    <!-- ========================= -->
+    <!-- AUTENTICAÇÃO -->
+    <!-- ========================= -->
+
+    <navigation
+        android:id="@+id/autentication"
         app:startDestination="@id/loginFragment">
+
         <fragment
             android:id="@+id/cadastroFragment"
             android:name="com.example.escouter.ui.auth.CadastroFragment"
             android:label="CadastroFragment"
+            tools:layout="@layout/fragment_cadastro">
 
-            tools:layout="@layout/fragment_cadastro" >
             <action
                 android:id="@+id/action_cadastroFragment_to_loginFragment"
                 app:destination="@id/loginFragment" />
+
         </fragment>
+
+
         <fragment
             android:id="@+id/loginFragment"
             android:name="com.example.escouter.ui.auth.LoginFragment"
             android:label="LoginFragment"
-            tools:layout="@layout/fragment_login" >
+            tools:layout="@layout/fragment_login">
+
             <action
                 android:id="@+id/action_loginFragment_to_cadastroFragment"
                 app:destination="@id/cadastroFragment" />
+
             <action
                 android:id="@+id/action_loginFragment_to_redefinirSenhaFragment"
                 app:destination="@id/redefinirSenhaFragment" />
+
             <action
                 android:id="@+id/action_loginFragment_to_home"
                 app:destination="@id/home" />
 
         </fragment>
+
+
         <fragment
             android:id="@+id/redefinirSenhaFragment"
             android:name="com.example.escouter.ui.auth.RedefinirSenhaFragment"
             android:label="RedefinirSenhaFragment"
             tools:layout="@layout/fragment_redefinir_senha">
+
             <action
                 android:id="@+id/action_redefinirSenhaFragment_to_loginFragment"
                 app:destination="@id/loginFragment" />
+
         </fragment>
+
     </navigation>
-    <navigation android:id="@+id/home"
+
+
+    <!-- ========================= -->
+    <!-- HOME -->
+    <!-- ========================= -->
+
+    <navigation
+        android:id="@+id/home"
         app:startDestination="@id/homeFragment">
+
+        <!-- Sair da conta -->
+        <action
+            android:id="@+id/action_home_to_autentication"
+            app:destination="@id/autentication"
+            app:popUpTo="@id/main_graph"
+            app:popUpToInclusive="true" />
+
+
         <fragment
             android:id="@+id/homeFragment"
             android:name="com.example.escouter.ui.home.HomeFragment"
             android:label="HomeFragment"
-            tools:layout="@layout/fragment_home"/>
+            tools:layout="@layout/fragment_home" />
+
+
         <fragment
             android:id="@+id/perfilFragment"
             android:name="com.example.escouter.ui.home.PerfilFragment"
             android:label="fragment_perfil"
-            tools:layout="@layout/fragment_perfil" >
+            tools:layout="@layout/fragment_perfil">
+
             <action
                 android:id="@+id/action_perfilFragment_to_editarPerfilAtletaFragment"
                 app:destination="@id/editarPerfilAtletaFragment" />
+
             <action
                 android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
                 app:destination="@id/editarPerfilClubeFragment" />
+
         </fragment>
+
+
         <fragment
             android:id="@+id/editarPerfilAtletaFragment"
             android:name="com.example.escouter.ui.home.EditarPerfilAtletaFragment"
             android:label="fragment_editar_perfil_atleta"
             tools:layout="@layout/fragment_editar_perfil_atleta" />
 
+
         <fragment
             android:id="@+id/minhasPeneirasFragment"
             android:name="com.example.escouter.ui.home.MinhasPeneirasFragment"
             android:label="Minhas Peneiras"
             tools:layout="@layout/fragment_minhas_peneiras" />
+
+
         <fragment
             android:id="@+id/editarPerfilClubeFragment"
             android:name="com.example.escouter.ui.home.EditarPerfilClubeFragment"

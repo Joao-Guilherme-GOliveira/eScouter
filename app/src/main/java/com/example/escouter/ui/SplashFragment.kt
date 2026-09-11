@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.databinding.FragmentSplashBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashFragment : Fragment() {
 
@@ -31,7 +32,13 @@ class SplashFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({checkAuth()},3000)
     }
     private fun checkAuth(){
-        findNavController().navigate(R.id.action_splashFragment_to_autentication)
+       val usuarioAtual = FirebaseAuth.getInstance().currentUser
+
+        if (usuarioAtual !=null){
+            findNavController().navigate(R.id.action_splashFragment_to_home)
+        }else{
+            findNavController().navigate(R.id.action_splashFragment_to_autentication)
+        }
     }
 
     override fun onDestroyView() {

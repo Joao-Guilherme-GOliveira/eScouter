@@ -98,6 +98,10 @@ class EditarPerfilAtletaFragment : Fragment() {
         binding.btnExcluirSelecionadas.setOnClickListener {
             confirmarExclusaoMidias()
         }
+        binding.txtSairConta.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(R.id.action_home_to_autentication)
+        }
     }
 
     // ============================================================
