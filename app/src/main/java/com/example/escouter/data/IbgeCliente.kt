@@ -7,7 +7,7 @@ import retrofit2.create
 object IbgeCliente {
     val service: Ibgeservice by lazy {
         Retrofit.Builder()
-            .baseUrl("https://servicodados.ibge.gov.br/api/v1/localidades")
+            .baseUrl("https://servicodados.ibge.gov.br/api/v1/localidades/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Ibgeservice::class.java)
