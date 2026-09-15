@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- TÍTULO -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Busca Todos"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#181818"
+            android:layout_marginBottom="20dp" />
+
+        <!-- BUSCA -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:background="@drawable/bg_input">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_buscar" />
+
+            <EditText
+                android:id="@+id/edtBusca"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/transparent"
+                android:hint="Buscar"
+                android:textSize="16sp"
+                android:singleLine="true" />
+
+        </LinearLayout>
+
+        <!-- FILTROS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnTodos"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Todos"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:backgroundTint="#6D50B5" />
+
+            <Button
+                android:id="@+id/btnAtletas"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Atletas"
+                android:textAllCaps="false"
+                android:backgroundTint="#6D50B5" />
+
+            <Button
+                android:id="@+id/btnClubes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Clubes"
+                android:textAllCaps="false"
+                android:backgroundTint="#6D50B5" />
+
+        </LinearLayout>
+
+        <!-- CATEGORIAS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categorias"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="#181818"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- LINHA 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_categoria">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Defensores"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#45404D"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_categoria">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎯"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meio-campo"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#45404D"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- LINHA 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_categoria">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚽"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Atacantes"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#45404D"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_categoria">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🧤"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Goleiros"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#45404D"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ATLETAS EM DESTAQUE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Atletas em Destaque"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="#181818"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- YAN -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:background="@drawable/bg_categoria"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JC  Yan Ishiyama"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#45404D" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Atacante"
+                android:textSize="14sp"
+                android:textColor="#777777"
+                android:layout_marginTop="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:text="Ver Perfil Completo"
+                android:textAllCaps="false"
+                android:backgroundTint="#6D50B5" />
+
+        </LinearLayout>
+
+        <!-- PEDRO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:background="@drawable/bg_categoria"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PS  Pedro de Souza"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#45404D" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Goleiro"
+                android:textSize="14sp"
+                android:textColor="#777777"
+                android:layout_marginTop="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:text="Ver Perfil Completo"
+                android:textAllCaps="false"
+                android:backgroundTint="#6D50B5" />
+
+        </LinearLayout>
+
+        <!-- ELINARIO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:background="@drawable/bg_categoria"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EC  Elinario Costa"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#45404D" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zagueiro"
+                android:textSize="14sp"
+                android:textColor="#777777"
+                android:layout_marginTop="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:text="Ver Perfil Completo"
+                android:textAllCaps="false"
+                android:backgroundTint="#6D50B5" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
