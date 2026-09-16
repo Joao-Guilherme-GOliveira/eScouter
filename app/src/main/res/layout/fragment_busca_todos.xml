@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/fundo">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:text="Busca Todos"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:textColor="#181818"
+            android:textColor="@color/txtPreto"
             android:layout_marginBottom="20dp" />
 
         <!-- BUSCA -->
@@ -26,22 +27,27 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
             android:background="@drawable/bg_input">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_buscar" />
+                android:src="@drawable/ic_buscar"
+                android:contentDescription="Buscar" />
 
             <EditText
                 android:id="@+id/edtBusca"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:layout_marginStart="10dp"
                 android:background="@android:color/transparent"
-                android:hint="Buscar"
+                android:hint="Buscar atleta ou clube"
                 android:textSize="16sp"
+                android:textColor="@color/txtPreto"
+                android:textColorHint="@color/txtCinzaClaro"
                 android:singleLine="true" />
 
         </LinearLayout>
@@ -60,26 +66,30 @@
                 android:layout_weight="1"
                 android:text="Todos"
                 android:textAllCaps="false"
-                android:textStyle="bold"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/cardPeneira" />
 
             <Button
                 android:id="@+id/btnAtletas"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginStart="6dp"
                 android:text="Atletas"
                 android:textAllCaps="false"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/pontuacoes" />
 
             <Button
                 android:id="@+id/btnClubes"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginStart="6dp"
                 android:text="Clubes"
                 android:textAllCaps="false"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/pontuacoes" />
 
         </LinearLayout>
 
@@ -90,7 +100,7 @@
             android:text="Categorias"
             android:textSize="21sp"
             android:textStyle="bold"
-            android:textColor="#181818"
+            android:textColor="@color/txtPreto"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="12dp" />
 
@@ -105,14 +115,18 @@
                 android:layout_height="120dp"
                 android:orientation="horizontal">
 
+                <!-- DEFENSORES -->
                 <LinearLayout
+                    android:id="@+id/cardDefensores"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:background="@drawable/bg_categoria">
+                    android:background="@drawable/bg_categoria"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -126,19 +140,23 @@
                         android:text="Defensores"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="#45404D"
+                        android:textColor="@color/txtPreto"
                         android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
+                <!-- MEIO-CAMPO -->
                 <LinearLayout
+                    android:id="@+id/cardMeioCampo"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:background="@drawable/bg_categoria">
+                    android:background="@drawable/bg_categoria"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -152,7 +170,7 @@
                         android:text="Meio-campo"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="#45404D"
+                        android:textColor="@color/txtPreto"
                         android:layout_marginTop="8dp" />
 
                 </LinearLayout>
@@ -165,14 +183,18 @@
                 android:layout_height="120dp"
                 android:orientation="horizontal">
 
+                <!-- ATACANTES -->
                 <LinearLayout
+                    android:id="@+id/cardAtacantes"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:background="@drawable/bg_categoria">
+                    android:background="@drawable/bg_categoria"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -186,19 +208,23 @@
                         android:text="Atacantes"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="#45404D"
+                        android:textColor="@color/txtPreto"
                         android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
+                <!-- GOLEIROS -->
                 <LinearLayout
+                    android:id="@+id/cardGoleiros"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:background="@drawable/bg_categoria">
+                    android:background="@drawable/bg_categoria"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -212,7 +238,7 @@
                         android:text="Goleiros"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="#45404D"
+                        android:textColor="@color/txtPreto"
                         android:layout_marginTop="8dp" />
 
                 </LinearLayout>
@@ -228,112 +254,130 @@
             android:text="Atletas em Destaque"
             android:textSize="21sp"
             android:textStyle="bold"
-            android:textColor="#181818"
+            android:textColor="@color/txtPreto"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="12dp" />
 
         <!-- YAN -->
         <LinearLayout
+            android:id="@+id/cardYan"
             android:layout_width="match_parent"
-            android:layout_height="115dp"
+            android:layout_height="wrap_content"
+            android:minHeight="115dp"
             android:orientation="vertical"
             android:padding="14dp"
             android:background="@drawable/bg_categoria"
             android:layout_marginBottom="10dp">
 
             <TextView
+                android:id="@+id/txtNomeYan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="JC  Yan Ishiyama"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="#45404D" />
+                android:textColor="@color/txtPreto" />
 
             <TextView
+                android:id="@+id/txtPosicaoYan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Atacante"
                 android:textSize="14sp"
-                android:textColor="#777777"
+                android:textColor="@color/txtCinza"
                 android:layout_marginTop="5dp" />
 
             <Button
+                android:id="@+id/btnVerYan"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
                 android:text="Ver Perfil Completo"
                 android:textAllCaps="false"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/cardPeneira" />
 
         </LinearLayout>
 
         <!-- PEDRO -->
         <LinearLayout
+            android:id="@+id/cardPedro"
             android:layout_width="match_parent"
-            android:layout_height="115dp"
+            android:layout_height="wrap_content"
+            android:minHeight="115dp"
             android:orientation="vertical"
             android:padding="14dp"
             android:background="@drawable/bg_categoria"
             android:layout_marginBottom="10dp">
 
             <TextView
+                android:id="@+id/txtNomePedro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PS  Pedro de Souza"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="#45404D" />
+                android:textColor="@color/txtPreto" />
 
             <TextView
+                android:id="@+id/txtPosicaoPedro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Goleiro"
                 android:textSize="14sp"
-                android:textColor="#777777"
+                android:textColor="@color/txtCinza"
                 android:layout_marginTop="5dp" />
 
             <Button
+                android:id="@+id/btnVerPedro"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
                 android:text="Ver Perfil Completo"
                 android:textAllCaps="false"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/cardPeneira" />
 
         </LinearLayout>
 
         <!-- ELINARIO -->
         <LinearLayout
+            android:id="@+id/cardElinario"
             android:layout_width="match_parent"
-            android:layout_height="115dp"
+            android:layout_height="wrap_content"
+            android:minHeight="115dp"
             android:orientation="vertical"
             android:padding="14dp"
             android:background="@drawable/bg_categoria"
             android:layout_marginBottom="20dp">
 
             <TextView
+                android:id="@+id/txtNomeElinario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EC  Elinario Costa"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="#45404D" />
+                android:textColor="@color/txtPreto" />
 
             <TextView
+                android:id="@+id/txtPosicaoElinario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Zagueiro"
                 android:textSize="14sp"
-                android:textColor="#777777"
+                android:textColor="@color/txtCinza"
                 android:layout_marginTop="5dp" />
 
             <Button
+                android:id="@+id/btnVerElinario"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
                 android:text="Ver Perfil Completo"
                 android:textAllCaps="false"
-                android:backgroundTint="#6D50B5" />
+                android:textColor="@color/txtBranco"
+                android:backgroundTint="@color/cardPeneira" />
 
         </LinearLayout>
 
