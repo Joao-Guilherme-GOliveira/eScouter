@@ -228,7 +228,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     findNavController().navigate(
                         R.id.perfilFragment
                     )
+                    true
+                }
 
+                R.id.nav_pesquisar->{
+                    findNavController().navigate(
+                        R.id.fragmentBuscaTodos
+                    )
                     true
                 }
 

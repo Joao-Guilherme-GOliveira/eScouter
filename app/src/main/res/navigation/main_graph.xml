@@ -100,13 +100,11 @@
             app:popUpTo="@id/main_graph"
             app:popUpToInclusive="true" />
 
-
         <fragment
             android:id="@+id/homeFragment"
             android:name="com.example.escouter.ui.home.HomeFragment"
             android:label="HomeFragment"
             tools:layout="@layout/fragment_home" />
-
 
         <fragment
             android:id="@+id/perfilFragment"
@@ -121,6 +119,7 @@
             <action
                 android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
                 app:destination="@id/editarPerfilClubeFragment" />
+
 
         </fragment>
 
@@ -144,6 +143,10 @@
             android:name="com.example.escouter.ui.home.EditarPerfilClubeFragment"
             android:label="fragment_editar_perfil_clube"
             tools:layout="@layout/fragment_editar_perfil_clube" />
+        <fragment
+            android:id="@+id/fragmentBuscaTodos"
+            android:name="com.example.escouter.ui.home.FragmentBuscaTodos"
+            android:label="FragmentBuscaTodos" />
 
     </navigation>
 
