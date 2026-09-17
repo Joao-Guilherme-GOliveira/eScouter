@@ -160,6 +160,38 @@
                     android:hint="00/00/0000"
                     android:inputType="date" />
 
+                <!-- Documento: CPF (atleta) / CNPJ (clube) -->
+                <TextView
+                    android:id="@+id/lblDocumento"
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="CPF" />
+
+                <EditText
+                    android:id="@+id/edtDocumento"
+                    style="@style/FieldInput"
+                    android:hint="Somente números"
+                    android:inputType="number"
+                    android:maxLength="14" />
+
+                <!-- Posição (somente para Atleta) -->
+                <TextView
+                    android:id="@+id/lblPosicao"
+                    style="@style/FieldLabel"
+                    android:layout_marginTop="14dp"
+                    android:text="Posição"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/spinnerPosicao"
+                    style="@style/Spinnerstyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_input"
+                    android:paddingHorizontal="12dp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone" />
+
                 <!-- Estado -->
                 <TextView
                     style="@style/FieldLabel"
@@ -181,14 +213,11 @@
                     android:layout_marginTop="14dp"
                     android:text="Cidade" />
 
-                <Spinner
-                    android:id="@+id/spinnerCidade"
-                    style="@style/Spinnerstyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_input"
-                    android:paddingHorizontal="12dp"
-                    android:spinnerMode="dropdown" />
+                <EditText
+                    android:id="@+id/edtCidade"
+                    style="@style/FieldInput"
+                    android:hint="Ex: São Paulo"
+                    android:inputType="text" />
 
                 <!-- Botões -->
                 <LinearLayout

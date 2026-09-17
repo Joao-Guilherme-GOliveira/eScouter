@@ -30,6 +30,17 @@
         <item>Tocantins</item>
     </string-array>
 
+    <string-array name="posicoes">
+        <item>Goleiro</item>
+        <item>Zagueiro</item>
+        <item>Lateral Direito</item>
+        <item>Lateral Esquerdo</item>
+        <item>Volante</item>
+        <item>Meio-Campo</item>
+        <item>Ponta</item>
+        <item>Atacante</item>
+    </string-array>
+
     <string-array name="tipo_de_usuario">
         <item>Atleta</item>
         <item>Clube/Olheiro</item>

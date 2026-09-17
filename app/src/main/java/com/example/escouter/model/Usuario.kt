@@ -23,5 +23,6 @@ data class Usuario(
     val telefone: String = "",
 
     // Mídias
-    val midias: List<Midia> = emptyList()
+    val midias: List<Midia> = emptyList(),
+    val documento: String = "",
 )
