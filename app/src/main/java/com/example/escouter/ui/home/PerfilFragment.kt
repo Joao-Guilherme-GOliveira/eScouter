@@ -456,10 +456,11 @@ class PerfilFragment : Fragment() {
 
                     R.id.nav_pesquisar->{
                         findNavController().navigate(
-                            R.id.fragmentBuscaTodos
+                            R.id.action_perfilFragment_to_fragmentBuscaTodos
                         )
                         true
                     }
+
                     else -> false
                 }
             }

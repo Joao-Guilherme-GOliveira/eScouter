@@ -119,6 +119,9 @@
             <action
                 android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
                 app:destination="@id/editarPerfilClubeFragment" />
+            <action
+                android:id="@+id/action_perfilFragment_to_fragmentBuscaTodos"
+                app:destination="@id/fragmentBuscaTodos" />
 
 
         </fragment>
