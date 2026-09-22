@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.lifecycle.lifecycleScope
+import com.example.escouter.data.IbgeCliente
+import kotlinx.coroutines.launch
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -49,6 +52,7 @@ class CadastroFragment : Fragment() {
 
 
         configurarSpinners()
+        configurarCidade()
         configurarDataNascimento()
         configurarBotoes()
 
@@ -152,6 +156,89 @@ class CadastroFragment : Fragment() {
         }
     }
 
+    //CONFIGURAR CIDADE
+    private var mapaSigla: Map<String, String> = emptyMap()
+
+    private fun configurarCidade(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            try{
+                val estados = IbgeCliente.service.getEstados()
+                mapaSigla = estados.associate { it.nome to it.sigla }
+            } catch (e: Exception) {
+
+            }
+        }
+        binding.spinnerEstado.onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position == 0) {
+                    binding.edtCidade.setText("")
+                    binding.edtCidade.isEnabled = false
+                    binding.edtCidade.hint = "Selecione um estado primeiro"
+                    return
+                }
+                val nomeEstado =
+                    binding.spinnerEstado.selectedItem?.toString() ?: return
+                carregarCidades(nomeEstado)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+    }
+    private fun carregarCidades(nomeEstado: String){
+        binding.edtCidade.setText("")
+        binding.edtCidade.isEnabled = false
+        binding.edtCidade.hint = "Carregando cidades..."
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+
+                // Garante que o mapa de siglas já foi carregado
+                var sigla = mapaSigla[nomeEstado]
+
+                if (sigla == null) {
+                    val estados = IbgeCliente.service.getEstados()
+                    mapaSigla = estados.associate { it.nome to it.sigla }
+                    sigla = mapaSigla[nomeEstado]
+                }
+                if (sigla == null) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Não foi possível identificar o estado selecionado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    binding.edtCidade.hint = "Selecione um estado primeiro"
+                    return@launch
+                }
+                val cidades = IbgeCliente.service.getCidades(sigla)
+                val nomesCidades = cidades.map { it.nome }
+                val adapterCidade = ArrayAdapter(
+                    requireContext(),
+                    R.layout.item_spinner_dropdown,
+                    nomesCidades
+                )
+                binding.edtCidade.setAdapter(adapterCidade)
+                binding.edtCidade.isEnabled = true
+                binding.edtCidade.hint = "Ex: ${nomesCidades.firstOrNull() ?: "Digite a cidade"}"
+                binding.edtCidade.setOnClickListener {
+                    binding.edtCidade.showDropDown()
+                }
+            } catch (e: Exception) {
+                binding.edtCidade.hint = "Erro ao carregar cidades"
+                Toast.makeText(
+                    requireContext(),
+                    "Não foi possível carregar as cidades. Verifique sua conexão.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
     // =========================================================
     // BOTÕES
     // =========================================================

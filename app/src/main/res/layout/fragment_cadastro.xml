@@ -213,11 +213,15 @@
                     android:layout_marginTop="14dp"
                     android:text="Cidade" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/edtCidade"
                     style="@style/FieldInput"
-                    android:hint="Ex: São Paulo"
-                    android:inputType="text" />
+                    android:enabled="false"
+                    android:hint="Selecione um estado primeiro"
+                    android:inputType="text"
+                    android:completionThreshold="1"
+                    android:dropDownHeight="220dp"
+                    android:dropDownBackground="@drawable/bg_dropdown" />
 
                 <!-- Botões -->
                 <LinearLayout
