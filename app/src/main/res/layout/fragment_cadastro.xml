@@ -220,8 +220,7 @@
                     android:hint="Selecione um estado primeiro"
                     android:inputType="text"
                     android:completionThreshold="1"
-                    android:dropDownHeight="220dp"
-                    android:dropDownBackground="@drawable/bg_dropdown" />
+                    android:dropDownHeight="220dp" />
 
                 <!-- Botões -->
                 <LinearLayout

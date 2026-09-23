@@ -75,6 +75,30 @@ class CadastroFragment : Fragment() {
         return tipo.equals("Clube/Olheiro", ignoreCase = true)
     }
 
+    private fun cpfValido(cpf: String): Boolean {
+        val cpfLimpo = cpf.replace(Regex("[^0-9]"), "")
+        if (cpfLimpo.length != 11) return false
+        if (cpfLimpo.all { it == cpfLimpo[0] }) return false
+
+        val numeros = cpfLimpo.map { it.toString().toInt() }
+
+        // Primeiro dígito verificador
+        var soma = 0
+        for (i in 0..8) soma += numeros[i] * (10 - i)
+        var resto = soma % 11
+        val digito1 = if (resto < 2) 0 else 11 - resto
+        if (numeros[9] != digito1) return false
+
+        // Segundo dígito verificador
+        soma = 0
+        for (i in 0..9) soma += numeros[i] * (11 - i)
+        resto = soma % 11
+        val digito2 = if (resto < 2) 0 else 11 - resto
+        if (numeros[10] != digito2) return false
+
+        return true
+    }
+
     // =========================================================
     // CÁLCULO DE IDADE
     // =========================================================
@@ -379,11 +403,6 @@ class CadastroFragment : Fragment() {
 
         return true
     }
-
-    // =========================================================
-    // VALIDAÇÃO PASSO 2
-    // =========================================================
-
     private fun validarPasso2(): Boolean {
 
         val dataNascimento =
@@ -400,7 +419,7 @@ class CadastroFragment : Fragment() {
             binding.edtDocumento.text
                 .toString()
                 .trim()
-                .replace(Regex("[^0-9]"), "")
+                .replace(Regex("[^0-9]"), "") // <- restaurado
 
         // Estado
         if (binding.spinnerEstado.selectedItemPosition == 0) {
@@ -457,7 +476,7 @@ class CadastroFragment : Fragment() {
             }
         }
 
-        // Documento (CPF / CNPJ)
+        // Documento vazio (checado ANTES do cpfValido, para mensagem correta)
         if (documento.isEmpty()) {
 
             binding.edtDocumento.error =
@@ -468,6 +487,7 @@ class CadastroFragment : Fragment() {
             return false
         }
 
+        // CNPJ: validação só por tamanho (Clube/Olheiro)
         if (isClube() && documento.length != 14) {
 
             binding.edtDocumento.error = "CNPJ inválido"
@@ -476,7 +496,8 @@ class CadastroFragment : Fragment() {
             return false
         }
 
-        if (!isClube() && documento.length != 11) {
+        // CPF: validação por dígito verificador (substitui a checagem antiga de length != 11)
+        if (!isClube() && !cpfValido(documento)) {
 
             binding.edtDocumento.error = "CPF inválido"
             binding.edtDocumento.requestFocus()
