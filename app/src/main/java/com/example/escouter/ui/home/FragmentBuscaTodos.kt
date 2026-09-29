@@ -25,6 +25,9 @@ class FragmentBuscaTodos : Fragment() {
     // null = todas as posições
     private var posicaoSelecionada: String? = null
 
+    // Lista com os cards de categoria (usada para controlar a borda azul)
+    private var cardsCategoria: List<View> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,42 +80,72 @@ class FragmentBuscaTodos : Fragment() {
             }
         }
     }
+
+    // Marca um card com borda azul e desmarca os outros.
+    // Se o card clicado já estava selecionado, desmarca e mostra todas as posições.
+    private fun selecionarCategoria(cardClicado: View, posicao: String) {
+
+        val jaSelecionado = cardClicado.isSelected
+
+        // Limpa a seleção de todos os cards
+        cardsCategoria.forEach { it.isSelected = false }
+
+        if (jaSelecionado) {
+            posicaoSelecionada = null
+        } else {
+            cardClicado.isSelected = true
+            posicaoSelecionada = posicao
+        }
+
+        buscarAtletas()
+    }
+
+    // Remove a borda azul de todos os cards
+    private fun limparSelecaoCategorias() {
+        cardsCategoria.forEach { it.isSelected = false }
+    }
+
     private fun configurarListeners() {
+
+        cardsCategoria = listOf(
+            binding.cardDefensores,
+            binding.cardMeioCampo,
+            binding.cardAtacantes,
+            binding.cardGoleiros
+        )
 
         // Botão TODOS
         binding.btnTodos.setOnClickListener {
+            limparSelecaoCategorias()
             posicaoSelecionada = null
             buscarAtletas()
         }
 
         // Botão ATLETAS
         binding.btnAtletas.setOnClickListener {
+            limparSelecaoCategorias()
             posicaoSelecionada = null
             buscarAtletas()
         }
 
         // Filtro DEFENSORES
         binding.cardDefensores.setOnClickListener {
-            posicaoSelecionada = "Defensor"
-            buscarAtletas()
+            selecionarCategoria(binding.cardDefensores, "Defensor")
         }
 
         // Filtro MEIO-CAMPO
         binding.cardMeioCampo.setOnClickListener {
-            posicaoSelecionada = "Meio-campo"
-            buscarAtletas()
+            selecionarCategoria(binding.cardMeioCampo, "Meio-campo")
         }
 
         // Filtro ATACANTES
         binding.cardAtacantes.setOnClickListener {
-            posicaoSelecionada = "Atacante"
-            buscarAtletas()
+            selecionarCategoria(binding.cardAtacantes, "Atacante")
         }
 
         // Filtro GOLEIROS
         binding.cardGoleiros.setOnClickListener {
-            posicaoSelecionada = "Goleiro"
-            buscarAtletas()
+            selecionarCategoria(binding.cardGoleiros, "Goleiro")
         }
 
         // Pesquisa pelo nome
@@ -276,10 +309,5 @@ class FragmentBuscaTodos : Fragment() {
 
             binding.containerAtletas.addView(item)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
