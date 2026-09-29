@@ -149,7 +149,19 @@
         <fragment
             android:id="@+id/fragmentBuscaTodos"
             android:name="com.example.escouter.ui.home.FragmentBuscaTodos"
-            android:label="FragmentBuscaTodos" />
+            android:label="FragmentBuscaTodos" >
+            <action
+                android:id="@+id/action_fragmentBuscaTodos_to_fragmentBuscaClubes"
+                app:destination="@id/fragmentBuscaClubes" />
+        </fragment>
+        <fragment
+            android:id="@+id/fragmentBuscaClubes"
+            android:name="com.example.escouter.ui.home.FragmentBuscaClubes"
+            android:label="FragmentBuscaClubes" >
+            <action
+                android:id="@+id/action_fragmentBuscaClubes_to_fragmentBuscaTodos"
+                app:destination="@id/fragmentBuscaTodos" />
+        </fragment>
 
     </navigation>
 
