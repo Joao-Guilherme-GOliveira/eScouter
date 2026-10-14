@@ -17,18 +17,14 @@ import com.example.escouter.model.Usuario
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentBuscaClubes : Fragment() {
-
     private var _binding: FragmentBuscaClubesBinding? = null
     private val binding get() = _binding!!
-
     private val db = FirebaseFirestore.getInstance()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentBuscaClubesBinding.inflate(
             inflater,
             container,
@@ -37,7 +33,6 @@ class FragmentBuscaClubes : Fragment() {
 
         return binding.root
     }
-
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
@@ -45,18 +40,13 @@ class FragmentBuscaClubes : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configurarListeners()
-
         // Carrega os clubes assim que abrir a tela
         pesquisarClubes()
-
         configurarBottomNavigation()
     }
-
     private fun configurarListeners() {
-
         // Pesquisa pelo nome, cidade ou estado
         binding.edtBusca.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -64,7 +54,6 @@ class FragmentBuscaClubes : Fragment() {
                 after: Int
             ) {
             }
-
             override fun onTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -87,7 +76,6 @@ class FragmentBuscaClubes : Fragment() {
                 R.id.action_fragmentBuscaClubes_to_fragmentBuscaTodos
             )
         }
-
         // Botão ATLETAS
 
         // Botão CLUBES
@@ -96,9 +84,7 @@ class FragmentBuscaClubes : Fragment() {
             pesquisarClubes()
         }
     }
-
     private fun configurarBottomNavigation() {
-
         binding.bottomNavigation.setOnItemSelectedListener { item ->
 
             when (item.itemId) {
@@ -120,12 +106,10 @@ class FragmentBuscaClubes : Fragment() {
                     )
                     true
                 }
-
                 else -> false
             }
         }
     }
-
     private fun pesquisarClubes() {
 
         // Pega o texto digitado
@@ -134,13 +118,9 @@ class FragmentBuscaClubes : Fragment() {
             .toString()
             .trim()
             .lowercase()
-
         binding.progressBar.visibility = View.VISIBLE
-
         binding.txtMensagem.visibility = View.GONE
-
         binding.containerClubes.removeAllViews()
-
         // Busca somente clubes/olheiros
         db.collection("usuarios")
             .whereEqualTo(
@@ -150,47 +130,41 @@ class FragmentBuscaClubes : Fragment() {
             .get()
             .addOnSuccessListener { resultado ->
 
+                // Evita crash se a tela foi fechada antes da resposta
+                if (_binding == null) return@addOnSuccessListener
+
                 binding.progressBar.visibility = View.GONE
 
+                // Pares (id do documento = uid, objeto Usuario)
                 val clubes = resultado.documents
                     .mapNotNull { documento ->
 
-                        documento.toObject(
-                            Usuario::class.java
-                        )
+                        val clube =
+                            documento.toObject(Usuario::class.java)
+
+                        if (clube == null) null
+                        else documento.id to clube
                     }
-                    .filter { clube ->
+                    .filter { (_, clube) ->
 
-                        // Se a pesquisa estiver vazia,
-                        // mostra todos os clubes.
-
-                        if (textoBusca.isEmpty()) {
-
-                            true
-
-                        } else {
-
-                            // Pesquisa por nome
-                            // OU cidade
-                            // OU estado
-
-                            clube.nome
-                                .lowercase()
-                                .contains(textoBusca) ||
-
-                                    clube.cidade
-                                        .lowercase()
-                                        .contains(textoBusca) ||
-
-                                    clube.estado
-                                        .lowercase()
-                                        .contains(textoBusca)
-                        }
+                        // Se a pesquisa estiver vazia, mostra todos.
+                        // Senão, pesquisa por nome OU cidade OU estado
+                        textoBusca.isEmpty() ||
+                                clube.nome
+                                    .lowercase()
+                                    .contains(textoBusca) ||
+                                clube.cidade
+                                    .lowercase()
+                                    .contains(textoBusca) ||
+                                clube.estado
+                                    .lowercase()
+                                    .contains(textoBusca)
                     }
-
                 mostrarClubes(clubes)
             }
             .addOnFailureListener { erro ->
+
+                if (_binding == null) return@addOnFailureListener
 
                 binding.progressBar.visibility = View.GONE
 
@@ -201,69 +175,56 @@ class FragmentBuscaClubes : Fragment() {
                 ).show()
             }
     }
-
     private fun mostrarClubes(
-        clubes: List<Usuario>
+        clubes: List<Pair<String, Usuario>>
     ) {
-
         binding.containerClubes.removeAllViews()
 
         // Nenhum clube encontrado
         if (clubes.isEmpty()) {
-
             binding.txtMensagem.text =
                 "Nenhum clube encontrado."
 
             binding.txtMensagem.visibility =
                 View.VISIBLE
-
             return
         }
-
         binding.txtMensagem.visibility =
             View.GONE
-
         // Cria um card para cada clube
-        clubes.forEach { clube ->
-
+        clubes.forEach { (uid, clube) ->
             val item = layoutInflater.inflate(
                 R.layout.item_busca_atleta,
                 binding.containerClubes,
                 false
             )
-
             val txtNome = item.findViewById<TextView>(
                 R.id.txtNomeAtleta
             )
-
             val txtPosicao = item.findViewById<TextView>(
                 R.id.txtPosicaoAtleta
             )
-
             val btnVerPerfil = item.findViewById<Button>(
                 R.id.btnVerPerfil
             )
-
             // Nome do clube
             txtNome.text = clube.nome
-
             // Cidade e estado
             txtPosicao.text =
                 "${clube.cidade} - ${clube.estado}"
-
+            // Abre o perfil (somente leitura) deste clube
             btnVerPerfil.setOnClickListener {
-
-                Toast.makeText(
-                    requireContext(),
-                    "Perfil de ${clube.nome}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val args = Bundle().apply {
+                    putString("usuarioId", uid)
+                }
+                findNavController().navigate(
+                    R.id.action_fragmentBuscaClubes_to_perfilFragment,
+                    args
+                )
             }
-
             binding.containerClubes.addView(item)
         }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -50,21 +50,17 @@ class FragmentBuscaTodos : Fragment() {
 
         return binding.root
     }
-
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-
         configurarListeners()
-
         // Carrega atletas e clubes assim que abrir a tela
         buscarUsuarios()
 
         configurarBottomNavigation()
     }
-
     private fun configurarBottomNavigation() {
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -93,39 +89,30 @@ class FragmentBuscaTodos : Fragment() {
             }
         }
     }
-
-    // Marca um card com borda azul e desmarca os outros.
-    // Se o card clicado já estava selecionado,
-    // desmarca e mostra todas as posições.
     private fun selecionarCategoria(
         cardClicado: View,
         posicao: String
     ) {
-
         val jaSelecionado = cardClicado.isSelected
 
         // Limpa a seleção de todos os cards
         cardsCategoria.forEach {
             it.isSelected = false
         }
-
         if (jaSelecionado) {
 
             posicaoSelecionada = null
 
         } else {
-
             cardClicado.isSelected = true
             posicaoSelecionada = posicao
         }
-
         // Ao selecionar uma posição,
         // automaticamente trabalhamos somente com atletas
         filtroSelecionado = "Atletas"
 
         buscarUsuarios()
     }
-
     // Remove a borda azul de todos os cards
     private fun limparSelecaoCategorias() {
 
@@ -133,20 +120,16 @@ class FragmentBuscaTodos : Fragment() {
             it.isSelected = false
         }
     }
-
     private fun configurarListeners() {
-
         cardsCategoria = listOf(
             binding.cardDefensores,
             binding.cardMeioCampo,
             binding.cardAtacantes,
             binding.cardGoleiros
         )
-
         // BOTÃO TODOS
         // Mostra atletas + clubes
         binding.btnTodos.setOnClickListener {
-
             limparSelecaoCategorias()
 
             posicaoSelecionada = null
@@ -155,20 +138,14 @@ class FragmentBuscaTodos : Fragment() {
 
             buscarUsuarios()
         }
-
         // BOTÃO ATLETAS
         // Mostra somente atletas
         binding.btnAtletas.setOnClickListener {
-
             limparSelecaoCategorias()
-
             posicaoSelecionada = null
-
             filtroSelecionado = "Atletas"
-
             buscarUsuarios()
         }
-
         // BOTÃO CLUBES
         // Abre a tela específica de clubes
         binding.btnClubes.setOnClickListener {
@@ -177,16 +154,13 @@ class FragmentBuscaTodos : Fragment() {
                 R.id.action_fragmentBuscaTodos_to_fragmentBuscaClubes
             )
         }
-
         // FILTRO DEFENSORES
         binding.cardDefensores.setOnClickListener {
-
             selecionarCategoria(
                 binding.cardDefensores,
                 "Defensor"
             )
         }
-
         // FILTRO MEIO-CAMPO
         binding.cardMeioCampo.setOnClickListener {
 
@@ -195,16 +169,13 @@ class FragmentBuscaTodos : Fragment() {
                 "Meio-campo"
             )
         }
-
         // FILTRO ATACANTES
         binding.cardAtacantes.setOnClickListener {
-
             selecionarCategoria(
                 binding.cardAtacantes,
                 "Atacante"
             )
         }
-
         // FILTRO GOLEIROS
         binding.cardGoleiros.setOnClickListener {
 
@@ -213,10 +184,8 @@ class FragmentBuscaTodos : Fragment() {
                 "Goleiro"
             )
         }
-
         // Pesquisa pelo nome
         binding.edtBusca.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -224,7 +193,6 @@ class FragmentBuscaTodos : Fragment() {
                 after: Int
             ) {
             }
-
             override fun onTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -233,14 +201,12 @@ class FragmentBuscaTodos : Fragment() {
             ) {
                 buscarUsuarios()
             }
-
             override fun afterTextChanged(
                 s: Editable?
             ) {
             }
         })
     }
-
     private fun buscarUsuarios() {
 
         // Pega o texto digitado na pesquisa
@@ -249,58 +215,45 @@ class FragmentBuscaTodos : Fragment() {
             .toString()
             .trim()
             .lowercase()
-
         // Busca todos os usuários
         db.collection("usuarios")
             .get()
             .addOnSuccessListener { resultado ->
-
-                // Converte os documentos do Firestore
-                // para objetos Usuario
+                // Evita crash se a tela foi fechada antes da resposta
+                if (_binding == null) return@addOnSuccessListener
+                // Converte os documentos do Firestore em pares
+                // (id do documento = uid, objeto Usuario)
                 val usuarios = resultado.documents
                     .mapNotNull { documento ->
 
-                        documento.toObject(
-                            Usuario::class.java
-                        )
+                        val usuario =
+                            documento.toObject(Usuario::class.java)
+
+                        if (usuario == null) null
+                        else documento.id to usuario
                     }
-
                     // Filtra pelo tipo de usuário
-                    .filter { usuario ->
-
+                    .filter { (_, usuario) ->
                         when (filtroSelecionado) {
 
-                            // TODOS:
-                            // atletas + clubes
-                            "Todos" -> {
-
+                            // TODOS: atletas + clubes
+                            "Todos" ->
                                 usuario.tipoUsuario == "Atleta" ||
                                         usuario.tipoUsuario == "Clube/Olheiro"
-                            }
 
-                            // ATLETAS:
-                            // somente atletas
-                            "Atletas" -> {
-
+                            // ATLETAS: somente atletas
+                            "Atletas" ->
                                 usuario.tipoUsuario == "Atleta"
-                            }
-
-                            else -> {
-                                false
-                            }
+                            else -> false
                         }
                     }
-
                     // Filtra pela posição
-                    .filter { usuario ->
+                    .filter { (_, usuario) ->
 
-                        if (
-                            posicaoSelecionada != null
-                        ) {
+                        if (posicaoSelecionada != null) {
 
                             // Quando uma posição foi selecionada,
                             // somente atletas podem aparecer.
-
                             usuario.tipoUsuario == "Atleta" &&
                                     usuario.posicao == posicaoSelecionada
 
@@ -309,19 +262,19 @@ class FragmentBuscaTodos : Fragment() {
                             true
                         }
                     }
-
                     // Pesquisa pelo nome
-                    .filter { usuario ->
+                    .filter { (_, usuario) ->
 
                         textoBusca.isEmpty() ||
                                 usuario.nome
                                     .lowercase()
                                     .contains(textoBusca)
                     }
-
                 mostrarUsuarios(usuarios)
             }
             .addOnFailureListener { erro ->
+
+                if (_binding == null) return@addOnFailureListener
 
                 Toast.makeText(
                     requireContext(),
@@ -330,11 +283,9 @@ class FragmentBuscaTodos : Fragment() {
                 ).show()
             }
     }
-
     private fun mostrarUsuarios(
-        usuarios: List<Usuario>
+        usuarios: List<Pair<String, Usuario>>
     ) {
-
         // Limpa os resultados anteriores
         binding.containerAtletas.removeAllViews()
 
@@ -344,17 +295,14 @@ class FragmentBuscaTodos : Fragment() {
             val mensagem = TextView(
                 requireContext()
             )
-
             mensagem.text = "Nenhum resultado encontrado."
             mensagem.textSize = 16f
-
             mensagem.setTextColor(
                 resources.getColor(
                     R.color.txtCinza,
                     requireContext().theme
                 )
             )
-
             mensagem.setPadding(
                 16,
                 20,
@@ -368,9 +316,8 @@ class FragmentBuscaTodos : Fragment() {
 
             return
         }
-
         // Cria um card para cada usuário
-        usuarios.forEach { usuario ->
+        usuarios.forEach { (uid, usuario) ->
 
             // Usa o layout que você já possui
             // tanto para atleta quanto para clube
@@ -391,34 +338,26 @@ class FragmentBuscaTodos : Fragment() {
             val btnVerPerfil = item.findViewById<Button>(
                 R.id.btnVerPerfil
             )
-
             // Nome do usuário
             txtNome.text = usuario.nome
-
-            // Se for atleta:
-            // mostra a posição
-            //
-            // Se for clube:
-            // mostra cidade e estado
+            // Se for atleta: mostra a posição
+            // Se for clube: mostra cidade e estado
             if (usuario.tipoUsuario == "Atleta") {
-
                 txtPosicao.text = usuario.posicao
-
             } else {
-
                 txtPosicao.text =
                     "${usuario.cidade} - ${usuario.estado}"
             }
-
+            // Abre o perfil (somente leitura) deste usuário
             btnVerPerfil.setOnClickListener {
-
-                Toast.makeText(
-                    requireContext(),
-                    "Perfil de ${usuario.nome}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val args = Bundle().apply {
+                    putString("usuarioId", uid)
+                }
+                findNavController().navigate(
+                    R.id.action_fragmentBuscaTodos_to_perfilFragment,
+                    args
+                )
             }
-
             // Adiciona o card na tela
             binding.containerAtletas.addView(item)
         }

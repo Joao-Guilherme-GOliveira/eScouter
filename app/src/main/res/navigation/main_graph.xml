@@ -162,6 +162,55 @@
                 android:id="@+id/action_fragmentBuscaClubes_to_fragmentBuscaTodos"
                 app:destination="@id/fragmentBuscaTodos" />
         </fragment>
+        <fragment
+            android:id="@+id/perfilFragment"
+            android:name="com.example.escouter.ui.home.PerfilFragment"
+            android:label="fragment_perfil"
+            tools:layout="@layout/fragment_perfil">
+
+            <!-- null = meu próprio perfil -->
+            <argument
+                android:name="usuarioId"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="@null" />
+
+            <action
+                android:id="@+id/action_perfilFragment_to_editarPerfilAtletaFragment"
+                app:destination="@id/editarPerfilAtletaFragment" />
+            <action
+                android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
+                app:destination="@id/editarPerfilClubeFragment" />
+            <action
+                android:id="@+id/action_perfilFragment_to_fragmentBuscaTodos"
+                app:destination="@id/fragmentBuscaTodos" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/fragmentBuscaTodos"
+            android:name="com.example.escouter.ui.home.FragmentBuscaTodos"
+            android:label="FragmentBuscaTodos">
+            <action
+                android:id="@+id/action_fragmentBuscaTodos_to_fragmentBuscaClubes"
+                app:destination="@id/fragmentBuscaClubes" />
+            <!-- NOVA -->
+            <action
+                android:id="@+id/action_fragmentBuscaTodos_to_perfilFragment"
+                app:destination="@id/perfilFragment" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/fragmentBuscaClubes"
+            android:name="com.example.escouter.ui.home.FragmentBuscaClubes"
+            android:label="FragmentBuscaClubes">
+            <action
+                android:id="@+id/action_fragmentBuscaClubes_to_fragmentBuscaTodos"
+                app:destination="@id/fragmentBuscaTodos" />
+            <!-- NOVA -->
+            <action
+                android:id="@+id/action_fragmentBuscaClubes_to_perfilFragment"
+                app:destination="@id/perfilFragment" />
+        </fragment>
 
     </navigation>
 
