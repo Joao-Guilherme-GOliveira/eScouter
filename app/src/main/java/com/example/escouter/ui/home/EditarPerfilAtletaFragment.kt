@@ -26,6 +26,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import coil.load
+import coil.transform.CircleCropTransformation // NOVO
 
 class EditarPerfilAtletaFragment : Fragment() {
 
@@ -47,6 +48,20 @@ class EditarPerfilAtletaFragment : Fragment() {
 
             if (uri != null) {
                 fazerUpload(uri)
+            }
+        }
+
+    /*
+     * NOVO: Abre a galeria permitindo selecionar APENAS imagem
+     * para a foto de perfil.
+     */
+    private val selecionarFotoPerfil =
+        registerForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+
+            if (uri != null) {
+                fazerUploadFotoPerfil(uri)
             }
         }
 
@@ -93,6 +108,15 @@ class EditarPerfilAtletaFragment : Fragment() {
         binding.btnAdicionarMidia.setOnClickListener {
 
             selecionarMidia.launch("*/*")
+        }
+
+        // NOVO: botão "Alterar foto" e clique na própria foto
+        binding.txtAlterarFoto.setOnClickListener {
+            selecionarFotoPerfil.launch("image/*")
+        }
+
+        binding.imgFotoPerfil.setOnClickListener {
+            selecionarFotoPerfil.launch("image/*")
         }
 
         binding.btnExcluirSelecionadas.setOnClickListener {
@@ -157,6 +181,10 @@ class EditarPerfilAtletaFragment : Fragment() {
                 usuarioAtual = usuario
 
                 preencherCampos(usuario)
+
+                // NOVO: carrega a foto de perfil direto do documento
+                // (não precisa alterar a classe Usuario)
+                exibirFotoPerfil(document.getString("fotoUrl"))
             }
             .addOnFailureListener { erro ->
 
@@ -267,6 +295,206 @@ class EditarPerfilAtletaFragment : Fragment() {
         )
 
         binding.spinnerExperiencia.adapter = adapterExperiencia
+    }
+
+    // ============================================================
+    // FOTO DE PERFIL (NOVO)
+    // ============================================================
+
+    /*
+     * Mostra a foto de perfil no círculo.
+     * Se não houver foto, mantém o ícone padrão (ic_perfil).
+     */
+    private fun exibirFotoPerfil(url: String?) {
+
+        if (_binding == null) return
+
+        if (url.isNullOrEmpty()) {
+            binding.imgFotoPerfil.setImageResource(R.drawable.ic_perfil)
+            return
+        }
+
+        binding.imgFotoPerfil.load(url) {
+            crossfade(true)
+            placeholder(R.drawable.ic_perfil)
+            error(R.drawable.ic_perfil)
+            transformations(CircleCropTransformation())
+        }
+    }
+
+    /*
+     * Envia a imagem escolhida para o Cloudinary e,
+     * quando terminar, salva a URL no Firestore.
+     */
+    private fun fazerUploadFotoPerfil(uri: Uri) {
+
+        val usuarioFirebase = auth.currentUser
+
+        if (usuarioFirebase == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val uid = usuarioFirebase.uid
+
+        // Garante que o arquivo escolhido é uma imagem
+        val tipoMime = requireContext()
+            .contentResolver
+            .getType(uri)
+
+        if (tipoMime == null || !tipoMime.startsWith("image")) {
+
+            Toast.makeText(
+                requireContext(),
+                "Selecione uma imagem válida.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        // Mostra a prévia na hora e bloqueia o botão durante o envio
+        binding.imgFotoPerfil.load(uri) {
+            crossfade(true)
+            transformations(CircleCropTransformation())
+        }
+
+        binding.txtAlterarFoto.isEnabled = false
+        binding.imgFotoPerfil.isEnabled = false
+
+        MediaManager.get()
+            .upload(uri)
+            .unsigned("escouter_midias")
+            .callback(object : UploadCallback {
+
+                override fun onStart(requestId: String) {
+                }
+
+                override fun onProgress(
+                    requestId: String,
+                    bytes: Long,
+                    totalBytes: Long
+                ) {
+
+                    if (_binding == null) return
+
+                    if (totalBytes > 0) {
+
+                        val progresso =
+                            ((bytes * 100) / totalBytes).toInt()
+
+                        binding.txtAlterarFoto.text =
+                            "Enviando... $progresso%"
+                    }
+                }
+
+                override fun onSuccess(
+                    requestId: String,
+                    resultData: MutableMap<Any?, Any?>
+                ) {
+
+                    if (_binding == null) return
+
+                    val url =
+                        resultData["secure_url"]?.toString()
+
+                    if (url.isNullOrEmpty()) {
+
+                        restaurarBotaoFoto()
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Não foi possível obter a URL da foto.",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        // volta para a foto que estava salva
+                        carregarUsuario()
+
+                        return
+                    }
+
+                    salvarFotoPerfilNoFirestore(uid, url)
+                }
+
+                override fun onError(
+                    requestId: String,
+                    error: ErrorInfo
+                ) {
+
+                    if (_binding == null) return
+
+                    restaurarBotaoFoto()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Erro no upload da foto: ${error.description}",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    // volta para a foto que estava salva
+                    carregarUsuario()
+                }
+
+                override fun onReschedule(
+                    requestId: String,
+                    error: ErrorInfo
+                ) {
+                }
+            })
+            .dispatch()
+    }
+
+    private fun salvarFotoPerfilNoFirestore(
+        uid: String,
+        url: String
+    ) {
+
+        db.collection("usuarios")
+            .document(uid)
+            .update("fotoUrl", url)
+            .addOnSuccessListener {
+
+                if (_binding == null) return@addOnSuccessListener
+
+                restaurarBotaoFoto()
+
+                exibirFotoPerfil(url)
+
+                Toast.makeText(
+                    requireContext(),
+                    "Foto de perfil atualizada!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener { erro ->
+
+                if (_binding == null) return@addOnFailureListener
+
+                restaurarBotaoFoto()
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao salvar foto: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // volta para a foto que estava salva
+                carregarUsuario()
+            }
+    }
+
+    private fun restaurarBotaoFoto() {
+
+        binding.txtAlterarFoto.text = "Alterar foto"
+        binding.txtAlterarFoto.isEnabled = true
+        binding.imgFotoPerfil.isEnabled = true
     }
 
     // ============================================================
