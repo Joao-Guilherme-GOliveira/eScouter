@@ -17,8 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
+import androidx.core.content.ContextCompat
+import com.example.escouter.data.SeguidorRepository
 class PerfilFragment : Fragment() {
+    private var seguindo = false
+    private var totalSeguidores = 0L
+    private val uidLogado get() = auth.currentUser?.uid.orEmpty()
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
@@ -73,7 +77,11 @@ class PerfilFragment : Fragment() {
         configurarBottomNavigation()
         configurarRecyclerMidias()
         // O clique de editar só é configurado no meu próprio perfil
-        if (!somenteLeitura) {
+        carregarContadores()
+
+        if (somenteLeitura) {
+            configurarBotaoSeguir()
+        } else {
             configurarBotaoEditar()
         }
     }
@@ -83,8 +91,102 @@ class PerfilFragment : Fragment() {
         // Perfil de terceiros: o botão de editar nem aparece
         binding.btnEditarPerfil.visibility =
             if (somenteLeitura) View.GONE else View.VISIBLE
+
+        binding.btnSeguir.visibility =
+            if (somenteLeitura) View.VISIBLE else View.GONE
+    }
+    // SEGUIR / SEGUIDORES
+    private fun carregarContadores() {
+        SeguidorRepository.qtdSeguidores(perfilUid) { total ->
+            if (_binding != null) {
+                totalSeguidores = total
+                atualizarTextoSeguidores()
+            }
+        }
+        SeguidorRepository.qtdSeguindo(perfilUid) { total ->
+            if (_binding != null) {
+                binding.txtSeguindo.text = "$total seguindo"
+            }
+        }
     }
 
+    private fun atualizarTextoSeguidores() {
+        binding.txtSeguidores.text =
+            if (totalSeguidores == 1L) "1 seguidor"
+            else "$totalSeguidores seguidores"
+    }
+
+    private fun configurarBotaoSeguir() {
+        // Fica desabilitado até sabermos se eu já sigo essa pessoa
+        binding.btnSeguir.isEnabled = false
+
+        SeguidorRepository.estaSeguindo(uidLogado, perfilUid) { resultado ->
+            if (_binding != null) {
+                seguindo = resultado
+                atualizarBotaoSeguir()
+                binding.btnSeguir.isEnabled = true
+            }
+        }
+
+        binding.btnSeguir.setOnClickListener {
+            alternarSeguir()
+        }
+    }
+
+    private fun alternarSeguir() {
+        // Evita toques repetidos enquanto a operação está em andamento
+        binding.btnSeguir.isEnabled = false
+
+        val aoTerminar = { sucesso: Boolean ->
+            if (_binding != null) {
+                if (sucesso) {
+                    seguindo = !seguindo
+                    totalSeguidores =
+                        if (seguindo) totalSeguidores + 1
+                        else (totalSeguidores - 1).coerceAtLeast(0)
+                    atualizarTextoSeguidores()
+                    atualizarBotaoSeguir()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Não foi possível concluir. Tente novamente.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                binding.btnSeguir.isEnabled = true
+            }
+        }
+
+        if (seguindo) {
+            SeguidorRepository.deixaSeguir(
+                uidLogado, perfilUid,
+                onSucesso = { aoTerminar(true) },
+                onErro = { aoTerminar(false) }
+            )
+        } else {
+            SeguidorRepository.seguir(
+                uidLogado, perfilUid,
+                onSucesso = { aoTerminar(true) },
+                onErro = { aoTerminar(false) }
+            )
+        }
+    }
+
+    private fun atualizarBotaoSeguir() {
+        if (seguindo) {
+            binding.btnSeguir.text = "Seguindo"
+            binding.btnSeguir.setBackgroundResource(R.drawable.bg_button_outline)
+            binding.btnSeguir.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.cardPeneira)
+            )
+        } else {
+            binding.btnSeguir.text = "Seguir"
+            binding.btnSeguir.setBackgroundResource(R.drawable.bg_button_primary)
+            binding.btnSeguir.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.card_white)
+            )
+        }
+    }
     private fun configurarBotaoEditar() {
 
         binding.btnEditarPerfil.setOnClickListener {
