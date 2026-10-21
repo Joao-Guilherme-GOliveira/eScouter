@@ -73,6 +73,10 @@ class FragmentBuscaTodos : Fragment() {
                     )
                     true
                 }
+                R.id.nav_partidas -> {
+                    findNavController().navigate(R.id.partidasFragment)
+                    true
+                }
 
                 R.id.nav_pesquisar -> {
                     true

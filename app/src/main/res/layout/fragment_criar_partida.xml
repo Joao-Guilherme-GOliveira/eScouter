@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp"
+        android:background="@color/background">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cadastrar partida"
+            android:textColor="@color/preto"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- time da casa -->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Time da casa" />
+        <EditText
+            android:id="@+id/edtTimeCasa"
+            style="@style/FieldInput"
+            android:hint="Nome do seu clube"
+            android:inputType="text" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Preenchido automaticamente com o nome do seu clube"
+            android:textColor="@color/txtCinza"
+            android:textSize="11sp" />
+
+        <!-- time visitante -->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Time visitante" />
+        <EditText
+            android:id="@+id/edtTimeVisitante"
+            style="@style/FieldInput"
+            android:hint="ex: Estrela FC - Sub-19"
+            android:inputType="textCapWords" />
+
+        <!-- data -->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Data da partida" />
+        <EditText
+            android:id="@+id/edtDataPartida"
+            style="@style/FieldInput"
+            android:hint="Selecione a data"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- hora -->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Horário da partida" />
+        <EditText
+            android:id="@+id/edtHoraPartida"
+            style="@style/FieldInput"
+            android:hint="Selecione o horário"
+            android:focusable="false"
+            android:clickable="true"
+            android:inputType="none" />
+
+        <!-- local -->
+        <TextView
+            style="@style/FieldLabel"
+            android:text="Local da partida" />
+        <EditText
+            android:id="@+id/edtLocalPartida"
+            style="@style/FieldInput"
+            android:hint="ex: Ifes Vitória, Vitória"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnSalvarPartida"
+            style="@style/Botao"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_button_primary"
+            android:elevation="0dp"
+            android:text="Salvar partida"
+            android:textAllCaps="false"
+            android:textColor="@color/branco"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

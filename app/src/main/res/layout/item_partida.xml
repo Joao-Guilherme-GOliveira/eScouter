@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mesmo estilo dos cards de "Destaques da Semana" da Home (bg_cardhome) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_cardhome"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/txtTimes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/txtPreto"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="Ifes Serra x Ifes Vix" />
+
+    <TextView
+        android:id="@+id/txtLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/txtCinza"
+        android:textSize="11sp"
+        tools:text="Ifes Vitória, Vitória" />
+
+    <TextView
+        android:id="@+id/txtDataHora"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_estatistica"
+        android:paddingStart="8dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="3dp"
+        android:textColor="@color/txtBranco"
+        android:textSize="9sp"
+        tools:text="23/08/2026 • 08:00" />
+
+</LinearLayout>

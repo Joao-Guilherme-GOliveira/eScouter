@@ -231,6 +231,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     true
                 }
 
+                R.id.nav_partidas -> {
+                    findNavController().navigate(R.id.partidasFragment)
+                    true
+                }
+
                 R.id.nav_pesquisar->{
                     findNavController().navigate(
                         R.id.fragmentBuscaTodos
