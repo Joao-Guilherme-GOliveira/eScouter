@@ -95,7 +95,6 @@ class PerfilFragment : Fragment() {
         binding.btnSeguir.visibility =
             if (somenteLeitura) View.VISIBLE else View.GONE
     }
-    // SEGUIR / SEGUIDORES
     private fun carregarContadores() {
         SeguidorRepository.qtdSeguidores(perfilUid) { total ->
             if (_binding != null) {
