@@ -313,6 +313,10 @@ class PerfilFragment : Fragment() {
                     navController.navigate(R.id.homeFragment)
                     true
                 }
+                R.id.nav_partidas -> {
+                    findNavController().navigate(R.id.partidasFragment)
+                    true
+                }
                 R.id.nav_perfil -> {
                     // Se estou vendo outro perfil, volta para o MEU perfil
                     // (abre sem argumento). Se já é o meu, não faz nada.

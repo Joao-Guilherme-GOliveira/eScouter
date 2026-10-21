@@ -27,7 +27,6 @@
 
     </fragment>
 
-
     <!-- ========================= -->
     <!-- AUTENTICAÇÃO -->
     <!-- ========================= -->
@@ -47,7 +46,6 @@
                 app:destination="@id/loginFragment" />
 
         </fragment>
-
 
         <fragment
             android:id="@+id/loginFragment"
@@ -69,7 +67,6 @@
 
         </fragment>
 
-
         <fragment
             android:id="@+id/redefinirSenhaFragment"
             android:name="com.example.escouter.ui.auth.RedefinirSenhaFragment"
@@ -83,7 +80,6 @@
         </fragment>
 
     </navigation>
-
 
     <!-- ========================= -->
     <!-- HOME -->
@@ -107,32 +103,10 @@
             tools:layout="@layout/fragment_home" />
 
         <fragment
-            android:id="@+id/perfilFragment"
-            android:name="com.example.escouter.ui.home.PerfilFragment"
-            android:label="fragment_perfil"
-            tools:layout="@layout/fragment_perfil">
-
-            <action
-                android:id="@+id/action_perfilFragment_to_editarPerfilAtletaFragment"
-                app:destination="@id/editarPerfilAtletaFragment" />
-
-            <action
-                android:id="@+id/action_perfilFragment_to_editarPerfilClubeFragment"
-                app:destination="@id/editarPerfilClubeFragment" />
-            <action
-                android:id="@+id/action_perfilFragment_to_fragmentBuscaTodos"
-                app:destination="@id/fragmentBuscaTodos" />
-
-
-        </fragment>
-
-
-        <fragment
             android:id="@+id/editarPerfilAtletaFragment"
             android:name="com.example.escouter.ui.home.EditarPerfilAtletaFragment"
             android:label="fragment_editar_perfil_atleta"
             tools:layout="@layout/fragment_editar_perfil_atleta" />
-
 
         <fragment
             android:id="@+id/minhasPeneirasFragment"
@@ -140,28 +114,18 @@
             android:label="Minhas Peneiras"
             tools:layout="@layout/fragment_minhas_peneiras" />
 
+        <!-- PARTIDAS (NOVO) -->
+        <fragment
+            android:id="@+id/partidasFragment"
+            android:name="com.example.escouter.ui.home.PartidasFragment"
+            android:label="PartidasFragment"
+            tools:layout="@layout/fragment_partidas" />
 
         <fragment
             android:id="@+id/editarPerfilClubeFragment"
             android:name="com.example.escouter.ui.home.EditarPerfilClubeFragment"
             android:label="fragment_editar_perfil_clube"
             tools:layout="@layout/fragment_editar_perfil_clube" />
-        <fragment
-            android:id="@+id/fragmentBuscaTodos"
-            android:name="com.example.escouter.ui.home.FragmentBuscaTodos"
-            android:label="FragmentBuscaTodos" >
-            <action
-                android:id="@+id/action_fragmentBuscaTodos_to_fragmentBuscaClubes"
-                app:destination="@id/fragmentBuscaClubes" />
-        </fragment>
-        <fragment
-            android:id="@+id/fragmentBuscaClubes"
-            android:name="com.example.escouter.ui.home.FragmentBuscaClubes"
-            android:label="FragmentBuscaClubes" >
-            <action
-                android:id="@+id/action_fragmentBuscaClubes_to_fragmentBuscaTodos"
-                app:destination="@id/fragmentBuscaTodos" />
-        </fragment>
         <fragment
             android:id="@+id/perfilFragment"
             android:name="com.example.escouter.ui.home.PerfilFragment"
