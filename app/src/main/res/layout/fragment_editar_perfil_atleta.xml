@@ -428,7 +428,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:text="Cancelar"
                 android:textColor="@color/cardPeneira"
                 android:textSize="13sp"
@@ -441,13 +446,16 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:text="Sair da conta"
                 android:textColor="@color/cardPeneira"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:clickable="true"
-                android:focusable="true"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
 
     </ScrollView>

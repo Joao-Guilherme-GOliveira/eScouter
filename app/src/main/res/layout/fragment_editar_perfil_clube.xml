@@ -61,10 +61,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_button_primary"
                 android:text="Alterar logo"
                 android:textAllCaps="false"
-                style="@style/Botao"/>
+                android:textColor="@color/txtBranco"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/cardPeneira"
+                app:cornerRadius="12dp" />
 
             <!-- Nome -->
             <com.google.android.material.textfield.TextInputLayout
@@ -184,18 +187,109 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- ========================= -->
+            <!-- MÍDIAS -->
+            <!-- ========================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Mídias"
+                android:textColor="@color/txtPreto"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Adicione vídeos ou outras mídias para mostrar seu clube."
+                android:textColor="@color/txtCinza"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnAdicionarMidia"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="14dp"
+                android:backgroundTint="@color/cardPeneira"
+                android:text="+  Adicionar mídia"
+                android:textAllCaps="false"
+                android:textColor="@color/txtBranco"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnExcluirSelecionadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/cardPeneira"
+                android:text="Excluir selecionadas"
+                android:textColor="@color/txtBranco"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <GridLayout
+                android:id="@+id/gridMidias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:columnCount="2"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp" />
+
             <!-- Botão salvar -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSalvar"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="28dp"
-                android:layout_marginBottom="16dp"
                 android:text="Salvar alterações"
                 android:textAllCaps="false"
-                android:background="@drawable/bg_button_primary"
-                android:textSize="16sp"
-                style="@style/Botao"/>
+                android:textColor="@color/txtBranco"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/cardPeneira"
+                app:cornerRadius="12dp" />
+
+            <!-- Cancelar -->
+            <TextView
+                android:id="@+id/txtCancelar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Cancelar"
+                android:textColor="@color/cardPeneira"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <!-- Sair da conta -->
+            <TextView
+                android:id="@+id/txtSairConta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Sair da conta"
+                android:textColor="@color/cardPeneira"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

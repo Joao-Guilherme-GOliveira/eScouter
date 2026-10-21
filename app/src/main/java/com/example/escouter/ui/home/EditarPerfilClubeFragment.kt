@@ -1,15 +1,27 @@
 package com.example.escouter.ui.home
 
+import android.content.Intent
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.load
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import com.example.escouter.R
 import com.example.escouter.databinding.FragmentEditarPerfilClubeBinding
+import com.example.escouter.model.Midia
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,7 +34,9 @@ class EditarPerfilClubeFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
 
     private var imagemSelecionada: Uri? = null
+    private val midiasSelecionadas = mutableSetOf<String>()
 
+    // Seleciona a logo do clube
     private val selecionarImagem =
         registerForActivityResult(
             ActivityResultContracts.GetContent()
@@ -33,6 +47,17 @@ class EditarPerfilClubeFragment : Fragment() {
                 imagemSelecionada = it
 
                 binding.imgLogoClube.setImageURI(it)
+            }
+        }
+
+    // Seleciona imagem ou vídeo para a galeria de mídias
+    private val selecionarMidia =
+        registerForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+
+            if (uri != null) {
+                fazerUpload(uri)
             }
         }
 
@@ -61,6 +86,7 @@ class EditarPerfilClubeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         carregarDados()
+        carregarMidias()
 
         binding.btnAlterarLogo.setOnClickListener {
             selecionarImagem.launch("image/*")
@@ -68,6 +94,23 @@ class EditarPerfilClubeFragment : Fragment() {
 
         binding.btnSalvar.setOnClickListener {
             salvarAlteracoes()
+        }
+
+        binding.btnAdicionarMidia.setOnClickListener {
+            selecionarMidia.launch("*/*")
+        }
+
+        binding.btnExcluirSelecionadas.setOnClickListener {
+            confirmarExclusaoMidias()
+        }
+
+        binding.txtCancelar.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.txtSairConta.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(R.id.action_home_to_autentication)
         }
     }
 
@@ -271,6 +314,608 @@ class EditarPerfilClubeFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+    }
+
+    // ============================================================
+    // SELEÇÃO E UPLOAD DA MÍDIA
+    // ============================================================
+
+    private fun fazerUpload(uri: Uri) {
+
+        val usuarioFirebase = auth.currentUser
+
+        if (usuarioFirebase == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val uid = usuarioFirebase.uid
+
+        // Descobre se o arquivo é imagem ou vídeo
+        val tipoMime = requireContext()
+            .contentResolver
+            .getType(uri)
+
+        val tipo = if (tipoMime?.startsWith("video") == true) {
+            "video"
+        } else {
+            "imagem"
+        }
+
+        Toast.makeText(
+            requireContext(),
+            "Enviando mídia...",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        val nomeArquivo = obterNomeArquivo(uri)
+
+        MediaManager.get()
+            .upload(uri)
+            .unsigned("escouter_midias")
+            .callback(object : UploadCallback {
+
+                override fun onStart(requestId: String) {
+                }
+
+                override fun onProgress(
+                    requestId: String,
+                    bytes: Long,
+                    totalBytes: Long
+                ) {
+
+                    if (totalBytes > 0) {
+
+                        val progresso =
+                            ((bytes * 100) / totalBytes).toInt()
+
+                        _binding?.btnAdicionarMidia?.text =
+                            "Enviando... $progresso%"
+                    }
+                }
+
+                override fun onSuccess(
+                    requestId: String,
+                    resultData: MutableMap<Any?, Any?>
+                ) {
+
+                    _binding?.btnAdicionarMidia?.text =
+                        "+  Adicionar mídia"
+
+                    val url =
+                        resultData["secure_url"]?.toString()
+
+                    if (url.isNullOrEmpty()) {
+
+                        context?.let {
+                            Toast.makeText(
+                                it,
+                                "Não foi possível obter a URL da mídia.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        return
+                    }
+
+                    // Só calcula duração se for vídeo
+                    val duracao = if (tipo == "video") {
+                        obterDuracao(uri)
+                    } else {
+                        ""
+                    }
+
+                    // Gera a capa automaticamente para vídeos
+                    val thumbnailUri = if (tipo == "video") {
+                        gerarThumbnailVideo(url)
+                    } else {
+                        url
+                    }
+
+                    salvarMidiaNoFirestore(
+                        uid = uid,
+                        nome = nomeArquivo,
+                        url = url,
+                        duracao = duracao,
+                        tipo = tipo,
+                        thumbnailUri = thumbnailUri
+                    )
+                }
+
+                override fun onError(
+                    requestId: String,
+                    error: ErrorInfo
+                ) {
+
+                    _binding?.btnAdicionarMidia?.text =
+                        "+  Adicionar mídia"
+
+                    context?.let {
+                        Toast.makeText(
+                            it,
+                            "Erro no upload: ${error.description}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                override fun onReschedule(
+                    requestId: String,
+                    error: ErrorInfo
+                ) {
+                }
+            })
+            .dispatch()
+    }
+
+    private fun gerarThumbnailVideo(videoUrl: String): String {
+
+        return videoUrl
+            .replace("/upload/", "/upload/so_0/")
+            .replace(
+                Regex("\\.[^./?]+$"),
+                ".jpg"
+            )
+    }
+
+    // ============================================================
+    // SALVAR URL NO FIRESTORE
+    // ============================================================
+
+    private fun salvarMidiaNoFirestore(
+        uid: String,
+        nome: String,
+        url: String,
+        duracao: String,
+        tipo: String,
+        thumbnailUri: String
+    ) {
+
+        val midia = Midia(
+            nome = nome,
+            uri = url,
+            duracao = duracao,
+            usuarioId = uid,
+            tipo = tipo,
+            thumbnailUri = thumbnailUri
+        )
+
+        db.collection("midias")
+            .add(midia)
+            .addOnSuccessListener {
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Mídia adicionada com sucesso!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                if (_binding != null) {
+                    carregarMidias()
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Erro ao salvar mídia: ${erro.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    // ============================================================
+    // CARREGAR MÍDIAS DO CLUBE
+    // ============================================================
+
+    private fun carregarMidias() {
+
+        val usuarioFirebase = auth.currentUser ?: return
+
+        val uid = usuarioFirebase.uid
+
+        db.collection("midias")
+            .whereEqualTo("usuarioId", uid)
+            .get()
+            .addOnSuccessListener { resultado ->
+
+                if (_binding == null) return@addOnSuccessListener
+
+                val midias = resultado.documents.mapNotNull { documento ->
+
+                    val midia = documento.toObject(Midia::class.java)
+
+                    if (midia != null) {
+                        Pair(documento.id, midia)
+                    } else {
+                        null
+                    }
+                }
+
+                mostrarMidias(midias)
+            }
+            .addOnFailureListener { erro ->
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Erro ao carregar mídias: ${erro.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun atualizarBotaoExcluir() {
+
+        if (midiasSelecionadas.isEmpty()) {
+
+            binding.btnExcluirSelecionadas.visibility =
+                View.GONE
+
+        } else {
+
+            binding.btnExcluirSelecionadas.visibility =
+                View.VISIBLE
+
+            binding.btnExcluirSelecionadas.text =
+                "Excluir ${midiasSelecionadas.size} selecionada(s)"
+        }
+    }
+
+    private fun confirmarExclusaoMidias() {
+
+        if (midiasSelecionadas.isEmpty()) {
+            return
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Excluir mídias")
+            .setMessage(
+                "Deseja realmente excluir ${midiasSelecionadas.size} mídia(s)?"
+            )
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Excluir") { _, _ ->
+
+                excluirMidiasSelecionadas()
+            }
+            .show()
+    }
+
+    private fun excluirMidiasSelecionadas() {
+
+        val batch = db.batch()
+
+        for (documentoId in midiasSelecionadas) {
+
+            val referencia = db.collection("midias")
+                .document(documentoId)
+
+            batch.delete(referencia)
+        }
+
+        batch.commit()
+            .addOnSuccessListener {
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Mídia(s) excluída(s) com sucesso!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                midiasSelecionadas.clear()
+
+                if (_binding != null) {
+                    carregarMidias()
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Erro ao excluir: ${erro.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun mostrarDialogEditarNome(
+        documentoId: String,
+        nomeAtual: String
+    ) {
+
+        val input = EditText(requireContext())
+
+        input.setText(nomeAtual)
+
+        input.setSelection(
+            input.text.length
+        )
+
+        input.setPadding(
+            50,
+            20,
+            50,
+            20
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Alterar nome da mídia")
+            .setMessage("Digite o novo nome que aparecerá no perfil.")
+            .setView(input)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Salvar") { _, _ ->
+
+                val novoNome =
+                    input.text.toString().trim()
+
+                if (novoNome.isEmpty()) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "O nome não pode ficar vazio.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@setPositiveButton
+                }
+
+                alterarNomeMidia(
+                    documentoId,
+                    novoNome
+                )
+            }
+            .show()
+    }
+
+    private fun alterarNomeMidia(
+        documentoId: String,
+        novoNome: String
+    ) {
+
+        db.collection("midias")
+            .document(documentoId)
+            .update("nome", novoNome)
+            .addOnSuccessListener {
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Nome alterado com sucesso!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                if (_binding != null) {
+                    carregarMidias()
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        "Erro ao alterar nome: ${erro.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun mostrarMidias(
+        midias: List<Pair<String, Midia>>
+    ) {
+
+        binding.gridMidias.removeAllViews()
+
+        midiasSelecionadas.clear()
+
+        atualizarBotaoExcluir()
+
+        for ((documentoId, midia) in midias) {
+
+            val item = layoutInflater.inflate(
+                R.layout.item_midia,
+                binding.gridMidias,
+                false
+            )
+
+            val imgMidia =
+                item.findViewById<android.widget.ImageView>(
+                    R.id.imgMidia
+                )
+
+            val txtNome =
+                item.findViewById<android.widget.TextView>(
+                    R.id.txtNomeMidia
+                )
+
+            val txtDuracao =
+                item.findViewById<android.widget.TextView>(
+                    R.id.txtDuracaoMidia
+                )
+
+            val checkSelecionar =
+                item.findViewById<CheckBox>(
+                    R.id.checkSelecionar
+                )
+
+            val btnEditarNome =
+                item.findViewById<android.widget.ImageButton>(
+                    R.id.btnEditarNomeMidia
+                )
+
+            // Nome
+            txtNome.text = midia.nome
+
+            // Duração
+            if (midia.tipo == "video") {
+                txtDuracao.text = midia.duracao
+                txtDuracao.visibility = View.VISIBLE
+            } else {
+                txtDuracao.visibility = View.GONE
+            }
+
+            // Imagem ou thumbnail do vídeo
+            val imagemParaMostrar =
+                if (midia.thumbnailUri.isNotEmpty()) {
+                    midia.thumbnailUri
+                } else {
+                    midia.uri
+                }
+
+            imgMidia.load(imagemParaMostrar) {
+                crossfade(true)
+                error(R.drawable.ic_video)
+            }
+
+            // Selecionar mídia
+            checkSelecionar.setOnCheckedChangeListener { _, marcado ->
+
+                if (marcado) {
+                    midiasSelecionadas.add(documentoId)
+                } else {
+                    midiasSelecionadas.remove(documentoId)
+                }
+
+                atualizarBotaoExcluir()
+            }
+
+            // Editar nome
+            btnEditarNome.setOnClickListener {
+                mostrarDialogEditarNome(
+                    documentoId,
+                    midia.nome
+                )
+            }
+
+            // Abrir mídia
+            imgMidia.setOnClickListener {
+
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(midia.uri)
+                )
+
+                startActivity(intent)
+            }
+
+            // Configuração do GridLayout
+            val params =
+                android.widget.GridLayout.LayoutParams()
+
+            params.width = 0
+
+            params.height =
+                android.widget.GridLayout.LayoutParams.WRAP_CONTENT
+
+            params.columnSpec =
+                android.widget.GridLayout.spec(
+                    android.widget.GridLayout.UNDEFINED,
+                    1f
+                )
+
+            item.layoutParams = params
+
+            binding.gridMidias.addView(item)
+        }
+    }
+
+    // ============================================================
+    // NOME DO ARQUIVO
+    // ============================================================
+
+    private fun obterNomeArquivo(uri: Uri): String {
+
+        var nome = "midia"
+
+        val cursor = requireContext()
+            .contentResolver
+            .query(
+                uri,
+                null,
+                null,
+                null,
+                null
+            )
+
+        cursor?.use {
+
+            val coluna =
+                it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+
+            if (coluna >= 0 && it.moveToFirst()) {
+
+                nome = it.getString(coluna)
+            }
+        }
+
+        return nome
+    }
+
+    // ============================================================
+    // DURAÇÃO DO VÍDEO
+    // ============================================================
+
+    private fun obterDuracao(uri: Uri): String {
+
+        try {
+
+            val retriever =
+                MediaMetadataRetriever()
+
+            retriever.setDataSource(
+                requireContext(),
+                uri
+            )
+
+            val duracaoString =
+                retriever.extractMetadata(
+                    MediaMetadataRetriever.METADATA_KEY_DURATION
+                )
+
+            retriever.release()
+
+            if (duracaoString == null) {
+                return ""
+            }
+
+            val duracaoMs =
+                duracaoString.toLong()
+
+            val segundosTotal =
+                duracaoMs / 1000
+
+            val minutos =
+                segundosTotal / 60
+
+            val segundos =
+                segundosTotal % 60
+
+            return String.format(
+                "%02d:%02d",
+                minutos,
+                segundos
+            )
+
+        } catch (e: Exception) {
+
+            return ""
+        }
     }
 
     override fun onDestroyView() {
