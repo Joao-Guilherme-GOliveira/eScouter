@@ -32,12 +32,8 @@
 
     <string-array name="posicoes">
         <item>Goleiro</item>
-        <item>Zagueiro</item>
-        <item>Lateral Direito</item>
-        <item>Lateral Esquerdo</item>
-        <item>Volante</item>
-        <item>Meio-Campo</item>
-        <item>Ponta</item>
+        <item>Defensor</item>
+        <item>Meio-campo</item>
         <item>Atacante</item>
     </string-array>
 
