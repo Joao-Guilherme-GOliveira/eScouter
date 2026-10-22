@@ -5,21 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
 import com.example.escouter.adapter.MediaAdapter
+import com.example.escouter.data.SeguidorRepository
 import com.example.escouter.databinding.FragmentPerfilBinding
 import com.example.escouter.model.Midia
 import com.example.escouter.model.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import androidx.core.content.ContextCompat
-import com.example.escouter.data.SeguidorRepository
+
 class PerfilFragment : Fragment() {
+
+    // Estado do botão seguir / contador de seguidores
     private var seguindo = false
     private var totalSeguidores = 0L
     private val uidLogado get() = auth.currentUser?.uid.orEmpty()
@@ -30,6 +34,10 @@ class PerfilFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var usuarioAtual: Usuario? = null
+
+    // Listener em tempo real do documento do usuário
+    private var perfilListener: ListenerRegistration? = null
+
     // uid do perfil que está sendo exibido
     // (o meu, ou o de outro usuário vindo da busca)
     private lateinit var perfilUid: String
@@ -37,6 +45,7 @@ class PerfilFragment : Fragment() {
     // true  = estou vendo o perfil de outra pessoa (somente leitura)
     // false = é o meu próprio perfil (pode editar)
     private var somenteLeitura = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,12 +62,15 @@ class PerfilFragment : Fragment() {
 
         return binding.root
     }
+
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+
         val meuUid = auth.currentUser?.uid
+
         if (meuUid == null) {
             Toast.makeText(
                 requireContext(),
@@ -67,34 +79,69 @@ class PerfilFragment : Fragment() {
             ).show()
             return
         }
+
         // Se veio "usuarioId" nos argumentos, exibe esse perfil.
         // Se não veio, exibe o perfil do usuário logado.
         perfilUid = arguments?.getString("usuarioId") ?: meuUid
 
         somenteLeitura = perfilUid != meuUid
+
         configurarModoVisualizacao()
         carregarUsuario()
         configurarBottomNavigation()
         configurarRecyclerMidias()
-        // O clique de editar só é configurado no meu próprio perfil
         carregarContadores()
 
+        // Perfil de terceiros: botão seguir. Meu perfil: botão editar.
         if (somenteLeitura) {
             configurarBotaoSeguir()
         } else {
             configurarBotaoEditar()
         }
     }
+
+    // =========================================================
     // MODO VISUALIZAÇÃO / EDIÇÃO
+    // =========================================================
+
     private fun configurarModoVisualizacao() {
 
         // Perfil de terceiros: o botão de editar nem aparece
         binding.btnEditarPerfil.visibility =
             if (somenteLeitura) View.GONE else View.VISIBLE
 
+        // Perfil de terceiros: aparece o botão de seguir
         binding.btnSeguir.visibility =
             if (somenteLeitura) View.VISIBLE else View.GONE
     }
+
+    private fun configurarBotaoEditar() {
+
+        binding.btnEditarPerfil.setOnClickListener {
+
+            val usuario = usuarioAtual ?: return@setOnClickListener
+
+            if (usuario.tipoUsuario.equals("Atleta", ignoreCase = true)) {
+
+                findNavController().navigate(
+                    R.id.action_perfilFragment_to_editarPerfilAtletaFragment
+                )
+
+            } else if (
+                usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)
+            ) {
+
+                findNavController().navigate(
+                    R.id.action_perfilFragment_to_editarPerfilClubeFragment
+                )
+            }
+        }
+    }
+
+    // =========================================================
+    // SEGUIR / SEGUIDORES
+    // =========================================================
+
     private fun carregarContadores() {
         SeguidorRepository.qtdSeguidores(perfilUid) { total ->
             if (_binding != null) {
@@ -186,28 +233,7 @@ class PerfilFragment : Fragment() {
             )
         }
     }
-    private fun configurarBotaoEditar() {
 
-        binding.btnEditarPerfil.setOnClickListener {
-
-            val usuario = usuarioAtual ?: return@setOnClickListener
-
-            if (usuario.tipoUsuario.equals("Atleta", ignoreCase = true)) {
-
-                findNavController().navigate(
-                    R.id.action_perfilFragment_to_editarPerfilAtletaFragment
-                )
-
-            } else if (
-                usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)
-            ) {
-
-                findNavController().navigate(
-                    R.id.action_perfilFragment_to_editarPerfilClubeFragment
-                )
-            }
-        }
-    }
     private fun configurarRecyclerMidias() {
 
         mediaAdapter = MediaAdapter(emptyList())
@@ -217,37 +243,61 @@ class PerfilFragment : Fragment() {
         carregarMidias()
     }
 
+    // =========================================================
+    // CARREGAR USUÁRIO (em tempo real)
+    // =========================================================
+
     private fun carregarUsuario() {
 
-        db.collection("usuarios")
-            .document(perfilUid)
-            .get()
-            .addOnSuccessListener { document ->
-                // Evita crash se a tela foi fechada antes da resposta
-                if (_binding == null) return@addOnSuccessListener
+        // Garante que nunca existam dois listeners ao mesmo tempo
+        perfilListener?.remove()
 
-                if (!document.exists()) {
+        perfilListener = db.collection("usuarios")
+            .document(perfilUid)
+            .addSnapshotListener { document, erro ->
+
+                // Evita crash se a tela foi fechada antes da resposta
+                if (_binding == null) return@addSnapshotListener
+
+                if (erro != null) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Erro ao acessar Firestore: ${erro.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@addSnapshotListener
+                }
+
+                if (document == null || !document.exists()) {
 
                     Toast.makeText(
                         requireContext(),
                         "Perfil não encontrado.",
                         Toast.LENGTH_LONG
                     ).show()
-                    return@addOnSuccessListener
+                    return@addSnapshotListener
                 }
+
                 try {
                     val usuario = document.toObject(Usuario::class.java)
+
                     if (usuario == null) {
                         Toast.makeText(
                             requireContext(),
                             "Não foi possível converter os dados do usuário.",
                             Toast.LENGTH_LONG
                         ).show()
-                        return@addOnSuccessListener
+                        return@addSnapshotListener
                     }
+
                     usuarioAtual = usuario
 
-                    mostrarUsuario(usuario)
+                    // Campos extras do clube, lidos direto do documento
+                    val telefone = document.getString("telefone") ?: ""
+                    val cnpj = document.getString("cnpj") ?: ""
+
+                    mostrarUsuario(usuario, telefone, cnpj)
 
                 } catch (e: Exception) {
 
@@ -258,19 +308,13 @@ class PerfilFragment : Fragment() {
                     ).show()
                 }
             }
-            .addOnFailureListener { erro ->
-
-                if (_binding == null) return@addOnFailureListener
-
-                Toast.makeText(
-                    requireContext(),
-                    "Erro ao acessar Firestore: ${erro.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
     }
 
-    private fun mostrarUsuario(usuario: Usuario) {
+    private fun mostrarUsuario(
+        usuario: Usuario,
+        telefone: String,
+        cnpj: String
+    ) {
 
         val ehClube =
             usuario.tipoUsuario.equals("Clube/Olheiro", ignoreCase = true)
@@ -285,6 +329,7 @@ class PerfilFragment : Fragment() {
             binding.txtPositionAge.visibility = View.VISIBLE
             binding.cardInfo.visibility = View.VISIBLE
         }
+
         binding.txtName.text = usuario.nome
 
         if (!ehClube) {
@@ -308,23 +353,39 @@ class PerfilFragment : Fragment() {
             binding.statExperiencia.txtStatLabel.text = "Experiência"
             binding.statExperiencia.txtStatValue.text = usuario.experiencia
         }
+
         val anoCadastro =
             if (usuario.dataCadastro.isNotEmpty()) {
                 usuario.dataCadastro.takeLast(4)
             } else {
                 ""
             }
+
         binding.txtLocationDate.text =
             if (anoCadastro.isNotEmpty()) {
                 "📍 ${usuario.cidade}, ${usuario.estado}     🗓 Desde $anoCadastro"
             } else {
                 "📍 ${usuario.cidade}, ${usuario.estado}"
             }
+
         if (usuario.descricao.isEmpty()) {
             binding.txtBio.visibility = View.GONE
         } else {
             binding.txtBio.visibility = View.VISIBLE
             binding.txtBio.text = usuario.descricao
+        }
+
+        // Contato do clube (telefone e CNPJ)
+        val linhasContato = mutableListOf<String>()
+
+        if (telefone.isNotBlank()) linhasContato.add("📞 $telefone")
+        if (cnpj.isNotBlank()) linhasContato.add("CNPJ: $cnpj")
+
+        if (ehClube && linhasContato.isNotEmpty()) {
+            binding.txtContatoClube.visibility = View.VISIBLE
+            binding.txtContatoClube.text = linhasContato.joinToString("\n")
+        } else {
+            binding.txtContatoClube.visibility = View.GONE
         }
     }
 
@@ -339,17 +400,23 @@ class PerfilFragment : Fragment() {
             "dd-MM-yyyy",
             "yyyy-MM-dd"
         )
+
         for (padrao in formatos) {
             try {
 
                 val formato = SimpleDateFormat(padrao, Locale.getDefault())
                 formato.isLenient = false
+
                 val data = formato.parse(dataNascimento) ?: continue
+
                 val nascimento = Calendar.getInstance()
                 nascimento.time = data
+
                 val hoje = Calendar.getInstance()
+
                 var idade =
                     hoje.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR)
+
                 if (hoje.get(Calendar.MONTH) < nascimento.get(Calendar.MONTH)) {
                     idade--
                 } else if (
@@ -359,18 +426,28 @@ class PerfilFragment : Fragment() {
                 ) {
                     idade--
                 }
+
                 return idade
+
             } catch (_: Exception) {
                 // Tenta o próximo formato
             }
         }
+
         return 0
     }
+
+    // =========================================================
+    // MÍDIAS
+    // =========================================================
+
     private fun carregarMidias() {
+
         db.collection("midias")
             .whereEqualTo("usuarioId", perfilUid)
             .get()
             .addOnSuccessListener { documentos ->
+
                 if (_binding == null) return@addOnSuccessListener
 
                 val listaMidias = documentos.mapNotNull { documento ->
@@ -380,15 +457,19 @@ class PerfilFragment : Fragment() {
                         null
                     }
                 }
+
                 if (listaMidias.isEmpty()) {
 
                     binding.recyclerMedia.visibility = View.GONE
+
                 } else {
+
                     binding.recyclerMedia.visibility = View.VISIBLE
                     mediaAdapter.atualizarMidias(listaMidias)
                 }
             }
             .addOnFailureListener {
+
                 if (_binding == null) return@addOnFailureListener
 
                 binding.recyclerMedia.visibility = View.GONE
@@ -400,24 +481,35 @@ class PerfilFragment : Fragment() {
                 ).show()
             }
     }
+
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
+
     private fun configurarBottomNavigation() {
+
         val navController = findNavController()
+
         // Define o item selecionado ANTES de registrar o listener,
         // para não disparar navegação sem querer.
         // Meu perfil -> "Perfil" marcado
         // Perfil de outra pessoa -> "Pesquisar" marcado (veio da busca)
         binding.bottomNavigation.selectedItemId =
             if (somenteLeitura) R.id.nav_pesquisar else R.id.nav_perfil
+
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
+
                 R.id.nav_inicio -> {
                     navController.navigate(R.id.homeFragment)
                     true
                 }
+
                 R.id.nav_partidas -> {
-                    findNavController().navigate(R.id.partidasFragment)
+                    navController.navigate(R.id.partidasFragment)
                     true
                 }
+
                 R.id.nav_perfil -> {
                     // Se estou vendo outro perfil, volta para o MEU perfil
                     // (abre sem argumento). Se já é o meu, não faz nada.
@@ -426,6 +518,7 @@ class PerfilFragment : Fragment() {
                     }
                     true
                 }
+
                 R.id.nav_pesquisar -> {
                     if (somenteLeitura) {
                         // Volta para a tela de busca de onde veio
@@ -439,13 +532,19 @@ class PerfilFragment : Fragment() {
                     }
                     true
                 }
+
                 else -> false
             }
         }
     }
+
     override fun onDestroyView() {
 
         super.onDestroyView()
+
+        // Para de escutar o Firestore quando a tela some
+        perfilListener?.remove()
+        perfilListener = null
 
         _binding = null
     }
