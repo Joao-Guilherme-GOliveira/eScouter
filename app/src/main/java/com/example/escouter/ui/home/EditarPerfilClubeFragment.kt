@@ -2,7 +2,9 @@ package com.example.escouter.ui.home
 
 import android.content.Intent
 import android.media.MediaMetadataRetriever
+import android.content.Context
 import android.net.Uri
+import java.io.File
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
@@ -35,6 +37,7 @@ class EditarPerfilClubeFragment : Fragment() {
 
     private var imagemSelecionada: Uri? = null
     private val midiasSelecionadas = mutableSetOf<String>()
+    private var uploadsPendentes = 0
 
     // Seleciona a logo do clube
     private val selecionarImagem =
@@ -53,11 +56,12 @@ class EditarPerfilClubeFragment : Fragment() {
     // Seleciona imagem ou vídeo para a galeria de mídias
     private val selecionarMidia =
         registerForActivityResult(
-            ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
+            ActivityResultContracts.OpenMultipleDocuments()
+        ) { uris: List<Uri> ->
 
-            if (uri != null) {
-                fazerUpload(uri)
+            if (uris.isNotEmpty()) {
+                uploadsPendentes += uris.size
+                uris.forEach { fazerUpload(it) }
             }
         }
 
@@ -97,7 +101,7 @@ class EditarPerfilClubeFragment : Fragment() {
         }
 
         binding.btnAdicionarMidia.setOnClickListener {
-            selecionarMidia.launch("*/*")
+            selecionarMidia.launch(arrayOf("image/*", "video/*"))
         }
 
         binding.btnExcluirSelecionadas.setOnClickListener {
@@ -320,7 +324,91 @@ class EditarPerfilClubeFragment : Fragment() {
     // SELEÇÃO E UPLOAD DA MÍDIA
     // ============================================================
 
+    // Copia o arquivo escolhido para o cache do app antes de enviar.
+    // Assim o Cloudinary recebe um arquivo local completo, e não um content:// URI.
     private fun fazerUpload(uri: Uri) {
+
+        val appContext = requireContext().applicationContext
+        val nome = obterNomeArquivo(uri)
+
+        Toast.makeText(
+            requireContext(),
+            "Preparando mídia...",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        Thread {
+
+            val arquivo = copiarParaCache(appContext, uri, nome)
+
+            activity?.runOnUiThread {
+
+                if (_binding == null) {
+                    arquivo?.delete()
+                    return@runOnUiThread
+                }
+
+                if (arquivo == null) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Não foi possível ler o arquivo selecionado.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    finalizarUpload()
+
+                } else {
+
+                    enviarArquivo(uri, arquivo)
+                }
+            }
+        }.start()
+    }
+
+    private fun copiarParaCache(
+        contexto: Context,
+        uri: Uri,
+        nome: String
+    ): File? {
+
+        return try {
+
+            val extensao = nome
+                .substringAfterLast('.', "")
+                .filter { it.isLetterOrDigit() }
+
+            val sufixo =
+                if (extensao.isNotEmpty()) ".$extensao" else ""
+
+            val arquivo = File.createTempFile(
+                "upload_",
+                sufixo,
+                contexto.cacheDir
+            )
+
+            val copiou = contexto.contentResolver
+                .openInputStream(uri)
+                ?.use { entrada ->
+                    arquivo.outputStream().use { saida ->
+                        entrada.copyTo(saida)
+                    }
+                    true
+                } ?: false
+
+            if (!copiou || arquivo.length() == 0L) {
+                arquivo.delete()
+                null
+            } else {
+                arquivo
+            }
+
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun enviarArquivo(uri: Uri, arquivo: File) {
 
         val usuarioFirebase = auth.currentUser
 
@@ -357,8 +445,9 @@ class EditarPerfilClubeFragment : Fragment() {
         val nomeArquivo = obterNomeArquivo(uri)
 
         MediaManager.get()
-            .upload(uri)
+            .upload(arquivo.absolutePath)
             .unsigned("escouter_midias")
+            .option("resource_type", "auto")
             .callback(object : UploadCallback {
 
                 override fun onStart(requestId: String) {
@@ -376,7 +465,7 @@ class EditarPerfilClubeFragment : Fragment() {
                             ((bytes * 100) / totalBytes).toInt()
 
                         _binding?.btnAdicionarMidia?.text =
-                            "Enviando... $progresso%"
+                            if (uploadsPendentes > 1) "Enviando $uploadsPendentes mídias..." else "Enviando... $progresso%"
                     }
                 }
 
@@ -385,8 +474,8 @@ class EditarPerfilClubeFragment : Fragment() {
                     resultData: MutableMap<Any?, Any?>
                 ) {
 
-                    _binding?.btnAdicionarMidia?.text =
-                        "+  Adicionar mídia"
+                    finalizarUpload()
+                    arquivo.delete()
 
                     val url =
                         resultData["secure_url"]?.toString()
@@ -433,8 +522,8 @@ class EditarPerfilClubeFragment : Fragment() {
                     error: ErrorInfo
                 ) {
 
-                    _binding?.btnAdicionarMidia?.text =
-                        "+  Adicionar mídia"
+                    finalizarUpload()
+                    arquivo.delete()
 
                     context?.let {
                         Toast.makeText(
@@ -452,6 +541,18 @@ class EditarPerfilClubeFragment : Fragment() {
                 }
             })
             .dispatch()
+    }
+
+    private fun finalizarUpload() {
+
+        if (uploadsPendentes > 0) {
+            uploadsPendentes--
+        }
+
+        if (uploadsPendentes == 0) {
+            _binding?.btnAdicionarMidia?.text =
+                "+  Adicionar mídia"
+        }
     }
 
     private fun gerarThumbnailVideo(videoUrl: String): String {
