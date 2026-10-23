@@ -1,6 +1,7 @@
 package com.example.escouter.ui.home
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -213,6 +214,11 @@ class MinhasPeneirasFragment : Fragment() {
                 R.id.btnExcluir
             )
 
+        val btnVerInscritos =
+            item.findViewById<View>(
+                R.id.btnVerInscritos
+            )
+
         txtNomeTime.text =
             peneira.nomeTime
 
@@ -240,9 +246,169 @@ class MinhasPeneirasFragment : Fragment() {
             )
         }
 
+        btnVerInscritos.setOnClickListener {
+
+            mostrarInscritos(
+                peneira
+            )
+        }
+
         binding.containerPeneiras.addView(
             item
         )
+    }
+
+    // =========================================================
+    // VER ATLETAS INSCRITOS
+    // =========================================================
+
+    private fun mostrarInscritos(
+        peneira: Peneira
+    ) {
+
+        val conteudo = layoutInflater.inflate(
+            R.layout.dialog_inscritos,
+            null
+        )
+
+        val txtMensagemInscritos =
+            conteudo.findViewById<TextView>(
+                R.id.txtMensagemInscritos
+            )
+
+        val containerInscritos =
+            conteudo.findViewById<LinearLayout>(
+                R.id.containerInscritos
+            )
+
+        val dialog =
+            AlertDialog.Builder(requireContext())
+                .setTitle("Inscritos • ${peneira.nomeTime}")
+                .setView(conteudo)
+                .setPositiveButton(
+                    "Fechar",
+                    null
+                )
+                .create()
+
+        dialog.show()
+
+        // As inscrições não guardam o ID da peneira,
+        // então ela é identificada por time + data + hora
+        db.collection("inscricoesPeneira")
+            .whereEqualTo("nomeTime", peneira.nomeTime)
+            .whereEqualTo("data", peneira.data)
+            .whereEqualTo("hora", peneira.hora)
+            .get()
+            .addOnSuccessListener { resultado ->
+
+                if (resultado.isEmpty) {
+
+                    txtMensagemInscritos.text =
+                        "Nenhum atleta inscrito ainda."
+
+                    return@addOnSuccessListener
+                }
+
+                txtMensagemInscritos.text =
+                    "${resultado.size()} atleta(s) inscrito(s)"
+
+                for (documento in resultado) {
+
+                    val nome =
+                        documento.getString("atletaNome")
+                            ?: "Atleta"
+
+                    val email =
+                        documento.getString("atletaEmail")
+                            ?: ""
+
+                    val itemInscrito = layoutInflater.inflate(
+                        R.layout.item_inscrito,
+                        containerInscritos,
+                        false
+                    )
+
+                    itemInscrito.findViewById<TextView>(
+                        R.id.txtNomeInscrito
+                    ).text = nome
+
+                    itemInscrito.findViewById<TextView>(
+                        R.id.txtEmailInscrito
+                    ).text = email
+
+                    itemInscrito.findViewById<View>(
+                        R.id.btnPerfilInscrito
+                    ).setOnClickListener {
+
+                        abrirPerfilDoAtleta(
+                            email,
+                            dialog
+                        )
+                    }
+
+                    containerInscritos.addView(
+                        itemInscrito
+                    )
+                }
+            }
+            .addOnFailureListener { erro ->
+
+                txtMensagemInscritos.text =
+                    "Erro ao carregar inscritos: ${erro.message}"
+            }
+    }
+
+    private fun abrirPerfilDoAtleta(
+        email: String,
+        dialog: AlertDialog
+    ) {
+
+        if (email.isEmpty()) {
+
+            Toast.makeText(
+                requireContext(),
+                "Atleta sem e-mail cadastrado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        db.collection("usuarios")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { resultado ->
+
+                val atleta = resultado.documents.firstOrNull()
+
+                if (atleta == null) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Perfil do atleta não encontrado.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@addOnSuccessListener
+                }
+
+                dialog.dismiss()
+
+                findNavController().navigate(
+                    R.id.perfilFragment,
+                    bundleOf("usuarioId" to atleta.id)
+                )
+            }
+            .addOnFailureListener { erro ->
+
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao abrir perfil: ${erro.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     // =========================================================
