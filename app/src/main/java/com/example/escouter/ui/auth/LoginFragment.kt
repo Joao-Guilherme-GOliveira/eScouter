@@ -60,16 +60,21 @@ class LoginFragment : Fragment() {
                         senha
                     )
                         .addOnSuccessListener {
+                            if (!isAdded) return@addOnSuccessListener
 
-                            Toast.makeText(
-                                requireContext(),
-                                "Login realizado com sucesso!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val navController = findNavController()
 
-                            findNavController().navigate(
-                                R.id.action_loginFragment_to_home
-                            )
+                            if (navController.currentDestination?.id == R.id.loginFragment) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Login realizado com sucesso!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                navController.navigate(
+                                    R.id.action_loginFragment_to_home
+                                )
+                            }
                         }
 
                         .addOnFailureListener {

@@ -8,5 +8,9 @@ data class Partida(
     val local: String = "",
     val dataHoraMillis: Long = 0L, // usado para ordenar e filtrar "próximas"
     val emailClube: String = "",
-    val clubeUid: String = ""
+    val clubeUid: String = "",
+
+    // Placar (opcional): enquanto for null a Home mostra apenas "A x B"
+    val golsCasa: Long? = null,
+    val golsVisitante: Long? = null
 )
