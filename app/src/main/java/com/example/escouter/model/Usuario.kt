@@ -17,6 +17,7 @@ data class Usuario(
 
     // Dados da conta
     val dataCadastro: String = "",
+    val fotoPerfil: String = "",
 
     // Dados do clube
     val cnpj: String = "",

@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.content.Context
 import android.net.Uri
 import java.io.File
+import com.example.escouter.data.FotoPerfilUploader
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
@@ -39,6 +40,18 @@ class EditarPerfilAtletaFragment : Fragment() {
     private val midiasSelecionadas = mutableSetOf<String>()
     private var uploadsPendentes = 0
     private var usuarioAtual: Usuario? = null
+    private var fotoSelecionada: Uri? = null
+
+    private val selecionarFoto =
+        registerForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            uri?.let {
+                fotoSelecionada = it
+                binding.imgFotoPerfil.setImageURI(it)
+            }
+        }
+
 
     /*
      * Abre a galeria permitindo selecionar imagem ou vídeo.
@@ -88,6 +101,10 @@ class EditarPerfilAtletaFragment : Fragment() {
 
         binding.btnSalvar.setOnClickListener {
             salvarAlteracoes()
+        }
+
+        binding.txtAlterarFoto.setOnClickListener {
+            selecionarFoto.launch("image/*")
         }
 
         binding.txtCancelar.setOnClickListener {
@@ -190,6 +207,10 @@ class EditarPerfilAtletaFragment : Fragment() {
             binding.spinnerPosicao.setSelection(posicaoSelecionada)
         }
 
+        if (usuario.fotoPerfil.isNotEmpty()) {
+            binding.imgFotoPerfil.load(usuario.fotoPerfil) { crossfade(true) }
+        }
+
         binding.edtPeso.setText(usuario.peso)
 
         // ==========================================
@@ -278,97 +299,39 @@ class EditarPerfilAtletaFragment : Fragment() {
     // ============================================================
 
     private fun salvarAlteracoes() {
+        val uri = fotoSelecionada
 
-        val usuarioFirebase = auth.currentUser
+        if (uri == null) {
+            gravarPerfil(uid, dadosAtualizados)
+        } else {
+            binding.btnSalvar.isEnabled = false
+            Toast.makeText(requireContext(), "Enviando foto...", Toast.LENGTH_SHORT).show()
 
-        if (usuarioFirebase == null) {
-            Toast.makeText(
+            FotoPerfilUploader.enviar(
                 requireContext(),
-                "Nenhum usuário está logado.",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return
+                uri,
+                onSucesso = { url ->
+                    dadosAtualizados["fotoPerfil"] = url
+                    gravarPerfil(uid, dadosAtualizados)
+                },
+                onErro = { mensagem ->
+                    if (_binding != null) {
+                        binding.btnSalvar.isEnabled = true
+                        Toast.makeText(requireContext(), mensagem, Toast.LENGTH_LONG).show()
+                    }
+                }
+            )
         }
+    }
 
-        val uid = usuarioFirebase.uid
-
-        // ==============================
-        // VALIDAÇÃO DE PESO E ALTURA
-        // ==============================
-
-        val peso = binding.edtPeso.text.toString().trim()
-        val pesoValor = peso.toDoubleOrNull()
-
-        val altura = binding.edtAltura.text.toString().trim()
-        val alturaValor = altura.toDoubleOrNull()
-
-        // Validação do peso
-        if (pesoValor == null || pesoValor <= 0) {
-            binding.edtPeso.error = "Informe um peso válido"
-            binding.edtPeso.requestFocus()
-            return
-        }
-
-        // Validação da altura
-        if (alturaValor == null || alturaValor <= 0) {
-            binding.edtAltura.error = "Informe uma altura válida em cm"
-            binding.edtAltura.requestFocus()
-            return
-        }
-        //transforma altura para metros
-
-        val alturaMetros = alturaValor/100
-
-
-        // ==============================
-        // VALIDAÇÃO DOS SPINNERS
-        // ==============================
-
-        if (binding.spinnerPosicao.selectedItemPosition == 0) {
-            Toast.makeText(
-                requireContext(),
-                "Selecione sua posição",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return
-        }
-
-        if (binding.spinnerExperiencia.selectedItemPosition == 0) {
-            Toast.makeText(
-                requireContext(),
-                "Selecione sua experiência",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return
-        }
-
-        // Pega os valores selecionados nos Spinners
-        val posicao = binding.spinnerPosicao.selectedItem.toString()
-        val experiencia = binding.spinnerExperiencia.selectedItem.toString()
-
-        // ==============================
-        // DADOS ATUALIZADOS
-        // ==============================
-
-        val dadosAtualizados = hashMapOf<String, Any>(
-            "posicao" to posicao,
-            "peso" to peso,
-            "altura" to alturaMetros.toString(),
-            "experiencia" to experiencia,
-            "descricao" to binding.edtDescricao.text.toString().trim()
-        )
-
-        // ==============================
-        // ATUALIZAÇÃO NO FIRESTORE
-        // ==============================
+    // NOVA função: grava no Firestore e volta para o perfil
+    private fun gravarPerfil(uid: String, dados: Map<String, Any>) {
 
         db.collection("usuarios")
             .document(uid)
-            .update(dadosAtualizados)
+            .update(dados)
             .addOnSuccessListener {
+                if (_binding == null) return@addOnSuccessListener
 
                 Toast.makeText(
                     requireContext(),
@@ -379,7 +342,9 @@ class EditarPerfilAtletaFragment : Fragment() {
                 findNavController().navigateUp()
             }
             .addOnFailureListener { erro ->
+                if (_binding == null) return@addOnFailureListener
 
+                binding.btnSalvar.isEnabled = true
                 Toast.makeText(
                     requireContext(),
                     "Erro ao salvar: ${erro.message}",

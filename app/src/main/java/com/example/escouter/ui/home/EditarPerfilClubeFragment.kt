@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.content.Context
 import android.net.Uri
 import java.io.File
+import com.example.escouter.data.FotoPerfilUploader
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
@@ -179,6 +180,11 @@ class EditarPerfilClubeFragment : Fragment() {
                 binding.edtEstado.setText(estado)
                 binding.edtDescricao.setText(descricao)
                 binding.edtTelefone.setText(telefone)
+
+                val foto = document.getString("fotoPerfil") ?: ""
+                if (foto.isNotEmpty()) {
+                    binding.imgLogoClube.load(foto) { crossfade(true) }
+                }
             }
             .addOnFailureListener { erro ->
 
@@ -297,28 +303,56 @@ class EditarPerfilClubeFragment : Fragment() {
             "telefone" to telefone
         )
 
-        db.collection("usuarios")
-            .document(uid)
-            .update(dadosAtualizados)
-            .addOnSuccessListener {
+            val uri = imagemSelecionada
 
-                Toast.makeText(
+            if (uri == null) {
+                gravarPerfil(uid, dadosAtualizados)
+            } else {
+                binding.btnSalvar.isEnabled = false
+                Toast.makeText(requireContext(), "Enviando foto...", Toast.LENGTH_SHORT).show()
+
+                FotoPerfilUploader.enviar(
                     requireContext(),
-                    "Perfil atualizado com sucesso!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                findNavController().navigateUp()
+                    uri,
+                    onSucesso = { url ->
+                        gravarPerfil(uid, dadosAtualizados + ("fotoPerfil" to url))
+                    },
+                    onErro = { mensagem ->
+                        if (_binding != null) {
+                            binding.btnSalvar.isEnabled = true
+                            Toast.makeText(requireContext(), mensagem, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                )
             }
-            .addOnFailureListener { erro ->
+        }
+            private fun gravarPerfil(uid: String, dados: Map<String, Any>) {
 
-                Toast.makeText(
-                    requireContext(),
-                    "Erro ao salvar: ${erro.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                db.collection("usuarios")
+                    .document(uid)
+                    .update(dados)
+                    .addOnSuccessListener {
+                        if (_binding == null) return@addOnSuccessListener
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Perfil atualizado com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        findNavController().navigateUp()
+                    }
+                    .addOnFailureListener { erro ->
+                        if (_binding == null) return@addOnFailureListener
+
+                        binding.btnSalvar.isEnabled = true
+                        Toast.makeText(
+                            requireContext(),
+                            "Erro ao salvar: ${erro.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
             }
-    }
 
     // ============================================================
     // SELEÇÃO E UPLOAD DA MÍDIA
