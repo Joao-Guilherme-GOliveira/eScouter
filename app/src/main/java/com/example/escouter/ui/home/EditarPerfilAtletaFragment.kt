@@ -299,6 +299,89 @@ class EditarPerfilAtletaFragment : Fragment() {
     // ============================================================
 
     private fun salvarAlteracoes() {
+
+        val usuarioFirebase = auth.currentUser
+
+        if (usuarioFirebase == null) {
+            Toast.makeText(
+                requireContext(),
+                "Nenhum usuário está logado.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val uid = usuarioFirebase.uid
+
+        // ==============================
+        // VALIDAÇÃO DE PESO E ALTURA
+        // ==============================
+
+        val peso = binding.edtPeso.text.toString().trim()
+        val pesoValor = peso.toDoubleOrNull()
+
+        val altura = binding.edtAltura.text.toString().trim()
+        val alturaValor = altura.toDoubleOrNull()
+
+        if (pesoValor == null || pesoValor <= 0) {
+            binding.edtPeso.error = "Informe um peso válido"
+            binding.edtPeso.requestFocus()
+            return
+        }
+
+        if (alturaValor == null || alturaValor <= 0) {
+            binding.edtAltura.error = "Informe uma altura válida em cm"
+            binding.edtAltura.requestFocus()
+            return
+        }
+
+        // transforma altura para metros
+        val alturaMetros = alturaValor / 100
+
+        // ==============================
+        // VALIDAÇÃO DOS SPINNERS
+        // ==============================
+
+        if (binding.spinnerPosicao.selectedItemPosition == 0) {
+            Toast.makeText(
+                requireContext(),
+                "Selecione sua posição",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        if (binding.spinnerExperiencia.selectedItemPosition == 0) {
+            Toast.makeText(
+                requireContext(),
+                "Selecione sua experiência",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val posicao = binding.spinnerPosicao.selectedItem.toString()
+        val experiencia = binding.spinnerExperiencia.selectedItem.toString()
+
+        // ==============================
+        // DADOS ATUALIZADOS
+        // ==============================
+
+        val dadosAtualizados = hashMapOf<String, Any>(
+            "posicao" to posicao,
+            "peso" to peso,
+            "altura" to alturaMetros.toString(),
+            "experiencia" to experiencia,
+            "descricao" to binding.edtDescricao.text.toString().trim()
+        )
+
+        // ==============================
+        // FOTO + FIRESTORE
+        // ==============================
+
         val uri = fotoSelecionada
 
         if (uri == null) {
@@ -323,8 +406,6 @@ class EditarPerfilAtletaFragment : Fragment() {
             )
         }
     }
-
-    // NOVA função: grava no Firestore e volta para o perfil
     private fun gravarPerfil(uid: String, dados: Map<String, Any>) {
 
         db.collection("usuarios")

@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.escouter.R
+import coil.load
 import com.example.escouter.adapter.MediaAdapter
 import com.example.escouter.data.SeguidorRepository
 import com.example.escouter.databinding.FragmentPerfilBinding
@@ -331,6 +332,12 @@ class PerfilFragment : Fragment() {
         }
 
         binding.txtName.text = usuario.nome
+
+        binding.imgAvatar.load(usuario.fotoPerfil.ifBlank { null }){
+            crossfade(true)
+            fallback(R.drawable.ic_perfil)
+            error(R.drawable.ic_perfil)
+        }
 
         if (!ehClube) {
 
