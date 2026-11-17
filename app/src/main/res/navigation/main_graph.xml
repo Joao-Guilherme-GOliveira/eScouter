@@ -104,7 +104,7 @@
 
         <fragment
             android:id="@+id/editarPerfilAtletaFragment"
-            android:name="com.example.escouter.ui.home.EditarPerfilAtletaFragment"
+            android:name="com.example.escouter.ui.perfil.EditarPerfilAtletaFragment"
             android:label="fragment_editar_perfil_atleta"
             tools:layout="@layout/fragment_editar_perfil_atleta" />
 
@@ -117,18 +117,18 @@
         <!-- PARTIDAS (NOVO) -->
         <fragment
             android:id="@+id/partidasFragment"
-            android:name="com.example.escouter.ui.home.PartidasFragment"
+            android:name="com.example.escouter.ui.partidas.PartidasFragment"
             android:label="PartidasFragment"
             tools:layout="@layout/fragment_partidas" />
 
         <fragment
             android:id="@+id/editarPerfilClubeFragment"
-            android:name="com.example.escouter.ui.home.EditarPerfilClubeFragment"
+            android:name="com.example.escouter.ui.perfil.EditarPerfilClubeFragment"
             android:label="fragment_editar_perfil_clube"
             tools:layout="@layout/fragment_editar_perfil_clube" />
         <fragment
             android:id="@+id/perfilFragment"
-            android:name="com.example.escouter.ui.home.PerfilFragment"
+            android:name="com.example.escouter.ui.perfil.PerfilFragment"
             android:label="fragment_perfil"
             tools:layout="@layout/fragment_perfil">
 
@@ -152,7 +152,7 @@
 
         <fragment
             android:id="@+id/fragmentBuscaTodos"
-            android:name="com.example.escouter.ui.home.FragmentBuscaTodos"
+            android:name="com.example.escouter.ui.busca.FragmentBuscaTodos"
             android:label="FragmentBuscaTodos">
             <action
                 android:id="@+id/action_fragmentBuscaTodos_to_fragmentBuscaClubes"
@@ -165,7 +165,7 @@
 
         <fragment
             android:id="@+id/fragmentBuscaClubes"
-            android:name="com.example.escouter.ui.home.FragmentBuscaClubes"
+            android:name="com.example.escouter.ui.busca.FragmentBuscaClubes"
             android:label="FragmentBuscaClubes">
             <action
                 android:id="@+id/action_fragmentBuscaClubes_to_fragmentBuscaTodos"

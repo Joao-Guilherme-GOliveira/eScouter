@@ -1,4 +1,4 @@
-package com.example.escouter.ui.home
+package com.example.escouter.ui.perfil
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.escouter.R
 import coil.load
+import com.example.escouter.R
 import com.example.escouter.adapter.MediaAdapter
 import com.example.escouter.data.SeguidorRepository
 import com.example.escouter.databinding.FragmentPerfilBinding
@@ -21,7 +21,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
+import android.widget.TextView
+import com.example.escouter.model.Partida
 class PerfilFragment : Fragment() {
 
     // Estado do botão seguir / contador de seguidores
@@ -92,6 +93,7 @@ class PerfilFragment : Fragment() {
         configurarBottomNavigation()
         configurarRecyclerMidias()
         carregarContadores()
+        carregarPartidas()
 
         // Perfil de terceiros: botão seguir. Meu perfil: botão editar.
         if (somenteLeitura) {
@@ -443,7 +445,75 @@ class PerfilFragment : Fragment() {
 
         return 0
     }
+    // =========================================================
+// PARTIDAS DO CLUBE
+// =========================================================
 
+    private fun carregarPartidas() {
+
+        // Só filtra por clubeUid (sem orderBy) para não exigir índice
+        // composto no Firestore; a ordenação é feita aqui no app.
+        db.collection("partidas")
+            .whereEqualTo("clubeUid", perfilUid)
+            .get()
+            .addOnSuccessListener { resultado ->
+
+                val b = _binding ?: return@addOnSuccessListener
+
+                val partidas = resultado.documents
+                    .mapNotNull { it.toObject(Partida::class.java) }
+                    .sortedByDescending { it.dataHoraMillis }
+
+                // Atleta (ou clube sem partidas): a seção continua escondida
+                if (partidas.isEmpty()) {
+                    b.txtPartidasTitle.visibility = View.GONE
+                    b.containerPartidas.visibility = View.GONE
+                    return@addOnSuccessListener
+                }
+
+                b.txtPartidasTitle.visibility = View.VISIBLE
+                b.containerPartidas.visibility = View.VISIBLE
+                b.containerPartidas.removeAllViews()
+
+                partidas.forEach { adicionarPartidaNoPerfil(it) }
+            }
+            .addOnFailureListener {
+                _binding?.let {
+                    it.txtPartidasTitle.visibility = View.GONE
+                    it.containerPartidas.visibility = View.GONE
+                }
+            }
+    }
+
+    private fun adicionarPartidaNoPerfil(partida: Partida) {
+
+        val b = _binding ?: return
+
+        val item = layoutInflater.inflate(
+            R.layout.item_partida,
+            b.containerPartidas,
+            false
+        )
+
+        // Mostra o placar quando existir; senão, só "A x B"
+        val gc = partida.golsCasa
+        val gv = partida.golsVisitante
+        item.findViewById<TextView>(R.id.txtTimes).text =
+            if (gc != null && gv != null)
+                "${partida.timeCasa} $gc x $gv ${partida.timeVisitante}"
+            else
+                "${partida.timeCasa} x ${partida.timeVisitante}"
+
+        item.findViewById<TextView>(R.id.txtLocal).text = partida.local
+
+        item.findViewById<TextView>(R.id.txtDataHora).text = getString(
+            R.string.data_hora_peneira,
+            partida.data,
+            partida.hora
+        )
+
+        b.containerPartidas.addView(item)
+    }
     // =========================================================
     // MÍDIAS
     // =========================================================

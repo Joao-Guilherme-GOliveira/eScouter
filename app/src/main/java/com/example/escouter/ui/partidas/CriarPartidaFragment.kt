@@ -1,4 +1,4 @@
-package com.example.escouter.ui.home
+package com.example.escouter.ui.partidas
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

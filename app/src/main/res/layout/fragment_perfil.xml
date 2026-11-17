@@ -298,7 +298,32 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+            <!-- ===================== SEÇÃO PARTIDAS ===================== -->
+            <TextView
+                android:id="@+id/txtPartidasTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:text="Partidas"
+                android:textColor="@color/txtPreto"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/cardInfo"
+                app:layout_constraintStart_toStartOf="parent" />
 
+            <LinearLayout
+                android:id="@+id/containerPartidas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/txtPartidasTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
             <!-- ===================== SEÇÃO MÍDIAS ===================== -->
             <TextView
                 android:id="@+id/txtMidiasTitle"
@@ -310,7 +335,7 @@
                 android:textColor="@color/txtPreto"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/cardInfo"
+                app:layout_constraintTop_toBottomOf="@id/containerPartidas"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView

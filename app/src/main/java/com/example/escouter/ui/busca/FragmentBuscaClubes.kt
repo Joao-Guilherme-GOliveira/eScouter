@@ -1,5 +1,4 @@
-
-package com.example.escouter.ui.home
+package com.example.escouter.ui.busca
 
 import android.os.Bundle
 import android.text.Editable

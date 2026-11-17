@@ -1,4 +1,4 @@
-package com.example.escouter.ui.home
+package com.example.escouter.ui.partidas
 
 import android.os.Bundle
 import android.view.LayoutInflater

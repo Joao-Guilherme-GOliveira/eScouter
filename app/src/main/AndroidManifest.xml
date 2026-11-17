@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".EscouterApplication"
+        android:name=".midia.EscouterApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -25,11 +25,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".VideoPlayerActivity"
+            android:name=".midia.VideoPlayerActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ImageViewerActivity"
+            android:name=".midia.ImageViewerActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

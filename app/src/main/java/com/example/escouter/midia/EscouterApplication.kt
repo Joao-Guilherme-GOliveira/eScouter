@@ -1,4 +1,4 @@
-package com.example.escouter
+package com.example.escouter.midia
 
 import android.app.Application
 import com.cloudinary.android.MediaManager

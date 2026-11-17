@@ -1,4 +1,4 @@
-package com.example.escouter
+package com.example.escouter.midia
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

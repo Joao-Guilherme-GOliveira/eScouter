@@ -1,4 +1,4 @@
-package com.example.escouter
+package com.example.escouter.midia
 
 import android.net.Uri
 import android.os.Bundle

@@ -1,11 +1,9 @@
-package com.example.escouter.ui.home
+package com.example.escouter.ui.perfil
 
+import android.content.Context
 import android.content.Intent
 import android.media.MediaMetadataRetriever
-import android.content.Context
 import android.net.Uri
-import java.io.File
-import com.example.escouter.data.FotoPerfilUploader
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
@@ -13,6 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.GridLayout
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -23,10 +25,12 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.escouter.R
+import com.example.escouter.data.FotoPerfilUploader
 import com.example.escouter.databinding.FragmentEditarPerfilClubeBinding
 import com.example.escouter.model.Midia
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.File
 
 class EditarPerfilClubeFragment : Fragment() {
 
@@ -870,17 +874,17 @@ class EditarPerfilClubeFragment : Fragment() {
             )
 
             val imgMidia =
-                item.findViewById<android.widget.ImageView>(
+                item.findViewById<ImageView>(
                     R.id.imgMidia
                 )
 
             val txtNome =
-                item.findViewById<android.widget.TextView>(
+                item.findViewById<TextView>(
                     R.id.txtNomeMidia
                 )
 
             val txtDuracao =
-                item.findViewById<android.widget.TextView>(
+                item.findViewById<TextView>(
                     R.id.txtDuracaoMidia
                 )
 
@@ -890,7 +894,7 @@ class EditarPerfilClubeFragment : Fragment() {
                 )
 
             val btnEditarNome =
-                item.findViewById<android.widget.ImageButton>(
+                item.findViewById<ImageButton>(
                     R.id.btnEditarNomeMidia
                 )
 
@@ -951,16 +955,16 @@ class EditarPerfilClubeFragment : Fragment() {
 
             // Configuração do GridLayout
             val params =
-                android.widget.GridLayout.LayoutParams()
+                GridLayout.LayoutParams()
 
             params.width = 0
 
             params.height =
-                android.widget.GridLayout.LayoutParams.WRAP_CONTENT
+                GridLayout.LayoutParams.WRAP_CONTENT
 
             params.columnSpec =
-                android.widget.GridLayout.spec(
-                    android.widget.GridLayout.UNDEFINED,
+                GridLayout.spec(
+                    GridLayout.UNDEFINED,
                     1f
                 )
 

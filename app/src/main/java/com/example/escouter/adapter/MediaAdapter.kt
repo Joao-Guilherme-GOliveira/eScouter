@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.escouter.ImageViewerActivity
+import com.example.escouter.midia.ImageViewerActivity
 import com.example.escouter.R
-import com.example.escouter.VideoPlayerActivity
+import com.example.escouter.midia.VideoPlayerActivity
 import com.example.escouter.model.Midia
 
 class MediaAdapter(
