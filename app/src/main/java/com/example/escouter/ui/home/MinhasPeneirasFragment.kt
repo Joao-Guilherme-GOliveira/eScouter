@@ -1,3 +1,4 @@
+
 package com.example.escouter.ui.home
 
 import android.os.Bundle
@@ -66,7 +67,6 @@ class MinhasPeneirasFragment : Fragment() {
     private fun configurarBottomNavigation() {
 
         bottomNavigation.setOnItemSelectedListener { item ->
-
             when (item.itemId) {
 
                 R.id.nav_inicio -> {
@@ -99,7 +99,6 @@ class MinhasPeneirasFragment : Fragment() {
     private fun carregarMinhasPeneiras() {
 
         val usuario = auth.currentUser
-
         if (usuario == null) {
 
             mostrarMensagem(
@@ -110,7 +109,6 @@ class MinhasPeneirasFragment : Fragment() {
         }
 
         val emailClube = usuario.email
-
         if (emailClube.isNullOrEmpty()) {
 
             mostrarMensagem(
@@ -222,7 +220,6 @@ class MinhasPeneirasFragment : Fragment() {
             peneira.local
 
         btnEditar.setOnClickListener {
-
             editarPeneira(
                 idPeneira,
                 peneira
@@ -230,7 +227,6 @@ class MinhasPeneirasFragment : Fragment() {
         }
 
         btnExcluir.setOnClickListener {
-
             confirmarExclusao(
                 idPeneira
             )
@@ -275,12 +271,45 @@ class MinhasPeneirasFragment : Fragment() {
         val editData =
             EditText(requireContext())
 
-        editData.hint =
-            "Data"
+        editData.hint = "Data (dd/MM/yyyy)"
+        editData.setText(peneira.data)
+        editData.isFocusable = false
+        editData.isClickable = true
 
-        editData.setText(
-            peneira.data
-        )
+        editData.setOnClickListener {
+            val calendario = java.util.Calendar.getInstance()
+            val partes = peneira.data.split("/")
+
+            if (partes.size == 3) {
+                try {
+                    calendario.set(
+                        partes[2].toInt(),
+                        partes[1].toInt() - 1,
+                        partes[0].toInt()
+                    )
+                } catch (_: NumberFormatException) {
+                    // Mantém a data atual caso a data salva seja inválida.
+                }
+            }
+
+            android.app.DatePickerDialog(
+                requireContext(),
+                R.style.PopupPeneira,
+                { _, ano, mes, dia ->
+                    val dataSelecionada = String.format(
+                        "%02d/%02d/%04d",
+                        dia,
+                        mes + 1,
+                        ano
+                    )
+
+                    editData.setText(dataSelecionada)
+                },
+                calendario.get(java.util.Calendar.YEAR),
+                calendario.get(java.util.Calendar.MONTH),
+                calendario.get(java.util.Calendar.DAY_OF_MONTH)
+            ).show()
+        }
 
         val editHora =
             EditText(requireContext())
@@ -302,24 +331,13 @@ class MinhasPeneirasFragment : Fragment() {
             peneira.local
         )
 
-        layout.addView(
-            editNomeTime
-        )
-
-        layout.addView(
-            editData
-        )
-
-        layout.addView(
-            editHora
-        )
-
-        layout.addView(
-            editLocal
-        )
+        layout.addView(editNomeTime)
+        layout.addView(editData)
+        layout.addView(editHora)
+        layout.addView(editLocal)
 
         val dialog =
-            AlertDialog.Builder(requireContext())
+            AlertDialog.Builder(requireContext(), R.style.PopupPeneira)
                 .setTitle("Editar peneira")
                 .setView(layout)
                 .setNegativeButton(
@@ -420,7 +438,7 @@ class MinhasPeneirasFragment : Fragment() {
         idPeneira: String
     ) {
 
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(), R.style.PopupPeneira)
             .setTitle("Excluir peneira")
             .setMessage(
                 "Tem certeza que deseja excluir esta peneira?"
@@ -432,7 +450,6 @@ class MinhasPeneirasFragment : Fragment() {
             .setPositiveButton(
                 "Excluir"
             ) { _, _ ->
-
                 excluirPeneira(
                     idPeneira
                 )

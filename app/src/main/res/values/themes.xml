@@ -1,9 +1,18 @@
+
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <!-- Tema principal -->
     <style name="Base.Theme.Escouter" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.Escouter" parent="Base.Theme.Escouter" />
+
+    <!-- Aparência dos pop-ups -->
+    <style name="PopupPeneira" parent="Theme.Material3.DayNight.Dialog.Alert">
+        <item name="colorPrimary">#23357A</item>
+        <item name="colorSecondary">#23357A</item>
+        <item name="android:colorAccent">#23357A</item>
+    </style>
+
 </resources>

@@ -1,3 +1,4 @@
+
 package com.example.escouter.ui.home
 
 import android.app.AlertDialog
@@ -78,7 +79,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
         }
 
         val uid = auth.currentUser?.uid
-
         if (uid == null) {
             binding.edtNomeTime.setText("")
             return
@@ -88,7 +88,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
             .document(uid)
             .get()
             .addOnSuccessListener { documento ->
-
                 val nomeClube =
                     documento.getString("nome") ?: ""
 
@@ -106,7 +105,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
     private fun configurarDatePicker() {
 
         binding.edtDataPeneira.setOnClickListener {
-
             val calendario = Calendar.getInstance()
 
             val ano = calendario.get(Calendar.YEAR)
@@ -115,8 +113,8 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
             DatePickerDialog(
                 requireContext(),
+                R.style.PopupPeneira,
                 { _, anoSelecionado, mesSelecionado, diaSelecionado ->
-
                     val data = String.format(
                         "%02d/%02d/%04d",
                         diaSelecionado,
@@ -140,7 +138,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
     private fun configurarTimePicker() {
 
         binding.edtHoraPeneira.setOnClickListener {
-
             val calendario = Calendar.getInstance()
 
             val horaAtual =
@@ -166,11 +163,13 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
             timePicker.hour = horaAtual
             timePicker.minute = minutoAtual
 
-            AlertDialog.Builder(requireContext())
+            AlertDialog.Builder(
+                requireContext(),
+                R.style.PopupPeneira
+            )
                 .setTitle("Selecione o horário da peneira")
                 .setView(view)
                 .setPositiveButton("OK") { _, _ ->
-
                     val hora = String.format(
                         "%02d:%02d",
                         timePicker.hour,
@@ -265,7 +264,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
         // =====================================================
 
         val usuario = auth.currentUser
-
         if (usuario == null) {
 
             Toast.makeText(
