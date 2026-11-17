@@ -77,11 +77,32 @@
         <TextView
             style="@style/FieldLabel"
             android:text="Local da partida" />
+
+        <Spinner
+            android:id="@+id/spinnerLocal"
+            style="@style/Spinnerstyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input"
+            android:paddingHorizontal="12dp"
+            android:spinnerMode="dropdown" />
+
         <EditText
-            android:id="@+id/edtLocalPartida"
+            android:id="@+id/edtLocalNovo"
             style="@style/FieldInput"
+            android:layout_marginTop="8dp"
             android:hint="ex: Ifes Vitória, Vitória"
-            android:inputType="text" />
+            android:inputType="textCapWords"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtLocalInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Escolha um local já cadastrado ou adicione um novo"
+            android:textColor="@color/txtCinza"
+            android:textSize="11sp" />
 
         <Button
             android:id="@+id/btnSalvarPartida"
