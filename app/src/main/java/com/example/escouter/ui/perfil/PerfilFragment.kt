@@ -21,6 +21,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
 import com.example.escouter.model.Partida
 class PerfilFragment : Fragment() {
@@ -489,6 +490,7 @@ class PerfilFragment : Fragment() {
 
         val b = _binding ?: return
 
+
         val item = layoutInflater.inflate(
             R.layout.item_partida,
             b.containerPartidas,
@@ -512,7 +514,37 @@ class PerfilFragment : Fragment() {
             partida.hora
         )
 
+        val btnExcluir = item.findViewById<TextView>(R.id.btnExcluirPartida)
+        if (!somenteLeitura) {
+            btnExcluir.visibility = View.VISIBLE
+            btnExcluir.setOnClickListener { confirmaExclui(partida) }
+        }
+
         b.containerPartidas.addView(item)
+
+    }
+    private fun confirmaExclui(partida: Partida) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Excluir partida")
+            .setMessage("Deseja excluir ${partida.timeCasa} x ${partida.timeVisitante}?")
+            .setPositiveButton("Excluir") { _, _ -> excluirPartida(partida) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun excluirPartida(partida: Partida) {
+        if (partida.id.isBlank()) return
+
+        db.collection("partidas").document(partida.id).delete()
+            .addOnSuccessListener {
+                if (_binding == null) return@addOnSuccessListener
+                Toast.makeText(requireContext(), "Partida excluída", Toast.LENGTH_SHORT).show()
+                carregarPartidas()
+            }
+            .addOnFailureListener {
+                if (_binding == null) return@addOnFailureListener
+                Toast.makeText(requireContext(), "Erro ao excluir: ${it.message}", Toast.LENGTH_LONG).show()
+            }
     }
     // =========================================================
     // MÍDIAS

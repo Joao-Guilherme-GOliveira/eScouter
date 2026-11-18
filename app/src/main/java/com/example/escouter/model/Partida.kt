@@ -1,6 +1,8 @@
 package com.example.escouter.model
 
+import com.google.firebase.firestore.DocumentId
 data class Partida(
+    @DocumentId var id: String = "",
     val timeCasa: String = "",
     val timeVisitante: String = "",
     val data: String = "",
