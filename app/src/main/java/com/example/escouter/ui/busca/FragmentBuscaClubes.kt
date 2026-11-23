@@ -98,6 +98,11 @@ class FragmentBuscaClubes : Fragment() {
 
             when (item.itemId) {
 
+                R.id.nav_notif -> {
+                    findNavController().navigate(R.id.notificacoesFragment)
+                    true
+                }
+
                 R.id.nav_inicio -> {
                     findNavController().navigate(
                         R.id.homeFragment

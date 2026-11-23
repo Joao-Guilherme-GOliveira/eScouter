@@ -229,6 +229,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             when (item.itemId) {
 
+                R.id.nav_notif -> {
+                    findNavController().navigate(R.id.notificacoesFragment)
+                    true
+                }
+
                 R.id.nav_inicio -> {
                     true
                 }

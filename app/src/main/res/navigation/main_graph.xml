@@ -151,6 +151,12 @@
         </fragment>
 
         <fragment
+            android:id="@+id/notificacoesFragment"
+            android:name="com.example.escouter.ui.notificacao.NotificacoesFragment"
+            android:label="NotificacoesFragment"
+            tools:layout="@layout/fragment_notificacoes" />
+
+        <fragment
             android:id="@+id/fragmentBuscaTodos"
             android:name="com.example.escouter.ui.busca.FragmentBuscaTodos"
             android:label="FragmentBuscaTodos">
