@@ -6,14 +6,14 @@ Aplicativo que conecta **atletas** e **clubes/olheiros**
 
 ## Funcionalidades
 
--Cadastro de Usuários(Clube e atletas)
--Login e Segurança: 
--Inscrever-se/Cancelar inscrição em uma peneira
--Criar peneiras
--Editar/Excluir peneiras
--Editar/Excluir perfil
--Filtrar clube/atletas
--Cadastro de partidas
+- Cadastro de Usuários(Clube e atletas)
+- Login e Segurança: 
+- Inscrever-se/Cancelar inscrição em uma peneira
+- Criar peneiras
+- Editar/Excluir peneiras
+- Editar/Excluir perfil
+- Filtrar clube/atletas
+- Cadastro de partidas
 
 
 ## Tecnologias
