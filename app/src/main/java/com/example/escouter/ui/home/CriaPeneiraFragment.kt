@@ -113,7 +113,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
             DatePickerDialog(
                 requireContext(),
-                R.style.PopupPeneira,
                 { _, anoSelecionado, mesSelecionado, diaSelecionado ->
                     val data = String.format(
                         "%02d/%02d/%04d",
@@ -165,7 +164,6 @@ class CriarPeneiraFragment : BottomSheetDialogFragment() {
 
             AlertDialog.Builder(
                 requireContext(),
-                R.style.PopupPeneira
             )
                 .setTitle("Selecione o horário da peneira")
                 .setView(view)

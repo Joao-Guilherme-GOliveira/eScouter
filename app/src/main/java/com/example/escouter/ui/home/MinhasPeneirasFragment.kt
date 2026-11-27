@@ -469,7 +469,6 @@ class MinhasPeneirasFragment : Fragment() {
 
             android.app.DatePickerDialog(
                 requireContext(),
-                R.style.PopupPeneira,
                 { _, ano, mes, dia ->
                     val dataSelecionada = String.format(
                         "%02d/%02d/%04d",
@@ -512,7 +511,7 @@ class MinhasPeneirasFragment : Fragment() {
         layout.addView(editLocal)
 
         val dialog =
-            AlertDialog.Builder(requireContext(), R.style.PopupPeneira)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Editar peneira")
                 .setView(layout)
                 .setNegativeButton(
@@ -613,7 +612,7 @@ class MinhasPeneirasFragment : Fragment() {
         idPeneira: String
     ) {
 
-        AlertDialog.Builder(requireContext(), R.style.PopupPeneira)
+        AlertDialog.Builder(requireContext())
             .setTitle("Excluir peneira")
             .setMessage(
                 "Tem certeza que deseja excluir esta peneira?"
