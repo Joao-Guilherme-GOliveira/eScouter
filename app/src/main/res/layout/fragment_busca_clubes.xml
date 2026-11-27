@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Buscar Clubes"
+                android:text="@string/buscar_clubes"
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:textColor="@color/txtPreto"
@@ -49,7 +49,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_buscar"
-                    android:contentDescription="Buscar" />
+                    android:contentDescription="@string/cd_buscar" />
 
                 <EditText
                     android:id="@+id/edtBusca"
@@ -58,7 +58,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:background="@android:color/transparent"
-                    android:hint="Buscar clube"
+                    android:hint="@string/hint_buscar_clube"
                     android:textSize="16sp"
                     android:textColor="@color/txtPreto"
                     android:textColorHint="@color/txtCinzaClaro"
@@ -79,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Todos"
+                    android:text="@string/todos"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/pontuacoes" />
@@ -90,7 +90,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    android:text="Atletas"
+                    android:text="@string/atletas"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/pontuacoes" />
@@ -101,7 +101,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    android:text="Clubes"
+                    android:text="@string/clubes"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/cardPeneira" />
@@ -113,7 +113,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clubes encontrados"
+                android:text="@string/clubes_encontrados"
                 android:textSize="21sp"
                 android:textStyle="bold"
                 android:textColor="@color/txtPreto"

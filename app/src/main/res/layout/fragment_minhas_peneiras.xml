@@ -34,7 +34,7 @@
                 android:id="@+id/txtTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minhas Peneiras"
+                android:text="@string/minhas_peneiras"
                 android:textColor="@color/txtPreto"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="Você ainda não criou nenhuma peneira."
+                android:text="@string/voce_ainda_nao_criou_nenhuma_peneira"
                 android:textColor="@color/txtCinza"
                 android:textSize="15sp" />
 

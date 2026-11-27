@@ -51,8 +51,8 @@
         android:layout_gravity="end"
         android:layout_marginTop="6dp"
         android:padding="4dp"
-        android:text="Excluir"
-        android:textColor="#D32F2F"
+        android:text="@string/excluir"
+        android:textColor="@color/vermelho_excluir"
         android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="gone" />

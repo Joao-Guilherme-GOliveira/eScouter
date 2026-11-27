@@ -19,4 +19,32 @@
     <color name="primary_blue">#1E3FCB</color>
     <color name="icon_blue">#2A4BD7</color>
 
+    <!-- Cores extraídas dos layouts/drawables/styles -->
+    <color name="azul_botao">#1B2A6B</color>
+    <color name="categoria_borda">#E3DDF2</color>
+    <color name="categoria_fundo">#F7F5FC</color>
+    <color name="categoria_selecionada">#1E88E5</color>
+    <color name="azul_escuro">#2F3FA8</color>
+    <color name="cinza_borda_item">#D5D5D5</color>
+    <color name="azul_partida_destaque">#123D9B</color>
+    <color name="cinza_partida">#E2E2E4</color>
+    <color name="cinza_spinner">#777777</color>
+    <color name="txtCinzaAzulado">#5A5F73</color>
+    <color name="cinza_divisor">#E5E7EB</color>
+    <color name="cinza_medio">#9E9E9E</color>
+    <color name="cinza_claro">#CCCCCC</color>
+    <color name="cinza_escuro">#1F1F1F</color>
+    <color name="cinza_texto_secundario">#666666</color>
+    <color name="preto_suave">#1A1A1A</color>
+    <color name="azul_link">#304CB2</color>
+    <color name="azul_item_peneira">#23357A</color>
+    <color name="vermelho_excluir">#D32F2F</color>
+    <color name="texto_spinner">#1C1C1E</color>
+    <color name="texto_input">#20222B</color>
+    <color name="texto_label">#33374A</color>
+    <color name="hint_input">#9A9DAD</color>
+    <color name="sombra_icone">#44000000</color>
+    <color name="branco_translucido">#33FFFFFF</color>
+    <color name="launcher_verde">#3DDC84</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

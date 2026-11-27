@@ -67,7 +67,7 @@
                     android:id="@+id/txtPeneira"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Próxima Peneira"
+                    android:text="@string/proxima_peneira"
                     android:textColor="@color/txtBranco"
                     android:textSize="19sp"
                     android:textStyle="bold"
@@ -112,7 +112,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_button_primary"
                 android:elevation="0dp"
-                android:text="+ Criar Peneira"
+                android:text="@string/criar_peneira"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="14sp"
@@ -126,7 +126,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_button_primary"
-                android:text="Minhas Peneiras"
+                android:text="@string/minhas_peneiras"
                 android:textAllCaps="false"
                 android:textColor="@color/branco"
                 android:textSize="15sp"
@@ -139,7 +139,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_button_primary"
-                android:text="Inscrever-se na Peneira"
+                android:text="@string/inscrever_se_na_peneira"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="15sp" />
@@ -154,7 +154,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Destaques da Semana"
+                android:text="@string/destaques_da_semana"
                 android:textColor="@color/txtPreto"
                 android:textSize="19sp"
                 android:textStyle="bold" />
@@ -164,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Ainda não há atletas em destaque."
+                android:text="@string/ainda_nao_ha_atletas_em_destaque"
                 android:textColor="@color/txtCinza"
                 android:textSize="13sp"
                 android:visibility="gone" />
@@ -345,7 +345,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Próximas Partidas"
+                android:text="@string/proximas_partidas"
                 android:textColor="@color/txtPreto"
                 android:textSize="19sp"
                 android:textStyle="bold" />
@@ -379,7 +379,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Partidas Recentes"
+                android:text="@string/partidas_recentes"
                 android:textColor="@color/txtPreto"
                 android:textSize="19sp"
                 android:textStyle="bold" />

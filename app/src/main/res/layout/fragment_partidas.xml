@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Partidas"
+                android:text="@string/partidas"
                 android:textColor="@color/txtPreto"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Acompanhe os próximos jogos"
+                android:text="@string/acompanhe_os_proximos_jogos"
                 android:textColor="@color/txtCinza"
                 android:textSize="14sp" />
 
@@ -61,7 +61,7 @@
                     android:id="@+id/txtTituloProxima"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Próxima Partida"
+                    android:text="@string/proxima_partida"
                     android:textColor="@color/txtBranco"
                     android:textSize="19sp"
                     android:textStyle="bold"
@@ -108,7 +108,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_button_primary"
                 android:elevation="0dp"
-                android:text="+ Cadastrar Partida"
+                android:text="@string/cadastrar_partida"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="14sp"
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="Carregando partidas..."
+                android:text="@string/carregando_partidas"
                 android:textColor="@color/txtCinza"
                 android:textSize="15sp" />
 
@@ -133,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Próximas Partidas"
+                android:text="@string/proximas_partidas"
                 android:textColor="@color/txtPreto"
                 android:textSize="19sp"
                 android:textStyle="bold"

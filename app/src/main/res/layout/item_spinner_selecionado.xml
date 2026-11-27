@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:textSize="15sp"
-    android:textColor="#1C1C1E"
+    android:textColor="@color/texto_spinner"
     android:background="@android:color/transparent" />

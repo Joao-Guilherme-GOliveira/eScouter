@@ -29,7 +29,7 @@
                 android:layout_width="180dp"
                 android:layout_height="90dp"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="Logo eScouter"
+                android:contentDescription="@string/cd_logo_escouter"
                 android:src="@drawable/logo" />
 
             <!-- Título e progresso -->
@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="CRIAR NOVA CONTA"
+                    android:text="@string/criar_nova_conta"
                     android:textColor="@color/txtPreto"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -53,7 +53,7 @@
                     android:id="@+id/txtProgresso"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Passo 1 de 3"
+                    android:text="@string/passo_1_de_3"
                     android:textColor="@color/cardPeneira"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -85,7 +85,7 @@
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="24dp"
-                    android:text="Tipo de Usuário" />
+                    android:text="@string/tipo_de_usuario" />
 
                 <Spinner
                     android:id="@+id/spinnerTipoUsuario"
@@ -101,24 +101,24 @@
                     android:id="@+id/lblNome"
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Nome" />
+                    android:text="@string/nome" />
 
                 <EditText
                     android:id="@+id/edtNome"
                     style="@style/FieldInput"
-                    android:hint="Nome Completo"
+                    android:hint="@string/hint_nome_completo"
                     android:inputType="textPersonName" />
 
                 <!-- Email -->
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Email" />
+                    android:text="@string/email" />
 
                 <EditText
                     android:id="@+id/edtEmail"
                     style="@style/FieldInput"
-                    android:hint="Email"
+                    android:hint="@string/hint_email"
                     android:inputType="textEmailAddress" />
 
                 <!-- Próximo -->
@@ -129,7 +129,7 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="20dp"
                     android:elevation="0dp"
-                    android:text="Próximo Passo →"
+                    android:text="@string/proximo_passo"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -150,14 +150,14 @@
                     android:id="@+id/lblDataNascimento"
                     style="@style/FieldLabel"
                     android:layout_marginTop="24dp"
-                    android:text="Data de Nascimento" />
+                    android:text="@string/data_de_nascimento" />
 
                 <EditText
                     android:id="@+id/edtDataNascimento"
                     style="@style/FieldInput"
                     android:clickable="true"
                     android:focusable="false"
-                    android:hint="00/00/0000"
+                    android:hint="@string/hint_n_00_00_0000"
                     android:inputType="date" />
 
                 <!-- Documento: CPF (atleta) / CNPJ (clube) -->
@@ -165,12 +165,12 @@
                     android:id="@+id/lblDocumento"
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="CPF" />
+                    android:text="@string/cpf" />
 
                 <EditText
                     android:id="@+id/edtDocumento"
                     style="@style/FieldInput"
-                    android:hint="Somente números"
+                    android:hint="@string/hint_somente_numeros"
                     android:inputType="number"
                     android:maxLength="14" />
 
@@ -179,7 +179,7 @@
                     android:id="@+id/lblPosicao"
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Posição"
+                    android:text="@string/posicao"
                     android:visibility="gone" />
 
                 <Spinner
@@ -196,7 +196,7 @@
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Estado" />
+                    android:text="@string/estado" />
 
                 <Spinner
                     android:id="@+id/spinnerEstado"
@@ -211,13 +211,13 @@
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Cidade" />
+                    android:text="@string/cidade" />
 
                 <AutoCompleteTextView
                     android:id="@+id/edtCidade"
                     style="@style/FieldInput"
                     android:enabled="false"
-                    android:hint="Selecione um estado primeiro"
+                    android:hint="@string/hint_selecione_um_estado_primeiro"
                     android:inputType="text"
                     android:completionThreshold="1"
                     android:dropDownHeight="220dp" />
@@ -238,7 +238,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_button_primary"
                         android:elevation="0dp"
-                        android:text="← Voltar"
+                        android:text="@string/voltar"
                         android:textAllCaps="false"
                         android:textColor="@color/txtBranco"
                         android:textSize="15sp" />
@@ -252,7 +252,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_button_primary"
                         android:elevation="0dp"
-                        android:text="Próximo →"
+                        android:text="@string/proximo"
                         android:textAllCaps="false"
                         android:textColor="@color/txtBranco"
                         android:textSize="15sp"
@@ -277,24 +277,24 @@
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="24dp"
-                    android:text="Senha" />
+                    android:text="@string/senha" />
 
                 <EditText
                     android:id="@+id/edtSenha"
                     style="@style/FieldInput"
-                    android:hint="Senha"
+                    android:hint="@string/hint_senha"
                     android:inputType="textPassword" />
 
                 <!-- Confirmar senha -->
                 <TextView
                     style="@style/FieldLabel"
                     android:layout_marginTop="14dp"
-                    android:text="Confirmar Senha" />
+                    android:text="@string/confirmar_senha" />
 
                 <EditText
                     android:id="@+id/edtConfirmarSenha"
                     style="@style/FieldInput"
-                    android:hint="Conf. Senha"
+                    android:hint="@string/hint_conf_senha"
                     android:inputType="textPassword" />
 
                 <!-- Botões -->
@@ -313,7 +313,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_button_primary"
                         android:elevation="0dp"
-                        android:text="← Voltar"
+                        android:text="@string/voltar"
                         android:textAllCaps="false"
                         android:textColor="@color/txtBranco"
                         android:textSize="15sp" />
@@ -327,7 +327,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/bg_button_primary"
                         android:elevation="0dp"
-                        android:text="Criar Conta"
+                        android:text="@string/criar_conta"
                         android:textAllCaps="false"
                         android:textColor="@color/txtBranco"
                         android:textSize="15sp"
@@ -346,8 +346,8 @@
                 android:layout_marginTop="20dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="Já possui uma conta? Faça login"
-                android:textColor="#5A5F73"
+                android:text="@string/ja_possui_uma_conta_faca_login"
+                android:textColor="@color/txtCinzaAzulado"
                 android:textSize="16sp" />
 
         </LinearLayout>

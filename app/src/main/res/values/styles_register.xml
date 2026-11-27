@@ -6,7 +6,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">14dp</item>
         <item name="android:layout_marginBottom">6dp</item>
-        <item name="android:textColor">#33374A</item>
+        <item name="android:textColor">@color/texto_label</item>
         <item name="android:textSize">13sp</item>
     </style>
 
@@ -16,8 +16,8 @@
         <item name="android:background">@drawable/bg_input</item>
         <item name="android:paddingHorizontal">12dp</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColorHint">#9A9DAD</item>
-        <item name="android:textColor">#20222B</item>
+        <item name="android:textColorHint">@color/hint_input</item>
+        <item name="android:textColor">@color/texto_input</item>
     </style>
 
     <style name="Spinnerstyle">

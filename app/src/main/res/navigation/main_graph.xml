@@ -111,7 +111,7 @@
         <fragment
             android:id="@+id/minhasPeneirasFragment"
             android:name="com.example.escouter.ui.home.MinhasPeneirasFragment"
-            android:label="Minhas Peneiras"
+            android:label="@string/minhas_peneiras"
             tools:layout="@layout/fragment_minhas_peneiras" />
 
         <!-- PARTIDAS (NOVO) -->

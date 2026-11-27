@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Busca Todos"
+                android:text="@string/busca_todos"
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:textColor="@color/txtPreto"
@@ -48,7 +48,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_buscar"
-                    android:contentDescription="Buscar" />
+                    android:contentDescription="@string/cd_buscar" />
 
                 <EditText
                     android:id="@+id/edtBusca"
@@ -57,7 +57,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:background="@android:color/transparent"
-                    android:hint="Buscar atleta ou clube"
+                    android:hint="@string/hint_buscar_atleta_ou_clube"
                     android:textSize="16sp"
                     android:textColor="@color/txtPreto"
                     android:textColorHint="@color/txtCinzaClaro"
@@ -77,7 +77,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Todos"
+                    android:text="@string/todos"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/cardPeneira" />
@@ -88,7 +88,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    android:text="Atletas"
+                    android:text="@string/atletas"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/pontuacoes" />
@@ -99,7 +99,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    android:text="Clubes"
+                    android:text="@string/clubes"
                     android:textAllCaps="false"
                     android:textColor="@color/txtBranco"
                     android:backgroundTint="@color/pontuacoes" />
@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categorias"
+                android:text="@string/categorias"
                 android:textSize="21sp"
                 android:textStyle="bold"
                 android:textColor="@color/txtPreto"
@@ -149,7 +149,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Defensores"
+                            android:text="@string/defensores"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/txtPreto"
@@ -178,7 +178,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Meio-campo"
+                            android:text="@string/meio_campo"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/txtPreto"
@@ -215,7 +215,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Atacantes"
+                            android:text="@string/atacantes"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/txtPreto"
@@ -244,7 +244,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Goleiros"
+                            android:text="@string/goleiros"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/txtPreto"
@@ -259,7 +259,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Em Destaque"
+                android:text="@string/em_destaque"
                 android:textSize="21sp"
                 android:textStyle="bold"
                 android:textColor="@color/txtPreto"

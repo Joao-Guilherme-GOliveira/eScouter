@@ -17,7 +17,7 @@
             android:layout_height="85dp"
             android:scaleType="centerCrop"
             android:background="@drawable/bg_midia"
-            android:contentDescription="Mídia do atleta" />
+            android:contentDescription="@string/cd_midia_do_atleta" />
 
         <TextView
             android:id="@+id/txtNomeMidia"
@@ -55,7 +55,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="4dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Editar nome da mídia"
+        android:contentDescription="@string/cd_editar_nome_da_midia"
         android:src="@android:drawable/ic_menu_edit" />
 
 </FrameLayout>

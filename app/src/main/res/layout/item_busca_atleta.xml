@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="end"
-        android:text="Ver Perfil Completo"
+        android:text="@string/ver_perfil_completo"
         android:textAllCaps="false"
         android:textColor="@color/txtBranco"
         android:backgroundTint="@color/cardPeneira" />

@@ -29,7 +29,7 @@
                 android:id="@+id/txtTitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Editar perfil"
+                android:text="@string/editar_perfil"
                 android:textColor="@color/txtPreto"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Atualize as informações do seu clube"
+                android:text="@string/atualize_as_informacoes_do_seu_clube"
                 android:textColor="@color/txtCinza"
                 android:textSize="14sp" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="110dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
-                android:contentDescription="Logo do clube"
+                android:contentDescription="@string/cd_logo_do_clube"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_perfil"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:text="Alterar logo"
+                android:text="@string/alterar_logo"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="12sp"
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:hint="Nome do clube"
+                android:hint="@string/hint_nome_do_clube"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="CNPJ"
+                android:hint="@string/hint_cnpj"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Cidade"
+                android:hint="@string/hint_cidade"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Estado"
+                android:hint="@string/hint_estado"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -154,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Descrição do clube"
+                android:hint="@string/hint_descricao_do_clube"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -174,7 +174,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Telefone"
+                android:hint="@string/hint_telefone"
                 android:textColorHint="@color/txtPreto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -195,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Mídias"
+                android:text="@string/title_midias"
                 android:textColor="@color/txtPreto"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -204,7 +204,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Adicione vídeos ou outras mídias para mostrar seu clube."
+                android:text="@string/adicione_videos_ou_outras_midias_para_mostrar_seu_2"
                 android:textColor="@color/txtCinza"
                 android:textSize="12sp" />
 
@@ -214,7 +214,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="14dp"
                 android:backgroundTint="@color/cardPeneira"
-                android:text="+  Adicionar mídia"
+                android:text="@string/adicionar_midia"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="13sp"
@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/cardPeneira"
-                android:text="Excluir selecionadas"
+                android:text="@string/excluir_selecionadas"
                 android:textColor="@color/txtBranco"
                 android:textSize="13sp"
                 android:visibility="gone" />
@@ -246,7 +246,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="28dp"
-                android:text="Salvar alterações"
+                android:text="@string/salvar_alteracoes"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="14sp"
@@ -267,7 +267,7 @@
                 android:minHeight="48dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Cancelar"
+                android:text="@string/cancelar"
                 android:textColor="@color/cardPeneira"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -286,7 +286,7 @@
                 android:minHeight="48dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Sair da conta"
+                android:text="@string/sair_da_conta"
                 android:textColor="@color/cardPeneira"
                 android:textSize="14sp"
                 android:textStyle="bold" />

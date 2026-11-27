@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cadastrar partida"
+            android:text="@string/cadastrar_partida_2"
             android:textColor="@color/preto"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -25,38 +25,38 @@
         <!-- time da casa -->
         <TextView
             style="@style/FieldLabel"
-            android:text="Time da casa" />
+            android:text="@string/time_da_casa" />
         <EditText
             android:id="@+id/edtTimeCasa"
             style="@style/FieldInput"
-            android:hint="Nome do seu clube"
+            android:hint="@string/hint_nome_do_seu_clube"
             android:inputType="text" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Preenchido automaticamente com o nome do seu clube"
+            android:text="@string/preenchido_automaticamente_com_o_nome_do_seu_clube"
             android:textColor="@color/txtCinza"
             android:textSize="11sp" />
 
         <!-- time visitante -->
         <TextView
             style="@style/FieldLabel"
-            android:text="Time visitante" />
+            android:text="@string/time_visitante" />
         <EditText
             android:id="@+id/edtTimeVisitante"
             style="@style/FieldInput"
-            android:hint="ex: Estrela FC - Sub-19"
+            android:hint="@string/hint_ex_estrela_fc_sub_19"
             android:inputType="textCapWords" />
 
         <!-- data -->
         <TextView
             style="@style/FieldLabel"
-            android:text="Data da partida" />
+            android:text="@string/data_da_partida" />
         <EditText
             android:id="@+id/edtDataPartida"
             style="@style/FieldInput"
-            android:hint="Selecione a data"
+            android:hint="@string/hint_selecione_a_data"
             android:focusable="false"
             android:clickable="true"
             android:inputType="none" />
@@ -64,11 +64,11 @@
         <!-- hora -->
         <TextView
             style="@style/FieldLabel"
-            android:text="Horário da partida" />
+            android:text="@string/horario_da_partida" />
         <EditText
             android:id="@+id/edtHoraPartida"
             style="@style/FieldInput"
-            android:hint="Selecione o horário"
+            android:hint="@string/hint_selecione_o_horario"
             android:focusable="false"
             android:clickable="true"
             android:inputType="none" />
@@ -76,7 +76,7 @@
         <!-- local -->
         <TextView
             style="@style/FieldLabel"
-            android:text="Local da partida" />
+            android:text="@string/local_da_partida" />
 
         <Spinner
             android:id="@+id/spinnerLocal"
@@ -91,7 +91,7 @@
             android:id="@+id/edtLocalNovo"
             style="@style/FieldInput"
             android:layout_marginTop="8dp"
-            android:hint="ex: Ifes Vitória, Vitória"
+            android:hint="@string/hint_ex_ifes_vitoria_vitoria"
             android:inputType="textCapWords"
             android:visibility="gone" />
 
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Escolha um local já cadastrado ou adicione um novo"
+            android:text="@string/escolha_um_local_ja_cadastrado_ou_adicione_um"
             android:textColor="@color/txtCinza"
             android:textSize="11sp" />
 
@@ -112,7 +112,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_button_primary"
             android:elevation="0dp"
-            android:text="Salvar partida"
+            android:text="@string/salvar_partida"
             android:textAllCaps="false"
             android:textColor="@color/branco"
             android:textSize="16sp" />

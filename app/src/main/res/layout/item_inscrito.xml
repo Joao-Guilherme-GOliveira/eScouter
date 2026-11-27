@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:text="Ver perfil"
+        android:text="@string/ver_perfil"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/cardPeneira"

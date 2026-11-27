@@ -38,7 +38,7 @@
                 android:id="@+id/txtTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Editar perfil"
+                android:text="@string/editar_perfil"
                 android:textColor="@color/txtPreto"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Atualize suas informações e deixe seu perfil completo."
+                android:text="@string/atualize_suas_informacoes_e_deixe_seu_perfil_completo"
                 android:textColor="@color/txtCinzaClaro"
                 android:textSize="13sp" />
 
@@ -62,7 +62,7 @@
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:strokeColor="#E5E7EB"
+            app:strokeColor="@color/cinza_divisor"
             app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -79,7 +79,7 @@
                         android:layout_height="115dp"
                         android:background="@drawable/bg_foto_perfil"
                         android:clipToOutline="true"
-                        android:contentDescription="Foto de perfil"
+                        android:contentDescription="@string/cd_foto_de_perfil"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_perfil" />
 
@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Alterar foto"
+                        android:text="@string/alterar_foto"
                         android:textAllCaps="false"
                         android:textColor="@color/txtBranco"
                         android:textSize="12sp"
@@ -109,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Dados pessoais"
+                android:text="@string/dados_pessoais"
                 android:textColor="@color/txtPreto"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Informações básicas do seu perfil"
+                android:text="@string/informacoes_basicas_do_seu_perfil"
                 android:textColor="@color/txtCinzaClaro"
                 android:textSize="12sp" />
 
@@ -129,7 +129,7 @@
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/cinza_divisor"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -144,7 +144,7 @@
                         android:id="@+id/txtNome"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Nome"
+                        android:text="@string/nome"
                         android:textColor="@color/txtPreto"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -156,7 +156,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Email"
+                        android:text="@string/email"
                         android:textColor="@color/txtCinzaClaro"
                         android:textSize="12sp" />
 
@@ -167,7 +167,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Cidade - Estado"
+                        android:text="@string/cidade_estado"
                         android:textColor="@color/txtCinzaClaro"
                         android:textSize="12sp" />
 
@@ -178,7 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Data de nascimento"
+                        android:text="@string/data_de_nascimento_2"
                         android:textColor="@color/txtCinzaClaro"
                         android:textSize="12sp" />
 
@@ -195,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Informações do atleta"
+                android:text="@string/informacoes_do_atleta"
                 android:textColor="@color/txtPreto"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -204,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Esses dados ajudam clubes a conhecerem você."
+                android:text="@string/esses_dados_ajudam_clubes_a_conhecerem_voce"
                 android:textColor="@color/txtCinzaClaro"
                 android:textSize="12sp" />
 
@@ -216,7 +216,7 @@
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/cinza_divisor"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -230,7 +230,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Posição"
+                        android:hint="@string/hint_posicao"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -254,7 +254,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Peso (kg)"
+                        android:hint="@string/hint_peso_kg"
                         app:hintTextColor="@color/txtPreto"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
@@ -279,7 +279,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Altura (cm)"
+                        android:hint="@string/hint_altura_cm"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -304,7 +304,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Experiência"
+                        android:hint="@string/hint_experiencia"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -328,7 +328,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Sobre você"
+                        android:hint="@string/hint_sobre_voce"
                         android:textColorHint="@color/txtPreto"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="12dp"
@@ -360,7 +360,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Mídias"
+                android:text="@string/title_midias"
                 android:textColor="@color/txtPreto"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -369,7 +369,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Adicione vídeos ou outras mídias para mostrar seu desempenho."
+                android:text="@string/adicione_videos_ou_outras_midias_para_mostrar_seu"
                 android:textColor="@color/txtCinzaClaro"
                 android:textSize="12sp" />
 
@@ -379,7 +379,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="14dp"
                 android:backgroundTint="@color/cardPeneira"
-                android:text="+  Adicionar mídia"
+                android:text="@string/adicionar_midia"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="13sp"
@@ -389,7 +389,7 @@
                 android:id="@+id/btnExcluirSelecionadas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Excluir selecionadas"
+                android:text="@string/excluir_selecionadas"
                 android:visibility="gone"
                 android:backgroundTint="@color/cardPeneira"
                 android:textColor="@color/txtBranco"
@@ -416,7 +416,7 @@
                 android:layout_height="52dp"
                 android:layout_marginTop="32dp"
                 android:backgroundTint="@color/cardPeneira"
-                android:text="Salvar alterações"
+                android:text="@string/salvar_alteracoes"
                 android:textAllCaps="false"
                 android:textColor="@color/txtBranco"
                 android:textSize="14sp"
@@ -434,7 +434,7 @@
                 android:minHeight="48dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Cancelar"
+                android:text="@string/cancelar"
                 android:textColor="@color/cardPeneira"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -452,7 +452,7 @@
                 android:minHeight="48dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Sair da conta"
+                android:text="@string/sair_da_conta"
                 android:textColor="@color/cardPeneira"
                 android:textSize="14sp"
                 android:textStyle="bold" />
